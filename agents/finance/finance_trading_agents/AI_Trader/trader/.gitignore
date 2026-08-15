@@ -1,0 +1,12 @@
+# Secrets and runtime state — never commit
+secrets.json
+journal.jsonl
+state.json
+journal_day.jsonl
+state_day.json
+day_universe.json
+__pycache__/
+*.pyc
+
+# cloudflared binary
+bin/

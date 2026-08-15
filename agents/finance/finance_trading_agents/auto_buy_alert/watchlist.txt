@@ -1,0 +1,17 @@
+# auto-buy-alert 自选股清单(每行一个,美股代码;# 开头为注释)
+# 比特币用 BTC-USD;SPCX=SpaceX(新上市);CRCL=Circle
+NOK
+GOOG
+MSFT
+COIN
+CRCL
+BTC-USD
+CELH
+SPCX
+INTC
+CEG
+RKLB
+NVDA
+TSLA
+SNDK
+MU

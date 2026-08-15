@@ -1,0 +1,45 @@
+# ===== Secrets — NEVER commit =====
+**/.env
+**/.env.local
+**/secrets.json
+**/ngrok.yml
+**/*.secret
+
+# ===== Python =====
+**/.venv/
+**/venv/
+**/env/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# ===== Node / frontend build =====
+**/node_modules/
+**/dist/
+**/build/
+
+# ===== Databases / runtime state =====
+*.db
+*.sqlite
+*.sqlite3
+**/service/server/data/
+**/trader/journal*.jsonl
+**/trader/state*.json
+**/trader/day_universe.json
+**/trader/bin/
+auto-buy-alert/last_run.json
+auto-buy-alert/state.json
+auto-buy-alert/_*.json
+auto-buy-alert/fund_state/
+
+# ===== Logs / temp =====
+*.log
+*.err
+*.out
+*.tmp
+
+# ===== IDE / OS =====
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

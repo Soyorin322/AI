@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>auto-buy-alert · 引擎状态</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --border:#2a3340;
+    --txt:#e6edf3; --muted:#8b949e; --green:#3fb950; --red:#f85149;
+    --yellow:#d29922; --blue:#58a6ff; --gray:#6e7681;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:"Segoe UI",system-ui,-apple-system,"Microsoft YaHei",sans-serif;}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 18px 60px;}
+  h1{font-size:20px;margin:0 0 2px;display:flex;align-items:center;gap:10px;}
+  .sub{color:var(--muted);font-size:12.5px;margin-bottom:18px;}
+  .banner{display:flex;align-items:center;gap:14px;padding:18px 20px;border-radius:14px;
+    border:1px solid var(--border);background:var(--panel);margin-bottom:18px;}
+  .banner .big{font-size:22px;font-weight:600;}
+  .banner .em{font-size:34px;line-height:1;}
+  .banner small{color:var(--muted);font-weight:400;font-size:13px;display:block;margin-top:3px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 15px;}
+  .card h3{margin:0 0 8px;font-size:14px;display:flex;align-items:center;gap:8px;}
+  .row{display:flex;justify-content:space-between;font-size:12.5px;margin:4px 0;color:var(--muted);}
+  .row b{color:var(--txt);font-weight:500;}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 auto;}
+  .badge{font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--border);}
+  section{margin-top:22px;}
+  section>h2{font-size:14px;color:var(--muted);margin:0 0 10px;font-weight:600;
+    text-transform:uppercase;letter-spacing:.04em;}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;}
+  .chip{display:flex;align-items:center;gap:9px;background:var(--panel);border:1px solid var(--border);
+    border-radius:10px;padding:10px 13px;min-width:200px;}
+  .chip .name{font-weight:600;font-size:13px;}
+  .chip .detail{color:var(--muted);font-size:11.5px;}
+  button{background:var(--panel2);color:var(--txt);border:1px solid var(--border);
+    border-radius:9px;padding:8px 14px;font-size:13px;cursor:pointer;}
+  button:hover{border-color:var(--blue);}
+  button:disabled{opacity:.5;cursor:default;}
+  .today{display:flex;gap:10px;flex-wrap:wrap;}
+  .pill{display:flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--border);
+    border-radius:20px;padding:6px 13px;font-size:12.5px;}
+  pre{background:#0a0e14;border:1px solid var(--border);border-radius:10px;padding:12px;
+    overflow:auto;font-size:11.5px;line-height:1.55;color:#c9d1d9;max-height:240px;margin:0;}
+  .muted{color:var(--muted);}
+  .tks{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+  .tk{font-size:12px;padding:3px 9px;border-radius:6px;background:var(--panel2);
+    border:1px solid var(--border);font-family:ui-monospace,Consolas,monospace;}
+  .spin{width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--blue);
+    border-radius:50%;display:inline-block;animation:s .7s linear infinite;}
+  @keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📡 auto-buy-alert · 引擎状态</h1>
+  <div class="sub">本地看板 · 仅 127.0.0.1 可见 · 状态每 15 秒自动刷新</div>
+
+  <div class="banner" id="banner">
+    <div class="em" id="bannerEm">⚪</div>
+    <div>
+      <div class="big" id="bannerTxt">加载中…</div>
+      <small id="bannerSub">正在读取定时任务状态</small>
+    </div>
+  </div>
+
+  <section>
+    <h2>实时连通(点"现在实测"会真去 ping，不发消息、不花 token)</h2>
+    <div class="chips" id="health">
+      <div class="chip"><span class="spin"></span><span class="muted">检测中…</span></div>
+    </div>
+    <div style="margin-top:10px;display:flex;align-items:center;gap:12px;">
+      <button id="btnHealth" onclick="runHealth()">🔄 现在实测</button>
+      <span class="muted" id="healthTime" style="font-size:12px;"></span>
+    </div>
+  </section>
+
+  <section>
+    <h2>市场情绪 · Fear &amp; Greed(每天盘中也会推到 Discord)</h2>
+    <div class="chips" id="market">
+      <div class="chip"><span class="spin"></span><span class="muted">加载中…</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>监视清单</h2>
+    <div id="watchlists"><span class="muted">加载中…</span></div>
+  </section>
+
+  <section>
+    <h2>基金追踪(推送到 funds 频道)</h2>
+    <div id="funds"><span class="muted">加载中…</span></div>
+  </section>
+
+  <section>
+    <h2>定时任务</h2>
+    <div class="grid" id="tasks"></div>
+  </section>
+
+  <section>
+    <h2 id="todayHdr">今日</h2>
+    <div class="today" id="today"></div>
+  </section>
+
+  <section>
+    <h2>最近日志(run.log)</h2>
+    <pre id="logs">—</pre>
+  </section>
+</div>
+
+<script>
+const OK_CODES = {0:'成功', 267009:'正在运行', 267011:'尚未运行', 2147946720:'已跳过(补跑已覆盖)'};
+// Task Scheduler codes that are NOT real failures (success / running / not-yet-run / benign skip)
+const BENIGN = [0, 267009, 267011, 2147946720, null, undefined];
+function fmt(ts){ if(!ts) return '—'; const d=new Date(ts); if(isNaN(d)) return ts;
+  return d.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+function color(c){ return {green:'var(--green)',red:'var(--red)',yellow:'var(--yellow)',
+  blue:'var(--blue)',gray:'var(--gray)'}[c]||'var(--gray)'; }
+function dot(c){ return `<span class="dot" style="background:${color(c)}"></span>`; }
+function resultLabel(code){
+  if(code in OK_CODES) return OK_CODES[code];
+  return '错误 (' + code + ')';
+}
+function resultColor(code){
+  if(code===0) return 'green'; if(code===267009) return 'blue';
+  if(code===267011||code===null||code===undefined||code===2147946720) return 'gray'; return 'red';
+}
+
+async function runStatus(){
+  try{
+    const s = await (await fetch('/api/status',{cache:'no-store'})).json();
+    renderTasks(s.tasks);
+    renderBanner(s.tasks);
+    renderToday(s.last_run);
+    renderWatchlists(s.watchlists);
+    renderFunds(s.funds);
+    document.getElementById('logs').textContent = (s.logs||[]).join('\n') || '—';
+  }catch(e){
+    document.getElementById('bannerEm').textContent='🔴';
+    document.getElementById('bannerTxt').textContent='看板服务无响应';
+    document.getElementById('bannerSub').textContent=String(e);
+  }
+}
+
+function renderBanner(tasks){
+  const em=document.getElementById('bannerEm'), tx=document.getElementById('bannerTxt'), sub=document.getElementById('bannerSub');
+  if(!Array.isArray(tasks)){ em.textContent='🔴'; tx.textContent='无法读取任务'; sub.textContent=JSON.stringify(tasks); return; }
+  const disabled = tasks.filter(t=>t.state==='Disabled');
+  const failed = tasks.filter(t=>!BENIGN.includes(t.lastResult));
+  const everRan = tasks.some(t=>t.lastRun);
+  if(disabled.length){ em.textContent='🔴'; tx.textContent='部分任务被禁用';
+    sub.textContent=disabled.map(t=>t.name).join('、'); }
+  else if(failed.length){ em.textContent='🟡'; tx.textContent='上次运行有错';
+    sub.textContent=failed.map(t=>t.name+':'+resultLabel(t.lastResult)).join('、'); }
+  else if(!everRan){ em.textContent='⚪'; tx.textContent='已部署，等待首次运行';
+    sub.textContent=tasks.length+' 个任务在岗 · 下个交易日开跑'; }
+  else { em.textContent='🟢'; tx.textContent='系统在岗';
+    sub.textContent=tasks.length+' 个任务已启用，最近运行正常'; }
+}
+
+function renderTasks(tasks){
+  const el=document.getElementById('tasks');
+  if(!Array.isArray(tasks)){ el.innerHTML='<div class="card muted">读取任务失败</div>'; return; }
+  el.innerHTML = tasks.sort((a,b)=>a.name.localeCompare(b.name)).map(t=>{
+    const enabled = t.state!=='Disabled';
+    return `<div class="card">
+      <h3>${dot(enabled?'green':'red')} ${t.name.replace('AutoBuyAlert-','')}</h3>
+      <div class="row"><span>状态</span><b>${t.state}</b></div>
+      <div class="row"><span>最近运行</span><b>${fmt(t.lastRun)}</b></div>
+      <div class="row"><span>结果</span><b style="color:${color(resultColor(t.lastResult))}">${resultLabel(t.lastResult)}</b></div>
+      <div class="row"><span>下次运行</span><b>${fmt(t.nextRun)}</b></div>
+    </div>`;
+  }).join('');
+}
+
+function renderToday(lr){
+  const hdr=document.getElementById('todayHdr'), el=document.getElementById('today');
+  const days = Object.keys(lr||{}).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).sort();
+  const day = days[days.length-1];
+  if(!day){ hdr.textContent='今日'; el.innerHTML='<span class="muted">还没有运行记录</span>'; return; }
+  hdr.textContent='最近交易日 · '+day;
+  const sess=[['preopen','盘前'],['hot','热门'],['close','盘后']];
+  el.innerHTML = sess.map(([k,label])=>{
+    const done = lr[day] && lr[day][k]==='done';
+    return `<span class="pill">${dot(done?'green':'gray')} ${label} ${done?'已跑':'未跑'}</span>`;
+  }).join('');
+}
+
+async function runHealth(){
+  const btn=document.getElementById('btnHealth'), box=document.getElementById('health');
+  btn.disabled=true; box.innerHTML='<div class="chip"><span class="spin"></span><span class="muted">检测中…</span></div>';
+  try{
+    const h = await (await fetch('/api/health',{cache:'no-store'})).json();
+    const items=[['claude','Claude 引擎'],['yahoo','Yahoo 数据源'],['discord','Discord 推送']];
+    box.innerHTML = items.map(([k,name])=>{
+      const c=h[k]||{}; return `<div class="chip">${dot(c.ok?'green':'red')}
+        <div><div class="name">${name}</div><div class="detail">${(c.detail||'').replace(/</g,'&lt;')}</div></div></div>`;
+    }).join('');
+    document.getElementById('healthTime').textContent='上次实测 '+(h.checked_at||'');
+  }catch(e){
+    box.innerHTML='<div class="chip">'+dot('red')+'<span class="muted">实测失败: '+e+'</span></div>';
+  }
+  btn.disabled=false;
+}
+
+function renderWatchlists(wls){
+  const el=document.getElementById('watchlists');
+  const names=Object.keys(wls||{});
+  if(!names.length){ el.innerHTML='<span class="muted">未配置清单</span>'; return; }
+  el.innerHTML = names.map(name=>{
+    const arr=wls[name]||[];
+    const chips=arr.map(t=>`<span class="tk">${t}</span>`).join('');
+    return `<div class="card" style="margin-bottom:10px;">
+      <h3>📋 ${name} <span class="muted" style="font-weight:400;font-size:12px;">${arr.length} 只</span></h3>
+      <div class="tks">${chips}</div></div>`;
+  }).join('');
+}
+
+function renderFunds(f){
+  const el=document.getElementById('funds');
+  if(!f || (!f.sa_13f_date && !f.ark_date)){ el.innerHTML='<span class="muted">尚未运行(每交易日 17:00 PT)</span>'; return; }
+  const top=(f.sa_top||[]).join('、')||'—';
+  el.innerHTML = `<div class="grid">
+    <div class="card"><h3>📈 Cathie Wood · ARK</h3>
+      <div class="row"><span>持仓数据</span><b>${f.ark_date||'—'}</b></div>
+      <div class="row"><span>追踪内容</span><b>每日买卖 · 6 只 ETF</b></div></div>
+    <div class="card"><h3>🧠 Aschenbrenner · 13F</h3>
+      <div class="row"><span>最新 13F</span><b>${f.sa_13f_date||'—'}</b></div>
+      <div class="row"><span>持仓数</span><b>${f.sa_holdings||'—'}</b></div>
+      <div class="row"><span>前5</span><b style="font-size:11px;text-align:right">${top}</b></div></div>
+  </div>`;
+}
+
+async function runMarket(){
+  const box=document.getElementById('market');
+  try{
+    const m = await (await fetch('/api/market',{cache:'no-store'})).json();
+    const items=[['stocks','美股 (US)'],['crypto','BTC / 加密']];
+    box.innerHTML = items.map(([k,name])=>{
+      const c=m[k]||{}; const v=c.value;
+      const col = (v==null)?'gray':(v<45?'red':(v<55?'yellow':'green'));
+      return `<div class="chip">${dot(col)}<div>
+        <div class="name">${name}: ${v==null?'—':v} <span style="color:${color(col)}">${c.rating||''}</span></div>
+        <div class="detail">${(c.detail||'').replace(/</g,'&lt;')}</div></div></div>`;
+    }).join('');
+  }catch(e){ box.innerHTML='<div class="chip">'+dot('red')+'<span class="muted">加载失败: '+e+'</span></div>'; }
+}
+
+runStatus(); runHealth(); runMarket();
+setInterval(runStatus, 15000);
+setInterval(runHealth, 90000);
+setInterval(runMarket, 300000);
+</script>
+</body>
+</html>

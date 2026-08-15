@@ -1,0 +1,593 @@
+# Task 001 — Bootstrap Aiko / ai-friend Framework
+
+## Objective
+
+Bootstrap the first executable architecture skeleton for `ai-friend`, a generic modular framework for persistent AI characters.
+
+This task is architecture-first.
+
+The goal is NOT to implement Aiko's final Persona, Memory, Knowledge, Skill, Event, or Perception algorithms.
+
+The goal is to create a clean, executable shell with stable subsystem contracts so later research results can be implemented without rewriting the whole project.
+
+---
+
+## Required reading
+
+Before making changes:
+
+1. Read the root `AGENTS.md`.
+2. Read the latest `character_create_v*.txt` architecture/research document available in the repository.
+3. Inspect the existing repository structure and code before creating or replacing files.
+
+Treat:
+
+```text
+character_create_v*.txt
+= architecture / research source of truth
+
+AGENTS.md
+= persistent repository development rules
+
+this task file
+= current implementation scope
+```
+
+Do not regenerate, simplify, or overwrite `AGENTS.md` unless this task explicitly requires an AGENTS.md change.
+
+If this task conflicts with `AGENTS.md` or the latest architecture document, stop before implementing the conflicting assumption and report the conflict.
+
+---
+
+## Scope
+
+Implement only the generic framework skeleton required to demonstrate these subsystems:
+
+```text
+Character
+Knowledge
+Memory
+Skills
+Perception
+LLM
+Runtime
+```
+
+The Runtime must coordinate them through explicit abstractions.
+
+Create or complete an executable path:
+
+```text
+CLI / text input
+        ↓
+Perception or runtime input
+        ↓
+Runtime / Orchestrator
+        ↓
+Character
+Knowledge
+Memory
+Skills
+        ↓
+Runtime Context
+        ↓
+LLMProvider
+        ↓
+Response
+```
+
+Do not bypass subsystem interfaces merely to make the demo work.
+
+---
+
+## Architecture requirements
+
+### 1. Subsystem boundaries
+
+Maintain separate modules for:
+
+```text
+character/
+knowledge/
+memory/
+skills/
+perception/
+llm/
+runtime/
+```
+
+A small shared `core/` or equivalent domain-contract module is allowed when it materially improves dependency direction.
+
+Runtime is the coordinator.
+
+Subsystems must not orchestrate each other.
+
+Follow all dependency restrictions defined in `AGENTS.md`.
+
+---
+
+### 2. Explicit contracts
+
+Define minimal typed public contracts for future replaceability.
+
+At minimum provide abstractions equivalent to:
+
+```python
+CharacterProvider
+KnowledgeStore
+MemoryStore
+SkillRegistry
+PerceptionSource
+LLMProvider
+```
+
+Use Python type hints throughout public APIs.
+
+Prefer `Protocol`, ABCs, dataclasses, or similarly lightweight standard-library mechanisms.
+
+Do not design final research-stage schemas.
+
+---
+
+### 3. Minimal domain models
+
+Create only the minimum models required for the framework to operate.
+
+Possible examples:
+
+```text
+CharacterIdentity
+CharacterProfile / CharacterState
+KnowledgeRecord
+MemoryRecord
+SkillDescriptor
+PerceptionEvent
+LLMRequest
+LLMResponse
+RuntimeContext
+```
+
+Names may differ if the existing repository already has reasonable equivalents.
+
+Do not introduce detailed final models for:
+
+```text
+8-domain Persona
+trait evolution
+belief update
+relationship evolution
+emotion modeling
+event cognition graphs
+persona consolidation
+skill proficiency
+```
+
+Those remain research-stage semantics unless the latest architecture document explicitly marks them ready for implementation.
+
+---
+
+### 4. Mock / in-memory implementations
+
+For unresolved subsystems, implement simple replaceable versions only.
+
+Examples:
+
+```text
+MockCharacterProvider
+InMemoryKnowledgeStore
+InMemoryMemoryStore
+FilesystemSkillRegistry
+MockPerceptionSource
+MockLLMProvider
+```
+
+Do not introduce production frameworks merely to satisfy Task 001.
+
+The architecture should make it possible to replace one implementation later without changing Runtime.
+
+---
+
+## Package structure
+
+Prefer a Python `src` layout.
+
+A reasonable target is:
+
+```text
+ai-friend/
+├── AGENTS.md
+├── README.md
+├── pyproject.toml
+├── character_create_v*.txt
+│
+├── src/
+│   └── ai_friend/
+│       ├── __init__.py
+│       ├── __main__.py
+│       ├── core/
+│       ├── character/
+│       ├── knowledge/
+│       ├── memory/
+│       ├── skills/
+│       ├── perception/
+│       ├── llm/
+│       └── runtime/
+│
+├── characters/
+│   └── example/
+│
+├── skills/
+│   └── example_skill/
+│       └── SKILL.md
+│
+├── tests/
+└── docs/
+```
+
+Do not force this exact tree if the existing repository already has a cleaner compatible structure.
+
+Document material deviations instead of restructuring working code unnecessarily.
+
+---
+
+## Character
+
+Implement only a generic character representation sufficient for runtime testing.
+
+The example character must be fictional-neutral and framework-only.
+
+Do not embed assumptions about:
+
+- Sakiko
+- BanG Dream!
+- anime characters
+- specific franchises
+- final Persona taxonomy
+- final Character Core schema
+
+A minimal character file may contain only:
+
+```yaml
+id: example
+name: Example
+description: Generic example character used for framework testing.
+```
+
+---
+
+## Knowledge
+
+Knowledge represents information available to the character.
+
+Memory represents experience/history.
+
+Keep them architecturally separate.
+
+For Task 001, implement only a minimal in-memory KnowledgeStore with basic operations needed by tests/runtime, such as:
+
+```text
+add
+get
+search/list
+```
+
+Do not add:
+
+- embeddings
+- RAG
+- vector search
+- graph retrieval
+- external knowledge services
+
+---
+
+## Memory
+
+Implement the MemoryStore contract and a simple in-memory implementation.
+
+A generic record should support at least:
+
+```text
+id
+timestamp
+content
+metadata
+```
+
+Do not finalize the future Memory taxonomy in code.
+
+Do not implement:
+
+- consolidation
+- forgetting
+- summarization
+- importance scoring
+- persona-conditioned insight
+- event graphs
+- autonomous memory writing
+- persona mutation
+
+---
+
+## Skills
+
+Implement a generic Skill descriptor and registry.
+
+Reserve support for filesystem skill packages such as:
+
+```text
+skills/
+└── example_skill/
+    ├── SKILL.md
+    ├── scripts/
+    ├── references/
+    └── assets/
+```
+
+Only `SKILL.md` is required for the example.
+
+The registry should be able to discover the example skill.
+
+Do not implement tool execution or automatic skill creation yet.
+
+---
+
+## Perception
+
+Define a typed event/observation abstraction that leaves room for:
+
+```text
+text
+audio
+screen
+image
+video
+MIDI
+system events
+```
+
+For Task 001, only text/mock behavior is required.
+
+Do not implement actual microphone, screen capture, vision, video, or MIDI processing.
+
+Perception must not directly mutate Character state.
+
+---
+
+## LLM
+
+Define a provider abstraction equivalent to:
+
+```python
+generate(request) -> response
+```
+
+Create a deterministic mock implementation.
+
+Do not integrate any real provider.
+
+Runtime and domain logic must depend on the abstraction, not on the mock class.
+
+---
+
+## Runtime
+
+Create or complete a central Runtime / Orchestrator.
+
+Runtime should:
+
+1. accept text input or a compatible PerceptionEvent;
+2. obtain minimal character state;
+3. obtain relevant mock/in-memory Knowledge and Memory context;
+4. discover or expose available Skills;
+5. build one explicit RuntimeContext;
+6. pass an LLMRequest to the configured LLMProvider;
+7. return the provider response.
+
+Prompt/context composition must remain centralized rather than scattered across subsystems.
+
+Do not implement advanced retrieval or context optimization yet.
+
+---
+
+## Executable demo
+
+The project must support:
+
+```bash
+python -m ai_friend
+```
+
+Provide a minimal terminal loop such as:
+
+```text
+ai-friend generic runtime
+Type "exit" to quit.
+
+You > Hello
+Example > Mock response to: Hello
+```
+
+The exact text may differ.
+
+The response must travel through the actual Runtime and LLMProvider abstraction.
+
+---
+
+## Dependencies
+
+Keep dependencies minimal.
+
+Prefer the Python standard library.
+
+Use `pytest` for tests if already configured or add it as the development test dependency.
+
+Use PyYAML only if YAML is actually used by the implementation.
+
+Do not add, unless explicitly required by existing code:
+
+```text
+LangChain
+LangGraph
+LlamaIndex
+Mem0
+FAISS
+Qdrant
+Chroma
+OpenAI SDK
+Anthropic SDK
+Ollama client
+FastAPI
+SQLAlchemy
+GUI frameworks
+```
+
+Do not choose a vector DB, graph DB, ORM, LLM vendor, memory framework, persona framework, or workflow engine in this task.
+
+---
+
+## Documentation
+
+Create or update:
+
+```text
+README.md
+docs/architecture.md
+```
+
+`docs/architecture.md` should briefly document:
+
+1. subsystem responsibilities;
+2. allowed dependency direction;
+3. Runtime orchestration flow;
+4. Knowledge vs Memory;
+5. replaceable implementations;
+6. why Task 001 intentionally uses mocks/in-memory components;
+7. explicitly deferred research-stage features.
+
+Short placeholder subsystem docs are acceptable if they already fit the repository structure, but do not invent detailed future architecture solely to fill documentation.
+
+Do not duplicate the full `character_create_v*.txt` research document.
+
+---
+
+## Tests
+
+Add focused tests that verify at minimum:
+
+### Runtime
+A text input can be processed through the Runtime using mock/in-memory components.
+
+### Replaceability
+A fake alternative implementation of at least one subsystem, preferably `LLMProvider`, can replace the default mock without changing Runtime code.
+
+### Knowledge
+In-memory knowledge can be stored and retrieved.
+
+### Memory
+In-memory memory can be stored and retrieved.
+
+### Skills
+The example `SKILL.md` can be discovered.
+
+### Perception
+A mock/text PerceptionEvent can enter the Runtime path.
+
+Avoid tests for algorithms that Task 001 intentionally does not implement.
+
+---
+
+## Explicit non-goals
+
+Do NOT implement in Task 001:
+
+- a real fictional character
+- final Character Core / Persona schema
+- automatic Persona evolution
+- Event → Persona mutation
+- final Event Interpretation pipeline
+- belief/value update algorithms
+- emotional model
+- relationship model
+- long-term memory algorithms
+- embeddings
+- RAG
+- vector databases
+- graph databases
+- memory consolidation
+- real LLM APIs
+- local model inference
+- speech recognition
+- TTS / voice cloning
+- microphone capture
+- screen capture
+- computer vision
+- video understanding
+- MIDI interpretation
+- piano analysis
+- autonomous agents
+- multi-agent architecture
+- GUI
+- web server
+- mobile application
+- cloud infrastructure
+
+If functionality is not necessary to prove the framework boundary, defer it.
+
+---
+
+## Acceptance criteria
+
+Task 001 is complete when:
+
+- [ ] The project has a clean importable Python package.
+- [ ] `python -m ai_friend` starts successfully.
+- [ ] A terminal text interaction works through Runtime.
+- [ ] Character, Knowledge, Memory, Skills, Perception, LLM, and Runtime remain separate domains/modules.
+- [ ] Major subsystem boundaries use explicit typed contracts.
+- [ ] Runtime depends on abstractions rather than concrete implementations.
+- [ ] Mock/in-memory implementations exist where required.
+- [ ] Knowledge and Memory remain distinct.
+- [ ] A generic PerceptionEvent/observation model exists.
+- [ ] RuntimeContext is explicitly represented.
+- [ ] The example `SKILL.md` can be discovered.
+- [ ] At least one replaceability test proves an implementation can be swapped without modifying Runtime.
+- [ ] No production LLM, external database, or real perception integration was introduced.
+- [ ] No character-specific assumptions are embedded in the framework.
+- [ ] Relevant tests pass.
+- [ ] README and architecture documentation reflect the implemented structure.
+- [ ] Existing `AGENTS.md` remains intact unless a change was explicitly necessary.
+
+---
+
+## Validation before finishing
+
+Before declaring completion:
+
+1. Inspect the final repository structure.
+2. Run the validation commands defined in `AGENTS.md`.
+3. Run all configured tests.
+4. Run `python -m ai_friend` manually with a simple input.
+5. Check that Runtime does not import subsystem concrete implementations unnecessarily.
+6. Check that no subsystem directly reaches into another subsystem's concrete storage/provider.
+7. Check for unnecessary dependencies and speculative abstractions.
+8. Confirm research-stage Character/Event/Memory semantics were not silently finalized.
+9. Update documentation if the final implementation differs materially from the intended structure.
+
+If a required validation cannot run, explain exactly why instead of silently skipping it.
+
+---
+
+## Final response
+
+When finished, report:
+
+- architecture created or changed;
+- important design decisions;
+- files/modules added or modified;
+- tests and validation commands executed;
+- results;
+- deliberate non-goals/deferred work;
+- any deviations from this task and why.
+
+Do not claim completion unless the acceptance criteria are actually satisfied.

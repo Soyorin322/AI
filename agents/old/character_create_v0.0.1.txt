@@ -1,0 +1,1005 @@
+# Aiko Virtual Character Architecture & Research Guide
+
+## 0. Project Goal
+
+Aiko 的目標不是建立一個「套上角色 Prompt 的聊天機器人」，而是建立一個可以長期存在、維持角色一致性、累積共同經歷、逐步獲得新知識與能力，並能透過語音、畫面、MIDI 等方式感知現實世界的 persistent virtual character system。
+
+核心目標：
+
+- 長期維持角色人格與說話風格
+- 保存並使用共同經歷
+- 將角色本身與 LLM、資料庫、第三方框架解耦
+- 能替換 Persona / Memory / Perception / LLM 等底層技術
+- 能逐步新增 Skills，而不需要重寫角色本身
+- 能在未來支援文字、語音、畫面、影片、MIDI 等多模態互動
+- 角色資料應比任何單一技術或框架活得更久
+
+---
+
+# 1. Design Philosophy
+
+## 1.1 Aiko is not a single LLM application
+
+Aiko 不等於 LLM。
+
+LLM 只是角色運行時使用的一個推理引擎。
+
+真正的角色由多個獨立系統共同構成：
+
+```text
+Aiko
+├── Character Core
+├── Knowledge
+├── Memory
+├── Perception
+├── Skills
+├── LLM / Reasoning Engine
+└── Runtime / Orchestrator
+```
+
+概念上：
+
+```text
+Character =
+Persona
++ Knowledge
++ Memory
++ Relationship
++ Skills
++ Perception
++ Reasoning Engine
+```
+
+---
+
+## 1.2 Framework ≠ Module Implementation ≠ Character Data
+
+Aiko 必須明確區分三個層級。
+
+### Framework
+
+Framework 定義：
+
+- Runtime
+- Interfaces / Contracts
+- Module boundaries
+- Data flow
+- Dependency rules
+
+Framework 不應該知道某個特定 Persona framework、Memory database 或 LLM vendor 的內部實作。
+
+### Module Implementation
+
+Module Implementation 是可以替換的技術實作，例如：
+
+```text
+Character Core
+├── simple structured persona
+├── PersonaForge-inspired engine
+└── future custom psychology model
+
+Memory
+├── simple local memory
+├── Mem0-style memory
+├── DualMem-inspired memory
+└── future graph/vector hybrid memory
+
+Perception
+├── text
+├── microphone
+├── screen
+├── vision
+└── MIDI
+```
+
+### Character Data
+
+Character Data 是角色真正需要長期保存的內容，例如：
+
+```text
+Aiko Data
+├── identity
+├── personality
+├── canonical background
+├── relationships
+├── memories
+├── knowledge
+├── preferences
+└── learned skills / experience
+```
+
+Character Data 不應與任何單一第三方框架綁定。
+
+---
+
+## 1.3 Modular / Plugin-Oriented Architecture
+
+Aiko 應採用類似遊戲 Engine + Mods 的架構。
+
+外部論文、GitHub 專案與 AI framework 應被視為：
+
+- design reference
+- candidate implementation
+- replaceable engine
+- adapter target
+
+而不是 Aiko Framework 本身。
+
+例如：
+
+```text
+Aiko Runtime
+     ↓
+Memory Interface
+     ↓
+Adapter
+     ↓
+Mem0 / DualMem / Custom Memory
+```
+
+或：
+
+```text
+Aiko Runtime
+     ↓
+Character Interface
+     ↓
+Adapter
+     ↓
+PersonaForge-inspired implementation
+```
+
+因此：
+
+> Aiko should own the character; external technologies should only provide capabilities.
+
+---
+
+## 1.4 Data Longevity > Implementation Longevity
+
+角色資料的生命週期應長於任何單一技術。
+
+即使未來：
+
+- PersonaForge 不再使用
+- Mem0 被替換
+- 現在的 LLM 被淘汰
+- Vector DB 被新的記憶技術取代
+
+仍然應該能保留：
+
+```text
+identity
+personality
+background
+memories
+relationship history
+knowledge
+skills / experience
+```
+
+因此：
+
+> Persistent character data must use Aiko-owned schemas.
+
+第三方 framework-specific object 或 database schema 不應直接成為 Character Core、Memory、Knowledge 或 Relationship 的 canonical storage format。
+
+需要整合第三方技術時，應透過 adapter 或 migration layer。
+
+---
+
+## 1.5 Stable Interfaces, Replaceable Implementations
+
+Framework 應依賴 interface，而不是 concrete implementation。
+
+例如：
+
+```text
+Runtime
+ ├── CharacterProvider
+ ├── KnowledgeStore
+ ├── MemoryStore
+ ├── SkillRegistry
+ ├── PerceptionSource
+ └── LLMProvider
+```
+
+未來替換：
+
+```text
+MockLLM → OpenAI → Ollama → llama.cpp → future local model
+```
+
+不應要求重寫 Runtime 或 Character Data。
+
+同理：
+
+```text
+Memory implementation A
+        ↓
+Memory implementation B
+```
+
+角色原本的記憶資料仍應可 migration / reuse。
+
+---
+
+## 1.6 Runtime Is the Coordinator
+
+各 subsystem 不應彼此直接 orchestrate。
+
+建議依賴方向：
+
+```text
+Character ──────┐
+Knowledge ──────┤
+Memory ─────────┤
+Skills ─────────┼──> Runtime / Orchestrator ──> LLM
+Perception ─────┘
+```
+
+原則：
+
+- Character 不直接操作 Memory database
+- Memory 不直接呼叫 LLM provider
+- Perception 不直接修改 Character state
+- Skills 不直接寫入 Memory
+- Runtime 負責協調所有 subsystem
+
+---
+
+# 2. Research Methodology
+
+## 2.1 不以 GitHub Star 作為主要技術選擇標準
+
+GitHub Star 只能代表部分社群熱度，不能直接代表：
+
+- 技術是否適合 persistent virtual character
+- Persona consistency 是否好
+- Memory 是否適合角色型記憶
+- 長對話是否穩定
+- 架構是否容易整合
+
+技術評估應優先看：
+
+1. Problem fit
+2. Research / evaluation quality
+3. Architecture
+4. Schema
+5. Runtime flow
+6. Replaceability
+7. Cost
+8. Maintenance status
+9. License
+
+---
+
+## 2.2 研究來源優先順序
+
+研究一個技術時建議按照：
+
+```text
+Paper / Official documentation
+        ↓
+README / Architecture overview
+        ↓
+Schema / Models
+        ↓
+Prompt / Runtime flow
+        ↓
+Evaluation / Ablation / Tests
+        ↓
+Implementation details
+```
+
+GitHub 中優先查看：
+
+```text
+README.md
+architecture/
+docs/
+schemas/
+models/
+examples/
+prompts/
+runtime/
+evals/
+tests/
+```
+
+不應一開始就從整個 `src/` 第一個檔案一路閱讀到底。
+
+---
+
+## 2.3 Research → Extract → Adapt
+
+研究外部技術時，不應預設「直接把整個 framework 裝進 Aiko」。
+
+標準流程：
+
+```text
+1. Understand
+2. Evaluate
+3. Extract
+4. Adapt
+5. Implement behind Aiko interface
+6. Add adapter if direct integration is necessary
+```
+
+詳細原則：
+
+1. Understand the problem it solves.
+2. Identify useful concepts, schema, algorithms, and runtime patterns.
+3. Evaluate whether they fit Aiko's requirements.
+4. Extract only the required design.
+5. Implement it behind Aiko's own subsystem interface.
+6. Use an adapter when directly integrating an external framework.
+
+Do not restructure Aiko around an external framework unless there is a strong architectural reason.
+
+---
+
+## 2.4 Technology Evaluation Sheet
+
+每一個候選技術至少評估：
+
+| 項目 | 問題 |
+|---|---|
+| Problem fit | 是否真的解決 Aiko 需要的問題？ |
+| Representation | Persona / Memory / Skill 如何被表示？ |
+| Static / Dynamic | 是否區分穩定資料與動態狀態？ |
+| Runtime integration | 如何影響 LLM 輸出？ |
+| Long-term stability | 是否測試長期 drift / consistency？ |
+| Evaluation | 是否有 quantitative / human evaluation？ |
+| Portability | 是否能抽取概念而不綁死 framework？ |
+| Performance | Token / latency / compute cost 多大？ |
+| Maintenance | Repo 是否仍活躍？ |
+| License | 是否允許未來使用與修改？ |
+
+---
+
+# 3. Character Core Research
+
+Character Core 的目標是回答：
+
+> Who is this character?
+
+而不是：
+
+> What does this character know?
+
+因此 Character Core 應與 Knowledge、Memory 分開。
+
+---
+
+## 3.1 Stable Persona
+
+可能包含：
+
+```text
+Identity
+├── name
+├── identity
+└── canonical self
+
+Personality
+├── personality traits
+├── values
+├── preferences
+├── emotional tendencies
+├── interpersonal behavior
+├── defense tendencies
+└── behavioral tendencies
+
+Expression
+├── speech style
+├── vocabulary tendencies
+├── tone
+└── example dialogue patterns
+```
+
+---
+
+## 3.2 Dynamic State
+
+Character Core 需要預留動態心理狀態，但不能與 Memory 混合。
+
+可能包含：
+
+```text
+Dynamic State
+├── current mood
+├── energy
+├── stress
+├── current goals
+├── short-term emotional state
+└── contextual behavioral bias
+```
+
+需要特別區分：
+
+```text
+Stable Identity
+        ≠
+Dynamic Psychological State
+        ≠
+Memory
+```
+
+---
+
+## 3.3 PersonaForge
+
+PersonaForge 是 Character Core 的重要研究候選。
+
+研究重點：
+
+- Personality Consistency
+- Style Adherence
+- Defense Mechanism
+- Response Diversity
+- Long-dialogue persona drift
+- Re-grounding ability
+- Structured personality representation
+
+可能值得 Aiko 抽取的概念：
+
+```text
+Core Traits
+Speaking Style
+Defense Tendencies
+Dynamic State
+```
+
+研究 PersonaForge 的目標不是直接將整個 PersonaForge framework 綁進 Aiko，而是判斷其中哪些人格結構與 runtime 方法值得成為 Aiko Character Core v1 的一部分。
+
+Reference:
+https://github.com/fQwQf/PersonaForge
+
+---
+
+## 3.4 SillyTavern Character Card
+
+Character Card 是成熟的角色描述格式，可作為 practical persona representation 參考。
+
+典型欄位：
+
+```text
+Character
+├── Name
+├── Description
+├── Personality
+├── Scenario
+├── First Message
+├── Example Dialogue
+├── System Prompt
+└── Lore / World Info
+```
+
+值得研究的方向：
+
+- 哪些欄位對角色一致性最有效
+- Example Dialogue 如何影響 speech style
+- Persona 與 Lore / World Info 如何分離
+- Character Card 如何被注入 prompt
+
+但 Lore / World Info 不應直接被視為 Character Core。
+
+Reference:
+https://github.com/SillyTavern/SillyTavern-Docs/blob/main/Usage/Characters/index.md
+
+---
+
+# 4. Knowledge
+
+Knowledge 的目標是回答：
+
+> What information is available to the character?
+
+Knowledge 不等於 Persona，也不等於 Memory。
+
+可能包含：
+
+```text
+Knowledge
+├── canonical background
+├── world lore
+├── people / organizations
+├── music knowledge
+├── piano knowledge
+├── real-world knowledge
+└── later imported knowledge packages
+```
+
+需要注意：
+
+- 原作背景資料可以存在 Knowledge
+- Character Core 只保存角色本身不可缺少的 canonical identity / personality
+- 大型世界觀與可檢索資料應避免全部塞入 Persona prompt
+
+未來可能使用：
+
+- RAG
+- Vector database
+- Keyword retrieval
+- Graph retrieval
+- Hybrid retrieval
+
+但目前不先綁定特定技術。
+
+---
+
+# 5. Memory Research
+
+Memory 的目標是回答：
+
+> What did the character experience, remember, infer, or learn from past interactions?
+
+Memory 與 Knowledge 必須分開。
+
+---
+
+## 5.1 Memory Types
+
+未來可研究：
+
+```text
+Memory
+├── Working Memory
+├── Episodic Memory
+├── Semantic Memory
+├── Relationship Memory
+└── Persona-conditioned Insight
+```
+
+---
+
+## 5.2 RoleMemo / DualMem
+
+重要概念：
+
+> Memory 不只記錄客觀事實，也可以保存角色依據 Persona 對事件形成的主觀理解。
+
+例如：
+
+```text
+Factual memory:
+User practiced piano for 45 minutes.
+
+Persona-conditioned insight:
+She noticed that he kept retrying the difficult part instead of giving up.
+
+Emotional interpretation:
+She feels quietly pleased but probably would not praise him directly.
+```
+
+可能架構：
+
+```text
+Memory
+├── factual cognition
+└── persona-conditioned insight
+```
+
+這個方向非常適合 persistent virtual character，因為不同人格對相同事件應產生不同記憶與理解。
+
+Reference:
+https://arxiv.org/abs/2605.25693
+
+---
+
+## 5.3 Mem0
+
+Mem0 是通用長期記憶技術的重要研究候選。
+
+值得研究：
+
+```text
+Memory extraction
+      ↓
+Entity linking
+      ↓
+Semantic retrieval
+BM25 retrieval
+Entity matching
+      ↓
+Multi-signal fusion
+      ↓
+Temporal reasoning
+```
+
+Temporal reasoning 對長期角色特別重要，例如：
+
+```text
+Past:
+User likes A
+
+Current:
+User no longer likes A and prefers B
+```
+
+記憶系統必須區分 current state 與 historical state。
+
+Reference:
+https://github.com/mem0ai/mem0
+
+---
+
+## 5.4 Letta / MemGPT
+
+Letta / MemGPT 值得研究的不是單純 RAG，而是 persistent stateful agent architecture。
+
+概念：
+
+```text
+Agent
+├── working memory
+├── long-term memory
+├── memory management
+├── tools
+└── persistent state
+```
+
+研究目標：
+
+- Agent 如何主動管理記憶
+- Context window 與 persistent memory 如何互動
+- 哪些概念適合抽取到 Aiko Memory subsystem
+
+Reference:
+https://github.com/letta-ai/letta
+
+---
+
+## 5.5 TeleMem
+
+TeleMem 專注於 character / role-play / companion AI / NPC memory。
+
+值得研究：
+
+- 本地記憶
+- Character memory isolation
+- 多角色記憶隔離
+- Local model + FAISS 等架構
+
+重要概念：
+
+```text
+Global Memory ≠ Character Memory
+```
+
+Reference:
+https://github.com/TeleAI-UAGI/telemem
+
+---
+
+# 6. Skills
+
+角色不需要天生無所不知。
+
+能力應該可以逐步新增：
+
+```text
+Character
+    +
+Skills
+```
+
+建議 Skills 採用獨立 loadable package。
+
+例如：
+
+```text
+skills/
+├── piano-listening/
+│   ├── SKILL.md
+│   ├── scripts/
+│   └── references/
+├── anime-watching/
+│   └── SKILL.md
+├── japanese-conversation/
+│   └── SKILL.md
+├── calendar/
+│   └── SKILL.md
+└── web-search/
+    └── SKILL.md
+```
+
+Agent Skills / SKILL.md 是目前重要的開放格式候選。
+
+基本格式：
+
+```text
+my-skill/
+├── SKILL.md
+├── scripts/
+├── references/
+└── assets/
+```
+
+SKILL.md 可包含：
+
+```yaml
+---
+name: piano-listening
+description: Listen to MIDI piano performances and comment on them.
+---
+```
+
+Skills 應與 Character Core 分離。
+
+角色是否「會做某件事」應來自 Skills，而不是把所有能力永久寫進 Persona。
+
+---
+
+# 7. Perception
+
+Perception 負責將現實世界事件轉換成 Aiko Runtime 可以理解的 typed events / observations。
+
+未來可能包含：
+
+```text
+Perception
+├── Text
+├── Microphone
+├── Speech Recognition
+├── Screen
+├── Image
+├── Video
+├── MIDI
+└── System Events
+```
+
+建議資料流：
+
+```text
+Audio
+Video
+Text
+MIDI
+      ↓
+Perception
+      ↓
+Typed Observation / Event
+      ↓
+Runtime
+      ↓
+Memory / Character / Skills / LLM
+```
+
+Perception 不應直接修改 Character state。
+
+---
+
+## 7.1 PersonaVLM
+
+PersonaVLM 是未來 multimodal long-term personalization 的重要研究候選。
+
+值得研究：
+
+```text
+Core memory
+Semantic memory
+Episodic memory
+Procedural memory
+```
+
+以及如何從：
+
+- 對話
+- 圖像
+- multimodal history
+
+抽取 long-term personalized information。
+
+此方向與未來：
+
+- 一起看動畫
+- 一起彈琴
+- 讓角色看到螢幕
+- 讓角色聽到環境
+
+高度相關。
+
+---
+
+# 8. Relationship State
+
+Relationship 不應簡化成單一：
+
+```text
+Relationship = friend
+```
+
+未來可研究結構化 relationship state，例如：
+
+```text
+Relationship
+├── familiarity
+├── trust
+├── affinity
+├── respect
+├── emotional closeness
+└── conflict
+```
+
+需要再決定 Relationship 最終屬於：
+
+- Character dynamic state
+- Memory subsystem
+- independent relationship subsystem
+
+目前先不做永久架構決定。
+
+---
+
+# 9. Current Aiko Architecture
+
+目前 Aiko Framework 已經分為：
+
+```text
+character/
+knowledge/
+memory/
+perception/
+skills/
+llm/
+runtime/
+```
+
+Runtime 應維持：
+
+```text
+Character ──────┐
+Knowledge ──────┤
+Memory ─────────┤
+Skills ─────────┼── Runtime ── LLM
+Perception ─────┘
+```
+
+此結構應作為後續研究與實作的穩定外框。
+
+後續每個 subsystem 可個別研究論文 / GitHub，再將適合的設計透過 Aiko-owned interface 裝入。
+
+---
+
+# 10. Recommended Research Order
+
+建議不要一次研究所有技術。
+
+## Phase 1 — Character Core
+
+研究：
+
+1. PersonaForge
+2. Dynamic Persona Coherence 類研究
+3. SillyTavern Character Card
+4. Role-playing persona evaluation / benchmark
+
+目標：
+
+```text
+Aiko Character Core Schema v1
+```
+
+---
+
+## Phase 2 — Knowledge
+
+研究：
+
+- RAG architecture
+- vector / keyword / graph retrieval
+- canonical knowledge separation
+
+目標：
+
+```text
+Aiko Knowledge Schema + Retrieval Contract
+```
+
+---
+
+## Phase 3 — Memory
+
+研究：
+
+1. RoleMemo / DualMem
+2. Mem0
+3. Letta / MemGPT
+4. TeleMem
+
+目標：
+
+```text
+Aiko Memory Schema v1
+Aiko Memory Lifecycle
+Memory Retrieval Contract
+```
+
+---
+
+## Phase 4 — Skills
+
+研究：
+
+- Agent Skills specification
+- SKILL.md
+- Skill discovery / loading
+- Tool execution isolation
+
+目標：
+
+```text
+Aiko Skill Package Format
+```
+
+---
+
+## Phase 5 — Perception
+
+研究：
+
+- Speech
+- Vision
+- Screen understanding
+- MIDI
+- PersonaVLM / multimodal memory
+
+目標：
+
+```text
+Aiko Perception Event Schema
+```
+
+---
+
+# 11. Development Rule for Codex / Future AI Coding Agents
+
+每次新增外部技術前，都應先回答：
+
+```text
+1. What problem does this solve?
+2. Which Aiko subsystem owns this responsibility?
+3. Is this a design reference, library, adapter, or canonical component?
+4. Does it force Aiko data into third-party schemas?
+5. Can the implementation be replaced later?
+6. What interface should isolate it from the Runtime?
+7. What data migration is required if it is removed?
+```
+
+如果無法回答以上問題，不應直接將新的 framework 加入 Aiko。
+
+---
+
+# 12. Core Principle Summary
+
+Aiko 的核心原則：
+
+```text
+Aiko owns:
+- identity
+- character data
+- memory data
+- relationship data
+- knowledge data
+- runtime contracts
+
+External technologies provide:
+- algorithms
+- models
+- retrieval engines
+- memory engines
+- perception engines
+- tools
+```
+
+最重要的設計哲學：
+
+> Aiko should own the character; external technologies should only provide capabilities.
+
+以及：
+
+> Research → Extract → Adapt, rather than blindly importing entire frameworks.
+
+最終目標不是把許多 GitHub 專案黏在一起，而是建立一個穩定的 virtual character runtime，讓不同技術可以像模組一樣替換，而角色本身的資料、記憶與存在狀態可以長期保存。

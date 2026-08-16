@@ -6,7 +6,7 @@ from ai_friend.knowledge.interfaces import KnowledgeStore
 from ai_friend.llm.interfaces import LLMProvider
 from ai_friend.llm.models import LLMRequest, LLMResponse
 from ai_friend.memory.interfaces import MemoryStore
-from ai_friend.memory.models import MemoryRecord, MemoryType
+from ai_friend.memory.models import MemoryRecord
 from ai_friend.perception.models import PerceptionEvent
 from ai_friend.runtime.context import RuntimeContext
 from ai_friend.runtime.session import RuntimeSession
@@ -40,17 +40,23 @@ class RuntimeOrchestrator:
 
     def _process(self, text: str, event: PerceptionEvent | None) -> LLMResponse:
         self.session.append(Message(role="user", content=text))
-        context = RuntimeContext(
+        context = self._compose_context(text, event)
+        response = self._llm.generate(LLMRequest(input_text=text, context=context))
+        self.session.append(Message(role="assistant", content=response.content))
+        self._memory.add(MemoryRecord(id=str(uuid4()), content=text, metadata={"source": "interaction"}))
+        return response
+
+    def _compose_context(self, text: str, event: PerceptionEvent | None) -> RuntimeContext:
+        """Build the temporary LLM view at the single composition boundary.
+
+        Selection is deliberately minimal. Future retrieval strategies can be
+        inserted here without allowing providers to query subsystem stores.
+        """
+
+        return RuntimeContext(
             character=self.character.profile(),
             knowledge=tuple(self._knowledge.search(text)),
             memories=tuple(self._memory.search(text)),
             skills=tuple(self._skills.discover()),
             perception=event,
         )
-        response = self._llm.generate(LLMRequest(input_text=text, context=context))
-        self.session.append(Message(role="assistant", content=response.content))
-        self._memory.add(
-            MemoryRecord(id=str(uuid4()), content=text, metadata={"source": "interaction"}, kind=MemoryType.EPISODIC)
-        )
-        return response
-

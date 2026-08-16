@@ -11,9 +11,12 @@ runtime validation framework, keeping dependencies minimal.
 Character ─────┐
 Knowledge ─────┤
 Memory ────────┤
-Skills ────────┼──> Runtime Orchestrator ──> LLMProvider ──> Response
+Skills ────────┼──> Runtime Orchestrator
 Perception ────┘             │
-                             └──> RuntimeContext
+                   Context composition boundary
+                             │
+                             v
+                  temporary RuntimeContext ──> LLMProvider ──> Response
 ```
 
 ## Responsibilities and dependencies
@@ -33,11 +36,24 @@ reach into one another's implementation.
 
 ## Runtime flow
 
-Text or a perception event enters the orchestrator. It requests the current
-character, searches knowledge and memory, discovers skills, and builds a
-`RuntimeContext`. The selected `LLMProvider` receives that context. After a
-response, Runtime records the interaction through the `MemoryStore` interface.
-Prompt/context assembly therefore remains centralized.
+Text or a perception event enters the orchestrator. Its focused context-composition
+method requests the current character, searches knowledge and memory, discovers
+skills, and builds a `RuntimeContext`. The selected `LLMProvider` receives only a
+composed `LLMRequest`; it does not query subsystem stores. After a response,
+Runtime records the interaction through the `MemoryStore` interface.
+
+`RuntimeContext` is a temporary, per-turn projection. It is neither canonical
+character storage nor a static character card. A future persistent character
+database must use Aiko-owned schemas behind subsystem interfaces; selection and
+retrieval can then evolve at this centralized composition boundary.
+
+## Framework, implementations, and character data
+
+The framework owns contracts, data flow, and orchestration. Current in-memory and
+mock classes are replaceable module implementations chosen only in `bootstrap.py`.
+Character-facing data uses small Aiko-owned dataclasses and the sample YAML; no
+vendor object is canonical. Replacing an LLM or store therefore does not redefine
+the character.
 
 ## Knowledge versus Memory
 
@@ -51,7 +67,9 @@ each subsystem evolve independently.
 - Add a perception source by implementing `PerceptionSource`; Runtime accepts its
   `PerceptionEvent` without knowing the device or modality.
 - Add a skill by creating a directory containing `SKILL.md`. Later registries may
-  load richer metadata while preserving `SkillRegistry`.
+  load richer metadata while preserving `SkillRegistry`. The future distinction
+  between role-execution and capability skills remains open and is not Persona
+  storage.
 
 ## Why mocks
 
@@ -60,8 +78,8 @@ credentials, network access, or premature operational choices.
 
 ## Deferred features
 
-Real characters and personality/emotion/relationship models; production LLMs;
-embeddings, RAG, databases, consolidation and forgetting; automatic skill/tool
-execution; audio, speech, screen, vision, video, MIDI; GUI/web/mobile interfaces;
-cloud infrastructure; and multi-agent behavior are intentionally deferred.
-
+Final Persona, event, relationship, skill-profile, and memory taxonomies and their
+update/consolidation algorithms remain research-stage. Real characters; production
+LLMs; embeddings, RAG, databases, consolidation and forgetting; automatic
+skill/tool execution; audio, speech, screen, vision, video, MIDI; GUI/web/mobile
+interfaces; cloud infrastructure; and multi-agent behavior are also deferred.

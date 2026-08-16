@@ -6,6 +6,10 @@ Perception, LLM providers, and Runtime orchestration. This first version uses
 only deterministic in-memory/mock adapters; it does not implement a fictional
 persona or connect to a real AI service.
 
+Runtime centrally composes a temporary `RuntimeContext` for each request. That
+context is a selected view for a replaceable reasoning engine, not canonical
+character storage or a static character card.
+
 ## Install
 
 Python 3.11 or newer is required.
@@ -28,4 +32,3 @@ python -m pytest
 
 See [docs/architecture.md](docs/architecture.md) for design boundaries and
 extension points.
-

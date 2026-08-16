@@ -1,5 +1,5 @@
 # Knowledge
 
-Task 001 provides a replaceable store and literal in-memory search. Retrieval,
-ranking, embeddings, and persistence will be designed only when required.
-
+Knowledge answers what information is available and remains separate from
+experience-derived Memory. The current replaceable store uses literal in-memory
+search. Schema, ranking, embeddings, RAG, and persistence remain deferred.

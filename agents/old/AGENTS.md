@@ -18,9 +18,17 @@ Aiko owns the character. External technologies provide capabilities.
 
 ## Source of truth
 
-Before making architectural changes, read the latest `character_create_v*.txt` document available in the repository.
+For architectural work, first inspect:
 
-Treat that document as the current architecture and research specification.
+```text
+docs/architecture/
+```
+
+Use the highest-versioned `character_create_v*.txt` or `character_create_v*.md` in that directory as the current architecture and research specification.
+
+Do not search outside the Aiko project directory for an architecture source unless the task explicitly provides one.
+
+Treat older `character_create` versions as historical references only.
 
 Do not silently convert research ideas, candidate technologies, examples, or future directions into finalized architecture.
 
@@ -107,6 +115,65 @@ Do not choose or introduce any of the following unless the task explicitly requi
 - workflow framework
 
 If a minimal implementation is required, prefer a simple local or in-memory implementation behind the appropriate interface.
+
+
+---
+
+## Research → Architecture → Schema → Task maturity flow
+
+Research findings are not automatically approved architecture.
+
+Use the following maturity flow:
+
+```text
+docs/research/
+    ↓
+research evidence, paper notes, experiments, candidate ideas
+
+docs/architecture/
+    ↓
+accepted architectural decisions and current design direction
+
+docs/schemas/
+    ↓
+implementation-facing contracts and data definitions
+
+tasks/
+    ↓
+explicit Codex implementation scope
+```
+
+Rules:
+
+- Files under `docs/research/` are evidence and exploration, not implementation authority.
+- Do not implement a research paper, GitHub project, or experiment merely because it exists under `docs/research/`.
+- A concept should normally move into `docs/architecture/` before it becomes a stable architectural requirement.
+- A data structure should normally move into `docs/schemas/` before Codex treats it as an implementation contract.
+- `tasks/` defines what should be implemented now; it does not redefine the whole architecture.
+- Completed task specifications are implementation history, not the current source of truth.
+- If a task requests behavior that has not matured beyond research-stage status, implement only the smallest compatible interface or placeholder unless the user explicitly approves the design.
+
+Prefer:
+
+```text
+Research
+   ↓
+Architecture decision
+   ↓
+Schema / contract
+   ↓
+Task
+   ↓
+Implementation
+```
+
+Avoid:
+
+```text
+Research paper
+   ↓
+direct permanent implementation
+```
 
 ---
 
@@ -288,12 +355,18 @@ Do not delete placeholders for planned architecture simply because they are curr
 
 ## Validation
 
-From this directory, run the existing project validation commands when applicable:
+Use the validation commands currently documented by the project in `README.md`, `pyproject.toml`, or task-specific instructions.
+
+At minimum, when applicable, run:
 
 ```powershell
 python -m pytest
-"Hello`nexit" | python -m ai_friend
+python -m ai_friend
 ```
+
+If an executable smoke test requires stdin or other setup, use the method documented by the current project rather than assuming an old command remains valid.
+
+Do not add or claim formatter, linter, type-checker, or test commands that are not actually configured.
 
 If a command cannot run because of the environment, dependency availability, or unfinished research-stage code, report that limitation rather than silently bypassing validation.
 

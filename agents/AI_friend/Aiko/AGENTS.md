@@ -90,6 +90,8 @@ Examples of research-stage areas may include:
 - final Persona schema
 - trait evolution rules
 - Event interpretation
+- character-specific appraisal / subjective cognition
+- perspective / knowledge boundary
 - Memory lifecycle
 - Relationship model
 - Knowledge retrieval strategy
@@ -253,7 +255,9 @@ Until the relevant research is finalized, model this with contracts such as:
 ```text
 Event / Observation
         ↓
-Interpretation
+Character-specific Interpretation / Appraisal
+        ↓
+Emotion / Intention / Behavior
         ↓
 Evidence / subsystem updates
         ↓
@@ -261,6 +265,167 @@ Optional controlled consolidation
 ```
 
 Do not hard-code a specific personality-update algorithm unless explicitly requested.
+
+Do not hard-code generic event-to-reaction rules such as:
+
+```text
+Event X -> Emotion Y
+Event X -> Behavior Y
+```
+
+The same external event may produce different interpretations, emotions, intentions, and behavior for:
+
+- different characters;
+- the same character at different life periods;
+- the same character with different prior memories;
+- the same character under different relationship or psychological states.
+
+Preserve the interpretation / appraisal layer as a research-stage extension point. Do not permanently select a specific appraisal theory, emotion model, or cognitive architecture unless the architecture or task explicitly approves it.
+
+---
+
+## Character-specific cognition and perspective safety
+
+Aiko must not operate a character merely by matching static persona traits to likely dialogue.
+
+The intended reasoning direction is:
+
+```text
+Event / Observation
+        +
+Point-in-Time Character State
+├── accessible knowledge
+├── relevant prior memory
+├── beliefs / values
+├── goals / motivation
+├── relationship state
+├── conflict
+└── dynamic psychological state
+        ↓
+Subjective Interpretation / Appraisal
+        ↓
+Emotion / Intention / Decision / Behavior
+```
+
+The central runtime question should be conceptually closer to:
+
+> Given what this character currently knows, remembers, believes, values, fears, wants, and feels, what does this event mean to this character?
+
+rather than:
+
+> What would a character with these traits probably do?
+
+### Same event, different meaning
+
+Do not assume identical events imply identical subjective experiences.
+
+Conceptually:
+
+```text
+Same Event
++
+Character State A
+        ↓
+Interpretation A
+
+Same Event
++
+Character State B
+        ↓
+Interpretation B
+```
+
+This also applies to different periods of the same character.
+
+A point-in-time character state is not merely a cosmetic profile selector. It represents a historically accumulated state shaped by prior experiences, beliefs, relationships, conflicts, motivations, and psychological context.
+
+When causal history is available, later character periods should preserve continuity with earlier periods rather than being modeled as unrelated replacement profiles.
+
+### Knowledge boundary / no omniscient leakage
+
+Character reasoning must respect point-in-time information access.
+
+Do not automatically expose the character to:
+
+- future canonical events;
+- narrator or author knowledge;
+- audience-only information;
+- another character's private thoughts or memories;
+- hidden world state the character has not perceived or learned;
+- later-period knowledge while simulating an earlier period.
+
+Preserve the distinction:
+
+```text
+Story / Canon Truth
+        ≠
+Character-accessible Knowledge
+        ≠
+Character Belief
+        ≠
+Character Inference
+```
+
+Runtime context selection should prefer only information the current character could reasonably access at that time unless a task explicitly requests an omniscient or analytical mode.
+
+### Canonical evidence vs inferred cognition
+
+Do not silently convert model-generated interpretation into canonical character data.
+
+Preserve provenance distinctions such as:
+
+```text
+Canonical Evidence
+        ↓
+Extracted Character State
+        ↓
+Inferred Character Cognition / Appraisal
+        ↓
+Predicted Emotion / Intention / Behavior
+```
+
+An inferred cognition may be highly plausible and useful for runtime reasoning while still remaining an inference.
+
+If an interpretation is not directly supported by source material, do not label it as canonical fact merely because the LLM generated it consistently.
+
+Schema and storage design should preserve enough provenance to distinguish:
+
+- directly observed / canonical evidence;
+- extracted or consolidated character state;
+- inferred subjective interpretation;
+- predicted response;
+- later confirmed or contradicted interpretation.
+
+### Character Core responsibility
+
+Character Core should provide persistent and point-in-time character state needed for character-specific reasoning.
+
+It should not be reduced to a static checklist such as:
+
+```text
+proud
+responsible
+elegant
+stubborn
+cares about friends
+```
+
+Traits are inputs to interpretation, not complete behavioral rules.
+
+Conceptually:
+
+```text
+Character Core + Memory + Relationship + Knowledge Boundary + Dynamic State
+        ↓
+Interpretation / Appraisal Process
+        ↓
+Character-specific Meaning
+```
+
+Character Core does not need to permanently own the appraisal algorithm.
+
+The appraisal / interpretation process may remain a Runtime or dedicated cognition-layer responsibility as long as subsystem boundaries remain explicit and replaceable.
+
 
 ---
 

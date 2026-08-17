@@ -1,0 +1,2744 @@
+# Aiko Virtual Character Architecture & Research Guide
+
+## 0. Project Goal
+
+Aiko 的目標不是建立一個「套上角色 Prompt 的聊天機器人」，而是建立一個可以長期存在、維持角色一致性、累積共同經歷、逐步獲得新知識與能力，並能透過語音、畫面、MIDI 等方式感知現實世界的 persistent virtual character system。
+
+核心目標：
+
+- 長期維持角色人格與說話風格
+- 保存並使用共同經歷
+- 將角色本身與 LLM、資料庫、第三方框架解耦
+- 能替換 Persona / Memory / Perception / LLM 等底層技術
+- 能逐步新增 Skills，而不需要重寫角色本身
+- 能在未來支援文字、語音、畫面、影片、MIDI 等多模態互動
+- 角色資料應比任何單一技術或框架活得更久
+- 不以 Fine-tuning / SFT / RL 建立角色專用 LLM 作為主要路線
+- 以 Character Reconstruction 建立持久化角色資料，再由可替換的通用 LLM 執行角色
+
+核心建構方向：
+
+```text
+Source Material
+    ↓
+Character Reconstruction
+    ↓
+Persistent Character Database
+    ↓
+Runtime Character Context
+    ↓
+General-purpose LLM
+    ↓
+Character Behavior / Interaction
+```
+
+Aiko 的「角色訓練」主要指：
+
+```text
+建立角色資料
+整理角色證據
+重建人格
+累積記憶
+建立能力與限制
+```
+
+而不是：
+
+```text
+把角色寫入某個特定模型權重
+```
+
+---
+
+
+# 0.1 Three Primary Research Tracks
+
+目前 Aiko 的角色研究正式拆分為三條彼此連接、但責任不同的主線：
+
+```text
+A. Character Reconstruction
+B. Character Runtime
+C. Event Interpretation
+```
+
+三者的關係：
+
+```text
+Source Material / Canon
+        ↓
+[A] Character Reconstruction
+        ↓
+Persistent Character Database
+        ↓
+Compiled Character State
+        ↓
+[B] Character Runtime
+        ↓
+Dynamic Character Context
+        ↓
+General-purpose LLM
+        ↑
+[C] Event Interpretation
+        ↑
+Perceived / Objective Event
+```
+
+### A. Character Reconstruction
+
+回答：
+
+> How do we reconstruct and progressively refine the character from source material?
+
+主要處理：
+
+```text
+Seed Character
+Representative Events
+Trait / Belief / Relationship Evidence
+Point-in-Time Persona
+Historical Accumulation
+Causal Formation
+Chronic Accessibility
+Habitual Processing
+Persona Consolidation
+Validation / Refinement
+```
+
+### B. Character Runtime
+
+回答：
+
+> How should a general-purpose LLM efficiently operate the reconstructed character?
+
+主要處理：
+
+```text
+Character Context Builder
+Compiled Character State
+Relevant Memory Retrieval
+Knowledge Boundary
+Role Skill
+Capability Skill
+Dynamic State
+Token / Latency Control
+Dense Representation / Sparse Activation
+```
+
+### C. Event Interpretation
+
+回答：
+
+> How does an objective or perceived event become this character's subjective experience?
+
+主要處理：
+
+```text
+Event Screening
+Character Perspective
+Character-dependent Processing
+Selective Appraisal
+Subjective Meaning
+Emotion / Intention / Behavior
+Memory Consequence
+Evidence Accumulation
+Possible Character Update
+```
+
+重要原則：
+
+> Character Reconstruction defines what the character has become.
+
+> Character Runtime decides what information is active now.
+
+> Event Interpretation determines what the current event means to this character.
+
+---
+
+# 1. Design Philosophy
+
+## 1.1 Aiko is not a single LLM application
+
+Aiko 不等於 LLM。
+
+LLM 只是角色運行時使用的一個推理引擎。
+
+真正的角色由多個獨立系統共同構成：
+
+```text
+Aiko
+├── Character Core
+├── Knowledge
+├── Memory
+├── Perception
+├── Skills
+├── LLM / Reasoning Engine
+└── Runtime / Orchestrator
+```
+
+概念上：
+
+```text
+Character =
+Persona
++ Knowledge
++ Memory
++ Relationship
++ Skills
++ Perception
++ Reasoning Engine
+```
+
+---
+
+## 1.1.1 Character Exists Outside the Model
+
+Aiko 不以建立某個特定的「角色 LLM」作為核心目標。
+
+真正的角色應存在於模型之外：
+
+```text
+Persistent Character Data
+        ↓
+Character Runtime
+        ↓
+Replaceable LLM
+```
+
+因此：
+
+> Aiko does not primarily train a character-specific model. Aiko reconstructs and maintains the character outside the model, while general-purpose LLMs act as replaceable engines for interpreting and performing that character.
+
+這代表：
+
+```text
+LLM replacement
+≠
+Character replacement
+```
+
+未來即使從 GPT 切換到其他 API 模型或本地模型，角色本身的 Persona、Memory、Knowledge、Relationship、Expression 與 Skill Profile 仍應保留。
+
+## 1.1.2 Persistent Character Database ≠ Runtime Character Context
+
+Aiko 不應把所有角色資料整理成一份巨大、靜態的 Character Card，再於每次互動完整塞入 Context。
+
+應明確區分：
+
+```text
+Persistent Character Database
+            ≠
+Runtime Character Context
+            ≠
+Static Character Card
+```
+
+Persistent Character Database 可以包含：
+
+```text
+Character Database
+├── Character Core
+├── Timeline
+├── Relationships
+├── Expression
+├── Evidence
+├── Memory
+├── Knowledge
+└── Skill Profile
+```
+
+Runtime 則只選擇當下真正需要的資料：
+
+```text
+Character Database
+        ↓
+Context Selection / Retrieval
+        ↓
+Runtime Character Context
+        ↓
+General-purpose LLM
+```
+
+因此：
+
+> The persistent character database is the character; the runtime character context is only a temporary view generated for the LLM.
+
+Aiko 的目標不是製作一張越來越大的角色卡，而是建立一個可以根據情境動態產生角色上下文的 Character System。
+
+## 1.1.3 Character Data Must Support Character-Specific Reasoning
+
+Character Database 的用途不應只是讓 LLM「知道角色設定」。
+
+更重要的目標是讓 LLM 在 runtime 中，從角色當下真正可用的狀態出發，理解事件對這個角色意味著什麼。
+
+因此 Aiko 應避免簡化成：
+
+```text
+User / Event Input
+      +
+Character Description
+      ↓
+Character-like Answer
+```
+
+而應逐步發展成：
+
+```text
+Perceived Event
+      +
+Current Character State
+├── current period / persona
+├── accessible knowledge
+├── relevant memories
+├── beliefs / values / goals
+├── relationship state
+├── dynamic psychological state
+└── conflicts / motivations
+      ↓
+Character-specific interpretation / appraisal
+      ↓
+Emotion / intention / decision
+      ↓
+Behavior
+```
+
+核心問題不再只是：
+
+> What is this character like?
+
+還包括：
+
+> Given what this character currently knows, believes, remembers, values, fears, wants, and feels, what does this event mean to this character?
+
+這個區分決定 Aiko 是：
+
+```text
+character-aware response generator
+```
+
+還是具有持續發展能力的：
+
+```text
+character-grounded cognition system
+```
+
+Character Core 本身不直接等於 appraisal engine。
+
+較精確的責任分工是：
+
+```text
+Character Core / Memory / Knowledge / Relationship / Dynamic State
+        ↓
+provide character-specific state
+        ↓
+Event Interpretation / Cognition Process
+        ↓
+Subjective Meaning
+```
+
+因此 Character Core 的重要功能之一，是提供讓同一個客觀世界在不同角色、不同時期形成不同主觀意義的穩定認知條件。
+
+
+## 1.2 Framework ≠ Module Implementation ≠ Character Data
+
+Aiko 必須明確區分三個層級。
+
+### Framework
+
+Framework 定義：
+
+- Runtime
+- Interfaces / Contracts
+- Module boundaries
+- Data flow
+- Dependency rules
+
+Framework 不應該知道某個特定 Persona framework、Memory database 或 LLM vendor 的內部實作。
+
+### Module Implementation
+
+Module Implementation 是可以替換的技術實作，例如：
+
+```text
+Character Core
+├── simple structured persona
+├── PersonaForge-inspired engine
+└── future custom psychology model
+
+Memory
+├── simple local memory
+├── Mem0-style memory
+├── DualMem-inspired memory
+└── future graph/vector hybrid memory
+
+Perception
+├── text
+├── microphone
+├── screen
+├── vision
+└── MIDI
+```
+
+### Character Data
+
+Character Data 是角色真正需要長期保存的內容，例如：
+
+```text
+Aiko Data
+├── identity
+├── personality
+├── canonical background
+├── relationships
+├── memories
+├── knowledge
+├── preferences
+└── learned skills / experience
+```
+
+Character Data 不應與任何單一第三方框架綁定。
+
+---
+
+## 1.3 Modular / Plugin-Oriented Architecture
+
+Aiko 應採用類似遊戲 Engine + Mods 的架構。
+
+外部論文、GitHub 專案與 AI framework 應被視為：
+
+- design reference
+- candidate implementation
+- replaceable engine
+- adapter target
+
+而不是 Aiko Framework 本身。
+
+例如：
+
+```text
+Aiko Runtime
+     ↓
+Memory Interface
+     ↓
+Adapter
+     ↓
+Mem0 / DualMem / Custom Memory
+```
+
+或：
+
+```text
+Aiko Runtime
+     ↓
+Character Interface
+     ↓
+Adapter
+     ↓
+PersonaForge-inspired implementation
+```
+
+因此：
+
+> Aiko should own the character; external technologies should only provide capabilities.
+
+---
+
+## 1.4 Data Longevity > Implementation Longevity
+
+角色資料的生命週期應長於任何單一技術。
+
+即使未來：
+
+- PersonaForge 不再使用
+- Mem0 被替換
+- 現在的 LLM 被淘汰
+- Vector DB 被新的記憶技術取代
+
+仍然應該能保留：
+
+```text
+identity
+personality
+background
+memories
+relationship history
+knowledge
+skills / experience
+```
+
+因此：
+
+> Persistent character data must use Aiko-owned schemas.
+
+第三方 framework-specific object 或 database schema 不應直接成為 Character Core、Memory、Knowledge 或 Relationship 的 canonical storage format。
+
+需要整合第三方技術時，應透過 adapter 或 migration layer。
+
+---
+
+## 1.5 Stable Interfaces, Replaceable Implementations
+
+Framework 應依賴 interface，而不是 concrete implementation。
+
+例如：
+
+```text
+Runtime
+ ├── CharacterProvider
+ ├── KnowledgeStore
+ ├── MemoryStore
+ ├── SkillRegistry
+ ├── PerceptionSource
+ └── LLMProvider
+```
+
+未來替換：
+
+```text
+MockLLM → OpenAI → Ollama → llama.cpp → future local model
+```
+
+不應要求重寫 Runtime 或 Character Data。
+
+同理：
+
+```text
+Memory implementation A
+        ↓
+Memory implementation B
+```
+
+角色原本的記憶資料仍應可 migration / reuse。
+
+---
+
+## 1.6 Runtime Is the Coordinator
+
+各 subsystem 不應彼此直接 orchestrate。
+
+建議依賴方向：
+
+```text
+Character ──────┐
+Knowledge ──────┤
+Memory ─────────┤
+Skills ─────────┼──> Runtime / Orchestrator ──> LLM
+Perception ─────┘
+```
+
+原則：
+
+- Character 不直接操作 Memory database
+- Memory 不直接呼叫 LLM provider
+- Perception 不直接修改 Character state
+- Skills 不直接寫入 Memory
+- Runtime 負責協調所有 subsystem
+
+---
+
+# 2. Research Methodology
+
+## 2.1 不以 GitHub Star 作為主要技術選擇標準
+
+GitHub Star 只能代表部分社群熱度，不能直接代表：
+
+- 技術是否適合 persistent virtual character
+- Persona consistency 是否好
+- Memory 是否適合角色型記憶
+- 長對話是否穩定
+- 架構是否容易整合
+
+技術評估應優先看：
+
+1. Problem fit
+2. Research / evaluation quality
+3. Architecture
+4. Schema
+5. Runtime flow
+6. Replaceability
+7. Cost
+8. Maintenance status
+9. License
+
+---
+
+## 2.2 研究來源優先順序
+
+研究一個技術時建議按照：
+
+```text
+Paper / Official documentation
+        ↓
+README / Architecture overview
+        ↓
+Schema / Models
+        ↓
+Prompt / Runtime flow
+        ↓
+Evaluation / Ablation / Tests
+        ↓
+Implementation details
+```
+
+GitHub 中優先查看：
+
+```text
+README.md
+architecture/
+docs/
+schemas/
+models/
+examples/
+prompts/
+runtime/
+evals/
+tests/
+```
+
+不應一開始就從整個 `src/` 第一個檔案一路閱讀到底。
+
+---
+
+## 2.3 Research → Extract → Adapt
+
+研究外部技術時，不應預設「直接把整個 framework 裝進 Aiko」。
+
+標準流程：
+
+```text
+1. Understand
+2. Evaluate
+3. Extract
+4. Adapt
+5. Implement behind Aiko interface
+6. Add adapter if direct integration is necessary
+```
+
+詳細原則：
+
+1. Understand the problem it solves.
+2. Identify useful concepts, schema, algorithms, and runtime patterns.
+3. Evaluate whether they fit Aiko's requirements.
+4. Extract only the required design.
+5. Implement it behind Aiko's own subsystem interface.
+6. Use an adapter when directly integrating an external framework.
+
+Do not restructure Aiko around an external framework unless there is a strong architectural reason.
+
+---
+
+## 2.4 Technology Evaluation Sheet
+
+每一個候選技術至少評估：
+
+| 項目 | 問題 |
+|---|---|
+| Problem fit | 是否真的解決 Aiko 需要的問題？ |
+| Representation | Persona / Memory / Skill 如何被表示？ |
+| Static / Dynamic | 是否區分穩定資料與動態狀態？ |
+| Runtime integration | 如何影響 LLM 輸出？ |
+| Long-term stability | 是否測試長期 drift / consistency？ |
+| Evaluation | 是否有 quantitative / human evaluation？ |
+| Portability | 是否能抽取概念而不綁死 framework？ |
+| Performance | Token / latency / compute cost 多大？ |
+| Maintenance | Repo 是否仍活躍？ |
+| License | 是否允許未來使用與修改？ |
+
+---
+
+## 2.5 Model-Training Filter
+
+研究角色相關論文時，需先判斷其主要貢獻屬於哪一類：
+
+```text
+A. Character representation
+B. Character reconstruction
+C. Persona extraction / consolidation
+D. Runtime grounding / retrieval
+E. Character memory
+F. Character capability
+G. Specialized model training
+```
+
+若某方法主要依賴：
+
+```text
+Fine-tuning
+SFT
+RL
+LoRA
+Large-scale character-specific training
+```
+
+則其 training pipeline 本身不是 Aiko 的優先目標。
+
+但仍應檢查是否能抽取：
+
+```text
+better schema
+better representation
+better extraction
+better update mechanism
+better retrieval
+better evaluation method
+```
+
+因此：
+
+> Training-heavy papers may still be useful as design references, but Aiko should extract transferable structure before considering specialized model training.
+
+
+
+# 2.6 Progressive Character Reconstruction Strategy
+
+Aiko 不應一次將全部 Canon 丟入 LLM 後要求產生「最終人格」。
+
+建議採用 progressive reconstruction：
+
+```text
+Phase A — Seed Character
+        ↓
+Phase B — Representative Event Expansion
+        ↓
+Phase C — Coverage Expansion
+        ↓
+Phase D — Long-tail Validation
+```
+
+## Phase A — Seed Character
+
+使用：
+
+```text
+Official profile
+Wiki / basic background
+少量高代表性場景
+重要角色台詞
+```
+
+建立：
+
+```text
+Character Core v0
+├── Identity
+├── Basic Personality
+├── Basic Motivation
+├── Initial Relationships
+├── Expression
+└── Important Background
+```
+
+## Phase B — Representative Event Expansion
+
+優先加入：
+
+```text
+重大關係事件
+重大失敗
+重大決策
+價值衝突
+角色轉折
+明顯表現核心人格的事件
+```
+
+每一個 Event：
+
+```text
+Event
+↓
+Deep Perspective / Appraisal Analysis
+↓
+Trait / Belief / Relationship Evidence
+↓
+Growth / Conflict
+↓
+Persona Consolidation
+```
+
+## Phase C — Coverage Expansion
+
+加入一般事件以：
+
+```text
+reinforce traits
+find exceptions
+refine expression
+refine Chronic Accessibility
+refine Habitual Processing
+discover contradictions
+```
+
+## Phase D — Long-tail Validation
+
+使用未參與建模的 Canon Event 驗證：
+
+> 目前 Character State 能否合理解釋角色未看過的行為？
+
+如果不能：
+
+```text
+Contradiction
+↓
+Deep Analysis
+↓
+Revise / Add Nuance
+```
+
+核心原則：
+
+> Character Reconstruction should behave like iterative model building: hypothesis → evidence → update → validation.
+
+---
+
+# 3. Character Core Research
+
+Character Core 的目標是回答：
+
+> Who is this character?
+
+而不是：
+
+> What does this character know?
+
+因此 Character Core 應與 Knowledge、Memory 分開。
+
+Character Core 不應再被視為一份單層、靜態的 Persona 文件，而應是一個具有：
+
+- structured traits
+- different change resistance
+- point-in-time persona
+- historical accumulation
+- causal formation
+- dynamic psychological state
+
+的多層人格系統。
+
+目前 Character Core 的目標是建立「足夠表達角色、但不過度複雜」的核心人格模型。
+在沒有實驗證據證明需要新增維度前，不再持續擴充人格分類，以避免 schema 過度繁瑣、推理成本增加與過度擬合特定作品。
+
+---
+
+## 3.1 Character Core Depth Model
+
+CharacterGPT 帶來兩個值得納入 Aiko 的重要概念：
+
+1. 不同 Trait 的變化速度不同
+2. 同一角色可以存在多個不同時期的 Persona state
+
+Aiko 不採用「可變 / 不可變」的二元分類，因為人格、價值觀與動機理論上都可能發生改變。
+
+更適合的表示方式是：
+
+```text
+Trait Change Resistance
+
+High resistance
+    ↓
+Core values / deep personality / identity
+    ↓
+Motivation / preferences / relationship tendencies
+    ↓
+Current emotion / short-term goals
+    ↓
+Low resistance
+```
+
+因此：
+
+> Stable does not mean immutable.  
+> Stable means slow-changing and resistant to weak evidence.
+
+Character Core 應允許所有 Trait 被更新，但更新門檻、證據強度與時間尺度不同。
+
+---
+
+## 3.2 Eight Character Trait Domains
+
+Aiko Character Core 的 Persona representation 應至少能覆蓋以下八個角色面向：
+
+```text
+Character
+├── Personality
+├── Physical
+├── Motivation
+├── Backstory
+├── Emotion
+├── Relationships
+├── Growth
+└── Conflict
+```
+
+### Personality
+
+描述角色相對持久的心理與行為傾向，例如：
+
+```text
+Personality
+├── personality traits
+├── values
+├── preferences
+├── emotional tendencies
+├── interpersonal tendencies
+├── defense tendencies
+└── behavioral tendencies
+```
+
+### Physical
+
+描述角色對自身身體與外貌的 canonical self-model。
+
+```text
+Physical
+├── appearance
+├── age / life-stage representation
+├── body-related identity
+└── characteristic physical features
+```
+
+Physical 不等於 Vision perception；它描述的是角色「自己是誰」的一部分。
+
+### Motivation
+
+描述角色行為背後較長期的驅動。
+
+```text
+Motivation
+├── desires
+├── goals
+├── responsibilities
+├── fears
+├── priorities
+└── value-driven objectives
+```
+
+### Backstory
+
+描述塑造角色的重要過去。
+
+Backstory 應只保留對角色人格形成有直接影響的高價值內容。
+
+完整原作劇情與世界資料仍應主要存放於 Knowledge。
+
+### Emotion
+
+描述角色具有持續性的 emotional tendencies，以及目前的短期 emotion state。
+
+需要區分：
+
+```text
+Emotional Tendency
+        ≠
+Current Emotion
+```
+
+例如「不容易向人表露脆弱」屬於較穩定的人格傾向，
+而「現在因某件事感到生氣」屬於短期狀態。
+
+### Relationships
+
+描述角色如何理解重要人物，以及不同關係長期如何演化。
+
+```text
+Relationships
+├── person / entity
+├── current relationship state
+├── historical stages
+├── trust
+├── affinity
+├── respect
+├── closeness
+└── unresolved conflict
+```
+
+Relationship 可以同時跨越 Character Core 與 Memory。
+
+Character Core 保存對人格行為有直接作用的 relationship state；
+Memory 保存形成這個 state 的具體事件。
+
+### Growth
+
+描述角色經歷事件後形成的持續性改變。
+
+```text
+Growth
+├── previous state
+├── transition
+├── current state
+└── supporting experiences
+```
+
+Growth 不只是故事摘要，而是：
+
+> What changed in this character because of what happened?
+
+### Conflict
+
+描述角色持續存在的內在或外在矛盾。
+
+```text
+Conflict
+├── internal contradiction
+├── competing motivations
+├── unresolved emotional tension
+├── external interpersonal conflict
+└── value conflict
+```
+
+Conflict 對維持角色「不像單純 personality checklist」非常重要，
+因為真實角色往往同時持有互相拉扯的價值、情緒與動機。
+
+---
+
+## 3.3 Trait Change Resistance
+
+CharacterGPT 原本區分 Type A / Type B。
+Aiko 應吸收這個概念，但將其擴充成連續的 change resistance，而不是 immutable / mutable binary。
+
+概念上：
+
+```text
+Very Slow-Changing
+├── identity
+├── deep personality
+├── core values
+└── foundational motivations
+
+Slow-Changing
+├── preferences
+├── interpersonal tendencies
+├── long-term goals
+└── important relationship attitudes
+
+Medium-Changing
+├── relationship state
+├── learned beliefs
+├── confidence
+├── current life priorities
+└── unresolved conflicts
+
+Fast-Changing
+├── current emotion
+├── stress
+├── energy
+├── short-term goals
+└── contextual behavioral bias
+```
+
+這不是固定分類表，而是未來 Character Schema 應支援的 Trait metadata。
+
+例如：
+
+```yaml
+trait:
+  domain: personality
+  value: "strong tendency toward self-reliance"
+  change_resistance: high
+  confidence: 0.92
+  source_periods:
+    - period_02
+    - period_03
+```
+
+未來更新人格時，不應只問：
+
+```text
+Does new evidence contradict the old trait?
+```
+
+還應考慮：
+
+```text
+How strong is the evidence?
+How repeated is the evidence?
+How recent is it?
+How important is the event?
+How resistant is this trait to change?
+Does this represent temporary state or persistent change?
+```
+
+因此人格更新更接近：
+
+```text
+New Experience
+      ↓
+Trait Evidence
+      ↓
+Change Evaluation
+      ├── temporary state
+      ├── reinforce existing trait
+      ├── weaken existing trait
+      ├── create new trait
+      └── persistent trait transition
+```
+
+---
+
+## 3.4 Point-in-Time Persona
+
+同一角色不應只有一份最終 Persona。
+
+角色在不同人生階段具有不同人格狀態：
+
+```text
+Character
+├── Period 1 Persona
+├── Period 2 Persona
+├── Period 3 Persona
+└── Current Persona
+```
+
+例如：
+
+```text
+Sakiko
+├── childhood
+├── CRYCHIC period
+├── post-CRYCHIC period
+├── Ave Mujica formation
+└── current period
+```
+
+每個時期都可以保存自己的：
+
+```text
+Personality
+Physical
+Motivation
+Backstory context
+Emotion tendencies
+Relationships
+Growth
+Conflict
+```
+
+這使 Aiko 能區分：
+
+```text
+Who the character was
+Who the character became
+Why the character changed
+Who the character is now
+```
+
+---
+
+
+## 3.4.1 Period-dependent Processing Dispositions
+
+Point-in-Time Persona 不只保存 Trait / Goal / Relationship，也應逐步保存角色在不同時期的 processing disposition。
+
+### Chronic Accessibility
+
+表示：
+
+> 哪些 appraisal-relevant cognitive structures、schemas 或 memories 在該時期更容易被喚起？
+
+例如：
+
+```text
+Period 1
+├── trust_schema: high
+├── abandonment_schema: low
+└── self_reliance_schema: medium
+
+Period 3
+├── trust_schema: low
+├── abandonment_schema: high
+└── self_reliance_schema: high
+```
+
+這可以表現角色成長，而不需要把所有變化都粗略壓成 Trait replacement。
+
+### Habitual Processing
+
+表示：
+
+> 角色長期習慣注意什麼、忽略什麼，以及如何組織與解釋事件資訊。
+
+例如：
+
+```text
+Trait:
+重視責任
+
+Habitual Processing:
+遇到失敗時，習慣先檢查自己的責任。
+```
+
+Habitual Processing 通常具有較高 change resistance，但不是 immutable。
+
+---
+
+## 3.5 Persona Is Historical Accumulation
+
+Current Persona 不應只是「最新 Trait 覆蓋舊 Trait」。
+
+人是由多個時期的自己疊加而成。
+
+因此概念上：
+
+```text
+Period 1
+   ↓
+Period 2
+   ↓
+Period 3
+   ↓
+Current Persona
+```
+
+更精確地說：
+
+```text
+Current Character
+=
+Core continuity
++ accumulated growth
++ unresolved historical influence
++ current psychological state
+```
+
+舊時期資料不應因新狀態出現而被刪除。
+
+例如：
+
+```text
+Period 1:
+trusts others easily
+
+Period 2:
+experiences betrayal
+
+Period 3:
+becomes highly guarded
+```
+
+Current Persona 不能只留下：
+
+```text
+guarded
+```
+
+而應能理解：
+
+```text
+previous openness
+        ↓
+important experience
+        ↓
+loss of trust
+        ↓
+current guarded behavior
+```
+
+這讓角色行為具有 causal history，而不是只有目前的 trait label。
+
+---
+
+## 3.6 Final Character Depth Model
+
+結合 CharacterGPT 與 DREAM，目前 Aiko Character Core 採用以下五個核心維度：
+
+```text
+Character
+=
+8 Trait Domains
+× Trait Change Resistance
+× Multiple Character Periods
+× Historical Accumulation
+× Causal Formation
+```
+
+五個維度分別回答：
+
+```text
+Trait Domain:
+What aspect of the character is this?
+
+Change Resistance:
+How easily should this aspect change?
+
+Time Period:
+When was this true?
+
+Historical Accumulation:
+How did previous versions of the character shape the current one?
+
+Causal Formation:
+Why did the character become this way?
+```
+
+其中 Causal Formation 不代表 Character Core 必須保存完整事件圖。
+Character Core 只需保留對目前人格形成具有長期意義的 causal summary / supporting links；
+完整事件、時間關係與因果細節應由 Memory subsystem 保存。
+
+```text
+Memory:
+What happened?
+When did it happen?
+What caused what?
+
+Character Core:
+What did these experiences make the character become?
+```
+
+### Complexity Guardrail
+
+目前五維模型視為 Aiko Character Core v1 的設計上限。
+
+除非後續實驗顯示存在明確缺陷，否則不因新的心理學分類、人格理論或論文而繼續新增 Character Core 維度。
+
+原則：
+
+```text
+Prefer:
+small number of expressive dimensions
++ rich evidence
++ good retrieval
++ causal history
+
+Avoid:
+many overlapping labels
++ duplicated psychological concepts
++ every observation becoming a permanent trait
+```
+
+Character depth 應主要來自：
+
+```text
+history
+contradictions
+relationships
+causal experiences
+gradual change
+```
+
+而不是單純增加更多 trait categories。
+
+## 3.6.1 Character State as the Basis of Subjective Interpretation
+
+五維 Character Depth Model 不只用來描述角色「是什麼樣的人」，還必須能在 runtime 中回答：
+
+> 這樣的一個人，在這個時間點遇到一件事情時，會怎麼理解它？
+
+因此 Multiple Character Periods、Historical Accumulation 與 Causal Formation 不只是資料整理結構，而是角色推理的重要輸入。
+
+概念上：
+
+```text
+Character State(t)
+=
+Current Period Persona
++ Historical Accumulation
++ Beliefs / Values / Goals
++ Relationship State
++ Accessible Memory
++ Dynamic State
+```
+
+當事件發生時：
+
+```text
+Perceived Event(t)
+        +
+Character State(t)
+        ↓
+Subjective Interpretation / Appraisal(t)
+        ↓
+Emotion / Intention / Behavior(t)
+```
+
+同一個事件在不同時期可以產生不同結果：
+
+```text
+Event + Sakiko(period_1) → Interpretation A
+Event + Sakiko(period_2) → Interpretation B
+Event + Sakiko(period_3) → Interpretation C
+```
+
+因此 Point-in-Time Persona 不能只被視為多張 Character Card。
+
+更合理的理解是：
+
+```text
+State(t0)
+  ↓ experience + interpretation + update
+State(t1)
+  ↓ experience + interpretation + update
+State(t2)
+```
+
+每個時期都是前一時期經歷、主觀理解與持續性更新累積形成的結果。
+
+這也是 Historical Accumulation 與 Causal Formation 的 runtime 意義。
+
+### Knowledge Boundary / Perspective Constraint
+
+角色只能使用該時間點實際可知、可回想或合理推論的資訊。
+
+必須避免：
+
+```text
+Author knowledge
+Future canon knowledge
+Other character private knowledge
+System omniscience
+        ↓
+leak into character reasoning
+```
+
+因此：
+
+> Story truth is not automatically character truth.
+
+Runtime 應以角色當時的 accessible knowledge / memory 為推理邊界。
+
+這是避免 omniscient leakage 並維持 point-in-time character fidelity 的必要條件。
+
+---
+
+
+## 3.6.2 Compiled Character State
+
+大量歷史 Event 不應在每次 Runtime 中重新分析。
+
+Character Reconstruction / Consolidation 應產生：
+
+```text
+Compiled Character State
+├── current traits
+├── period traits
+├── active beliefs
+├── values / goals
+├── relationship summaries
+├── Chronic Accessibility
+├── Habitual Processing
+├── unresolved conflicts
+├── long-term motivations
+├── expression profile
+└── supporting evidence links
+```
+
+Runtime 優先使用 Compiled Character State。
+
+只有在：
+
+```text
+persona contradiction
+high-conflict event
+major relationship change
+identity / value challenge
+need for causal explanation
+```
+
+等情況下，才回溯更完整的 Event / Evidence。
+
+因此：
+
+> Deep psychology can be compiled into character state and retrieved on demand.
+
+---
+
+## 3.7 Stable Persona
+
+Stable Persona 仍然存在，但它不代表 immutable persona。
+
+它代表目前具有高 persistence / high change resistance 的角色資料。
+
+可能包含：
+
+```text
+Identity
+├── name
+├── identity
+└── canonical self
+
+Personality
+├── personality traits
+├── values
+├── preferences
+├── emotional tendencies
+├── interpersonal behavior
+├── defense tendencies
+└── behavioral tendencies
+
+Expression
+├── speech style
+├── vocabulary tendencies
+├── tone
+└── example dialogue patterns
+```
+
+Expression 應與 Personality 分離。
+
+角色：
+
+```text
+what she believes / feels / tends to do
+```
+
+與：
+
+```text
+how she expresses it
+```
+
+不是同一件事。
+
+---
+
+## 3.8 Dynamic State
+
+Character Core 需要預留動態心理狀態，但不能與 Memory 混合。
+
+可能包含：
+
+```text
+Dynamic State
+├── current mood
+├── energy
+├── stress
+├── current goals
+├── short-term emotional state
+└── contextual behavioral bias
+```
+
+需要特別區分：
+
+```text
+Slow-Changing Persona
+        ≠
+Dynamic Psychological State
+        ≠
+Memory
+```
+
+Dynamic State 可以暫時改變角色的輸出，
+但不應因一次事件直接重寫高 resistance 的 Personality / Values。
+
+---
+
+## 3.9 Character Persona Update Pipeline
+
+Character Core 未來應具有 Persona Update / Consolidation 機制。
+
+概念流程：
+
+```text
+Canon / Experience / Memory
+            ↓
+      Trait Extraction
+            ↓
+   Trait Domain Classification
+            ↓
+   Change Resistance Evaluation
+            ↓
+   Period / Timeline Assignment
+            ↓
+     Persona Consolidation
+            ↓
+ ┌──────────┼──────────┐
+ ↓          ↓          ↓
+reinforce   update     preserve as
+trait       trait      historical state
+            ↓
+      Current Persona
+```
+
+重要原則：
+
+> Memory stores what happened.  
+> Character Core stores what those experiences made the character become.
+
+因此：
+
+```text
+Event
+  ↓
+Memory
+
+Repeated / important interpreted experience
+  ↓
+Growth / Relationship / Conflict
+  ↓
+Possible persistent Persona change
+```
+
+Character Core 不應直接吸收每一段對話或每一個事件。
+
+---
+
+## 3.10 CharacterGPT / CPT
+
+CharacterGPT 是 Character Core 的重要研究候選。
+
+值得 Aiko 抽取的設計：
+
+```text
+Structured Character Traits
+Type A / Type B distinction
+Incremental Persona Consolidation
+Point-in-Time Persona
+Character growth across narrative periods
+```
+
+Aiko 不應完整照搬 CharacterGPT 的 Type A / Type B binary。
+
+應將其轉化為：
+
+```text
+Trait-specific change resistance
++
+period-aware persona history
++
+persistent persona consolidation
+```
+
+CharacterGPT 對 Aiko 的定位：
+
+```text
+Character Core
+└── Persona Construction / Consolidation
+```
+
+而不是完整 Character Core。
+
+Reference:
+https://arxiv.org/pdf/2405.19778
+
+---
+
+## 3.11 DREAM / Event-Aware Memory Graph
+
+DREAM 對 Aiko 最重要的價值不是「使用 Knowledge Graph」，而是補足 Character Core 與 Experience / Memory 之間的形成關係。
+
+值得抽取的核心概念：
+
+```text
+Event as the basic episodic unit
+Temporal relation
+Causal relation
+Cognition
+Emotion
+Behavior
+Cognition update
+Point-in-time retrieval
+Dynamic profile construction
+```
+
+簡化的角色形成鏈：
+
+```text
+Event
+   ↓
+Cognition
+   ↓
+Emotion
+   ↓
+Behavior
+   ↓
+Cognition Update
+   ↓
+Later Behavior / Persona Evidence
+```
+
+這個模型的用途不是將「A 發生 → 必然產生 B 情緒」寫成固定規則。
+
+真正重要的是保存：
+
+```text
+same event
++ current persona
++ current beliefs
++ relationship context
++ prior experiences
+        ↓
+subjective interpretation
+        ↓
+emotion / behavior
+        ↓
+possible long-term update
+```
+
+因此，同一個 Event 對不同角色，甚至對同一角色不同時期，都可以形成不同結果。
+
+### Separation from Character Core
+
+DREAM-style Event Graph 應主要屬於 Memory subsystem：
+
+```text
+Memory / Event Graph
+├── event
+├── participants
+├── temporal links
+├── causal links
+├── cognition
+├── emotion
+├── behavior
+└── cognition update
+```
+
+Character Core 不直接保存完整 Event Graph。
+
+Character Core 只吸收被反覆支持、具有持續性或高重要度的結果：
+
+```text
+Event Graph
+      ↓
+Trait Evidence
+      ↓
+Persona Update / Consolidation
+      ↓
+Growth / Conflict / Relationship / Personality change
+```
+
+因此：
+
+```text
+Memory stores causal experience.
+Character Core stores consolidated character change.
+Runtime combines both when generating behavior.
+```
+
+### Runtime Use
+
+不是每一次簡單對話都需要完整 multi-hop causal retrieval。
+
+```text
+Simple interaction
+→ Character Core + lightweight memory
+
+Contextually important interaction
+→ relevant event / causal retrieval
+
+Major character-forming event
+→ deep causal analysis
+→ Memory update
+→ possible Persona consolidation
+```
+
+Reference:
+https://arxiv.org/pdf/2608.05170
+
+---
+
+## 3.12 PersonaForge
+
+PersonaForge 是 Character Core 的重要研究候選。
+
+研究重點：
+
+- Personality Consistency
+- Style Adherence
+- Defense Mechanism
+- Response Diversity
+- Long-dialogue persona drift
+- Re-grounding ability
+- Structured personality representation
+
+可能值得 Aiko 抽取的概念：
+
+```text
+Core Traits
+Speaking Style
+Defense Tendencies
+Dynamic State
+```
+
+研究 PersonaForge 的目標不是直接將整個 PersonaForge framework 綁進 Aiko，而是判斷其中哪些人格結構與 runtime 方法值得成為 Aiko Character Core v1 的一部分。
+
+Reference:
+https://github.com/fQwQf/PersonaForge
+
+---
+
+## 3.13 SillyTavern Character Card
+
+Character Card 是成熟的角色描述格式，可作為 practical persona representation 參考。
+
+典型欄位：
+
+```text
+Character
+├── Name
+├── Description
+├── Personality
+├── Scenario
+├── First Message
+├── Example Dialogue
+├── System Prompt
+└── Lore / World Info
+```
+
+值得研究的方向：
+
+- 哪些欄位對角色一致性最有效
+- Example Dialogue 如何影響 speech style
+- Persona 與 Lore / World Info 如何分離
+- Character Card 如何被注入 prompt
+
+但 Lore / World Info 不應直接被視為 Character Core。
+
+Reference:
+https://github.com/SillyTavern/SillyTavern-Docs/blob/main/Usage/Characters/index.md
+
+---
+
+# 4. Knowledge
+
+Knowledge 的目標是回答：
+
+> What information is available to the character?
+
+Knowledge 不等於 Persona，也不等於 Memory。
+
+可能包含：
+
+```text
+Knowledge
+├── canonical background
+├── world lore
+├── people / organizations
+├── music knowledge
+├── piano knowledge
+├── real-world knowledge
+└── later imported knowledge packages
+```
+
+需要注意：
+
+- 原作背景資料可以存在 Knowledge
+- Character Core 只保存角色本身不可缺少的 canonical identity / personality
+- 大型世界觀與可檢索資料應避免全部塞入 Persona prompt
+
+未來可能使用：
+
+- RAG
+- Vector database
+- Keyword retrieval
+- Graph retrieval
+- Hybrid retrieval
+
+但目前不先綁定特定技術。
+
+---
+
+# 5. Memory Research
+
+Memory 的目標是回答：
+
+> What did the character experience, remember, infer, or learn from past interactions?
+
+Memory 與 Knowledge 必須分開。
+
+---
+
+## 5.1 Memory Types
+
+未來可研究：
+
+```text
+Memory
+├── Working Memory
+├── Episodic Memory
+├── Semantic Memory
+├── Relationship Memory
+└── Persona-conditioned Insight
+```
+
+---
+
+## 5.2 RoleMemo / DualMem
+
+重要概念：
+
+> Memory 不只記錄客觀事實，也可以保存角色依據 Persona 對事件形成的主觀理解。
+
+例如：
+
+```text
+Factual memory:
+User practiced piano for 45 minutes.
+
+Persona-conditioned insight:
+She noticed that he kept retrying the difficult part instead of giving up.
+
+Emotional interpretation:
+She feels quietly pleased but probably would not praise him directly.
+```
+
+可能架構：
+
+```text
+Memory
+├── factual cognition
+└── persona-conditioned insight
+```
+
+這個方向非常適合 persistent virtual character，因為不同人格對相同事件應產生不同記憶與理解。
+
+Reference:
+https://arxiv.org/abs/2605.25693
+
+---
+
+## 5.3 Mem0
+
+Mem0 是通用長期記憶技術的重要研究候選。
+
+值得研究：
+
+```text
+Memory extraction
+      ↓
+Entity linking
+      ↓
+Semantic retrieval
+BM25 retrieval
+Entity matching
+      ↓
+Multi-signal fusion
+      ↓
+Temporal reasoning
+```
+
+Temporal reasoning 對長期角色特別重要，例如：
+
+```text
+Past:
+User likes A
+
+Current:
+User no longer likes A and prefers B
+```
+
+記憶系統必須區分 current state 與 historical state。
+
+Reference:
+https://github.com/mem0ai/mem0
+
+---
+
+## 5.4 Letta / MemGPT
+
+Letta / MemGPT 值得研究的不是單純 RAG，而是 persistent stateful agent architecture。
+
+概念：
+
+```text
+Agent
+├── working memory
+├── long-term memory
+├── memory management
+├── tools
+└── persistent state
+```
+
+研究目標：
+
+- Agent 如何主動管理記憶
+- Context window 與 persistent memory 如何互動
+- 哪些概念適合抽取到 Aiko Memory subsystem
+
+Reference:
+https://github.com/letta-ai/letta
+
+---
+
+## 5.5 TeleMem
+
+TeleMem 專注於 character / role-play / companion AI / NPC memory。
+
+值得研究：
+
+- 本地記憶
+- Character memory isolation
+- 多角色記憶隔離
+- Local model + FAISS 等架構
+
+重要概念：
+
+```text
+Global Memory ≠ Character Memory
+```
+
+Reference:
+https://github.com/TeleAI-UAGI/telemem
+
+---
+
+# 6. Skills
+
+角色不需要天生無所不知。
+
+Aiko 的 Skills 應至少區分兩種：
+
+```text
+Skills
+├── Role / Character Execution Skill
+└── Capability Skills
+```
+
+這兩者責任不同。
+
+---
+
+## 6.1 Role / Character Execution Skill
+
+Role Skill 負責：
+
+> How should the LLM operate this character?
+
+它不是角色人格資料本身，而是「如何使用角色資料來執行這個角色」的 runtime instruction layer。
+
+例如：
+
+```text
+skills/
+└── roleplay-sakiko/
+    ├── SKILL.md
+    ├── references/
+    └── optional scripts/
+```
+
+`roleplay-sakiko/SKILL.md` 可以描述：
+
+```text
+1. Load the current Persona period
+2. Retrieve relevant Character Core traits
+3. Retrieve current relationship state
+4. Retrieve relevant memories
+5. Retrieve relevant knowledge
+6. Apply expression / speech profile
+7. Respect character knowledge limitations
+8. Preserve high-resistance traits unless strong evidence exists
+9. Use motivation / conflict / current state when resolving behavior
+10. Avoid using capabilities the character has not acquired
+```
+
+概念上：
+
+```text
+Persistent Character Database
+            ↓
+     roleplay-sakiko Skill
+            ↓
+   Context Selection / Composition
+            ↓
+   Runtime Character Context
+            ↓
+     General-purpose LLM
+```
+
+因此 Role Skill 可以被視為 Character Runtime Adapter。
+
+它負責「如何扮演」，但不應成為角色 canonical data 的主要保存位置。
+
+---
+
+## 6.2 Capability Skills
+
+Capability Skills 負責：
+
+> What can this character do?
+
+例如：
+
+```text
+skills/
+├── piano/
+│   ├── SKILL.md
+│   ├── scripts/
+│   └── references/
+├── etiquette/
+│   └── SKILL.md
+├── anime-watching/
+│   └── SKILL.md
+├── japanese-conversation/
+│   └── SKILL.md
+├── calendar/
+│   └── SKILL.md
+└── web-search/
+    └── SKILL.md
+```
+
+Agent Skills / SKILL.md 是目前重要的開放格式候選。
+
+基本格式：
+
+```text
+my-skill/
+├── SKILL.md
+├── scripts/
+├── references/
+└── assets/
+```
+
+Capability Skill 應與 Character Core 分離。
+
+角色是否「會做某件事」應來自 Skills，而不是把所有能力永久寫進 Persona。
+
+---
+
+## 6.3 Character Identity ≠ Capability
+
+需要明確區分：
+
+```text
+Who the character is
+        ≠
+What the character can do
+```
+
+例如鋼琴：
+
+```text
+Character Core
+├── 音樂對角色的重要性
+├── 對練習的態度
+├── 對演奏的價值觀
+├── 過去與鋼琴相關的重要經歷
+└── 音樂相關人格傾向
+```
+
+而 Piano Skill 負責：
+
+```text
+Piano Skill
+├── MIDI interpretation
+├── rhythm analysis
+├── music theory
+├── fingering knowledge
+├── practice feedback
+└── performance evaluation
+```
+
+因此：
+
+```text
+Character Core
+→ 決定角色如何看待鋼琴
+
+Piano Skill
+→ 決定角色實際能做什麼
+```
+
+禮儀也同樣：
+
+```text
+Character Core
+→ 重視禮節、習慣保持距離、表達方式有教養
+
+Etiquette Skill
+→ 知道具體的正式禮儀、場合規範與行為方式
+```
+
+---
+
+## 6.4 Underlying LLM Capability ≠ Character Capability
+
+通用 LLM 可能知道大量知識，但角色本身不應自動繼承全部能力。
+
+因此必須建立能力限制層：
+
+```text
+Underlying LLM Capability
+          ↓
+      Capability Skill
+          ↓
+ Character Skill Profile
+          ↓
+What this character can actually do
+```
+
+未來可研究：
+
+```text
+SkillInstance
+├── skill_id
+├── proficiency
+├── confidence_by_domain
+├── personal_style
+├── experience
+└── character-specific limitations
+```
+
+底層 LLM 即使擁有完整知識，也不代表角色在所有能力上都應表現為專家。
+
+---
+
+## 6.5 Character Package View
+
+目前可將角色 runtime 所需資訊理解為四層：
+
+```text
+Aiko Character Package
+
+1. Character Data
+   ├── Personality
+   ├── Motivation
+   ├── Relationships
+   ├── Timeline
+   ├── Growth
+   ├── Conflict
+   └── Expression
+           ↓
+      Who am I?
+
+2. Role Skill
+   └── roleplay-character
+           ↓
+      How should the LLM act as me?
+
+3. Capability Skills
+   ├── piano
+   ├── etiquette
+   ├── anime-watching
+   └── ...
+           ↓
+      What can I do?
+
+4. Runtime State
+   ├── current emotion
+   ├── current activity
+   ├── current relationship context
+   ├── relevant memory
+   └── environment
+           ↓
+      What is happening to me now?
+```
+
+Runtime 最終將：
+
+```text
+Character Data
+      +
+Role Skill
+      +
+Capability Skills
+      +
+Runtime State
+      ↓
+Dynamic Character Context
+      ↓
+General-purpose LLM
+      ↓
+Character Behavior
+```
+
+---
+
+# 7. Perception
+
+Perception 負責將現實世界事件轉換成 Aiko Runtime 可以理解的 typed events / observations。
+
+未來可能包含：
+
+```text
+Perception
+├── Text
+├── Microphone
+├── Speech Recognition
+├── Screen
+├── Image
+├── Video
+├── MIDI
+└── System Events
+```
+
+建議資料流：
+
+```text
+Audio
+Video
+Text
+MIDI
+      ↓
+Perception
+      ↓
+Typed Observation / Event
+      ↓
+Runtime
+      ↓
+Memory / Character / Skills / LLM
+```
+
+Perception 不應直接修改 Character state。
+
+---
+
+## 7.1 PersonaVLM
+
+PersonaVLM 是未來 multimodal long-term personalization 的重要研究候選。
+
+值得研究：
+
+```text
+Core memory
+Semantic memory
+Episodic memory
+Procedural memory
+```
+
+以及如何從：
+
+- 對話
+- 圖像
+- multimodal history
+
+抽取 long-term personalized information。
+
+此方向與未來：
+
+- 一起看動畫
+- 一起彈琴
+- 讓角色看到螢幕
+- 讓角色聽到環境
+
+高度相關。
+
+---
+
+# 8. Relationship State
+
+Relationship 不應簡化成單一：
+
+```text
+Relationship = friend
+```
+
+未來可研究結構化 relationship state，例如：
+
+```text
+Relationship
+├── familiarity
+├── trust
+├── affinity
+├── respect
+├── emotional closeness
+└── conflict
+```
+
+需要再決定 Relationship 最終屬於：
+
+- Character dynamic state
+- Memory subsystem
+- independent relationship subsystem
+
+目前先不做永久架構決定。
+
+---
+
+
+# 8.1 Character Runtime Principles
+
+Character Runtime 不應等於「把整個 Character Database 丟給 LLM」。
+
+核心：
+
+```text
+Persistent Character Database
+        ↓
+Compiled Character State
+        ↓
+Selective Retrieval / Activation
+        ↓
+Runtime Character Context
+        ↓
+General-purpose LLM
+```
+
+最重要的成本控制原則：
+
+> Dense representation, sparse activation.
+
+也就是：
+
+```text
+完整 Character Representation
+≠
+每次互動全部啟動
+```
+
+Runtime 只啟動：
+
+```text
+relevant traits
+relevant beliefs / goals
+relevant relationship state
+relevant memories
+relevant knowledge
+relevant skills
+relevant appraisal dimensions
+```
+
+因此：
+
+> Deep psychology does not require deep reasoning on every interaction.
+
+---
+
+# 9. Current Aiko Architecture
+
+目前 Aiko Framework 已經分為：
+
+```text
+character/
+knowledge/
+memory/
+perception/
+skills/
+llm/
+runtime/
+```
+
+Runtime 應維持：
+
+```text
+Character ──────┐
+Knowledge ──────┤
+Memory ─────────┤
+Skills ─────────┼── Runtime ── LLM
+Perception ─────┘
+```
+
+但 Runtime 不應直接將所有 subsystem 資料完整注入 LLM。
+
+應增加 Character Context Builder / Context Composer 概念：
+
+```text
+Character Core ─────┐
+Knowledge ──────────┤
+Memory ─────────────┤
+Role Skill ─────────┤
+Capability Skills ──┤
+Runtime State ──────┤
+Perception ─────────┘
+          ↓
+Character Context Builder
+          ↓
+Dynamic Character Context
+          ↓
+General-purpose LLM
+```
+
+因此：
+
+```text
+Persistent Character Database
+        ↓
+select / retrieve / compose
+        ↓
+Runtime Character Context
+```
+
+此結構應作為後續研究與實作的穩定外框。
+
+後續每個 subsystem 可個別研究論文 / GitHub，再將適合的設計透過 Aiko-owned interface 裝入。
+
+---
+
+# 10. Recommended Research Structure
+
+後續研究不再只按照 subsystem 線性排列，而正式分為三條主線：
+
+```text
+A. Character Reconstruction
+B. Character Runtime
+C. Event Interpretation
+```
+
+---
+
+## Track A — Character Reconstruction
+
+研究基礎：
+
+1. CharacterGPT / Character Persona Training
+2. DREAM / Event-Aware Memory Graph
+3. PersonaForge
+4. Character trait extraction
+5. Point-in-Time Persona
+6. Historical accumulation
+7. Causal formation
+8. Chronic Accessibility
+9. Habitual Processing
+10. Evidence accumulation / validation
+
+目標：
+
+```text
+Aiko Character Core Schema v1
+Aiko Persona Timeline Model
+Aiko Character Reconstruction Workflow
+Aiko Compiled Character State
+Aiko Persona Update Contract
+```
+
+目前 Character Core 五維模型維持：
+
+```text
+8 Trait Domains
+× Trait Change Resistance
+× Multiple Character Periods
+× Historical Accumulation
+× Causal Formation
+```
+
+除非 evaluation 顯示明確缺陷，否則不再增加新的 Character Core 維度。
+
+---
+
+## Track B — Character Runtime
+
+研究：
+
+```text
+Character Context Builder
+Role / Character Execution Skill
+Capability Skills
+Perspective / Knowledge Constraint
+Relevant Memory Retrieval
+Compiled Character State Retrieval
+Token / Latency Control
+LLM portability
+Dense Representation / Sparse Activation
+```
+
+目標：
+
+```text
+Aiko Runtime Character Context Contract
+Aiko Character Context Builder
+Aiko Role Skill Contract
+Aiko Capability Skill Contract
+Aiko Character Skill Profile
+```
+
+---
+
+## Track C — Event Interpretation
+
+研究：
+
+```text
+Event Identification / Segmentation
+Objective Event Representation
+Character Perspective
+Character-dependent Processing
+Appraisal
+Salience Gate
+Selective Activation
+Emotion / Intention / Behavior
+Memory Formation
+Evidence-driven Escalation
+Event → Persona Evidence
+```
+
+核心流程：
+
+```text
+Objective / Perceived Event
+        ↓
+Character Perspective
+        ↓
+Character-dependent Processing
+        ↓
+Selective Appraisal
+        ↓
+Subjective Meaning
+        ↓
+Emotion / Intention / Behavior
+        ↓
+Memory / Evidence
+        ↓
+Possible Character Update
+```
+
+目標：
+
+```text
+Aiko Event Schema v1
+Aiko Character Perspective Contract
+Aiko Salience Gate
+Aiko Appraisal Contract
+Aiko Event Interpretation Pipeline
+Aiko Event → Memory Contract
+Aiko Event → Persona Evidence Contract
+```
+
+---
+
+## Supporting Research — Knowledge / Memory / Skills / Perception
+
+Knowledge、Memory、Skills、Perception 不消失，而是作為三條主線共同依賴的 supporting subsystem。
+
+```text
+Knowledge
+→ supplies accessible information
+
+Memory
+→ supplies past experience and subjective insight
+
+Skills
+→ supplies executable capability
+
+Perception
+→ supplies observations / events
+```
+
+
+# 11. Development Rule for Codex / Future AI Coding Agents
+
+每次新增外部技術前，都應先回答：
+
+```text
+1. What problem does this solve?
+2. Which Aiko subsystem owns this responsibility?
+3. Is this a design reference, library, adapter, or canonical component?
+4. Does it force Aiko data into third-party schemas?
+5. Can the implementation be replaced later?
+6. What interface should isolate it from the Runtime?
+7. What data migration is required if it is removed?
+8. Does this require training a specialized character model?
+9. If yes, which useful representation / extraction / retrieval ideas can be used without model training?
+10. Does this belong to Character Reconstruction, Character Runtime, Event Interpretation, or a supporting subsystem?
+11. Is this a representation dimension or an activation rule?
+12. Does it increase runtime cost?
+13. Can that cost be moved to reconstruction / consolidation time?
+14. Must this run for every event, or only when salient?
+```
+
+如果無法回答以上問題，不應直接將新的 framework 加入 Aiko。
+
+---
+
+# 12. Core Principle Summary
+
+Aiko 的核心原則：
+
+```text
+Aiko owns:
+- identity
+- character data
+- memory data
+- relationship data
+- knowledge data
+- runtime contracts
+
+External technologies provide:
+- algorithms
+- models
+- retrieval engines
+- memory engines
+- perception engines
+- tools
+```
+
+最重要的設計哲學：
+
+> Aiko should own the character; external technologies should only provide capabilities.
+
+以及：
+
+> Aiko does not primarily train a character-specific model. Aiko reconstructs and maintains the character outside the model, while general-purpose LLMs act as replaceable engines for interpreting and performing that character.
+
+以及：
+
+> The persistent character database is the character; the runtime character context is only a temporary view generated for the LLM.
+
+以及：
+
+> Research → Extract → Adapt, rather than blindly importing entire frameworks.
+
+對 Character Core，再增加一條原則：
+
+> Character is not a static profile. It is a temporally layered, slowly evolving state.
+
+也就是：
+
+```text
+Character
+=
+8 Trait Domains
+× Trait Change Resistance
+× Multiple Time Periods
+× Historical Accumulation
+× Causal Formation
+```
+
+人格穩定不代表人格永遠不變。
+
+真正需要追求的是：
+
+```text
+slow traits change slowly
+fast states change quickly
+major changes require meaningful evidence
+past selves remain part of the current character
+events are interpreted through the existing character
+causal experiences explain why persistent traits formed
+complexity should grow only when evaluation proves it necessary
+```
+
+再增加本階段最重要的認知原則：
+
+> Do not ask only "What would this character do?" Ask first: "Given what this character currently knows, believes, remembers, values, fears, wants, and feels, what does this event mean to this character?"
+
+以及：
+
+> Character data should not merely describe the character to the LLM. It should constrain and ground the LLM's reasoning from the character's point of view.
+
+因此：
+
+```text
+Objective / Perceived Event
+        ×
+Point-in-Time Character State
+        ↓
+Subjective Interpretation / Appraisal
+        ↓
+Emotion / Intention / Behavior
+        ↓
+Experience / Memory / Evidence
+        ↓
+Possible Character State(t+1)
+```
+
+這使 Aiko 的研究目標從「知道角色設定並模仿回答」進一步轉向：
+
+```text
+reconstruct the character's cognitive starting state
++
+reason from that state
++
+allow new experience to accumulate after canon
+```
+
+
+新增目前階段的實作原則：
+
+> Dense representation, sparse activation.
+
+> Deep psychology does not require deep reasoning on every interaction.
+
+> Build the character progressively: seed → representative events → consolidation → expansion → validation.
+
+> Chronic Accessibility and Habitual Processing are period-dependent processing dispositions that help historical experience affect future interpretation without forcing every change into a new trait.
+
+三條主線最後形成：
+
+```text
+Character Reconstruction
+        ↓
+Persistent / Compiled Character State
+        ↓
+Character Runtime
+        ↕
+Event Interpretation
+        ↓
+Memory / Evidence
+        ↓
+Possible Character State(t+1)
+```
+
+
+最終目標不是把許多 GitHub 專案黏在一起，而是建立一個穩定的 virtual character runtime，讓不同技術可以像模組一樣替換，而角色本身的資料、記憶與存在狀態可以長期保存。

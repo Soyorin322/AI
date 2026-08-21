@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/reirin-speaker-annotation.yml'
-      - 'character_data/tools/generate_reirin_speaker_annotations_v2.py'
+      - 'character_data/tools/llm_reirin_speaker_attribution.py'
       - 'character_data/Reirin/sources/raw/novel/**'
   workflow_dispatch:
 
@@ -19,16 +19,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install local inference runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install huggingface_hub
+          python -m pip install llama-cpp-python --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
       - name: Validate on Volume 1 and generate Volume 2/3
-        run: python character_data/tools/generate_reirin_speaker_annotations_v2.py
-      - name: Commit generated files and validation report
+        continue-on-error: true
+        run: python character_data/tools/llm_reirin_speaker_attribution.py
+      - name: Commit accepted outputs and validation report
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- 'character_data/Reirin/sources/raw/novel/惡女不才_第二卷_speaker重校.md' 'character_data/Reirin/sources/raw/novel/惡女不才_第三卷_speaker重校.md' 'character_data/Reirin/speaker_attribution_validation.md'
+          git add -- 'character_data/Reirin/sources/raw/novel/惡女不才_第二卷_speaker重校.md' 'character_data/Reirin/sources/raw/novel/惡女不才_第三卷_speaker重校.md' 'character_data/Reirin/speaker_attribution_llm_validation.md'
           if git diff --cached --quiet; then
-            echo "No generated changes"
+            echo "No accepted generated changes"
             exit 0
           fi
-          git commit -m "Regenerate validated Reirin speaker annotations [skip ci]"
+          git commit -m "Generate context-validated Reirin speaker annotations [skip ci]"
           git push

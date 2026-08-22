@@ -1,0 +1,51 @@
+{
+  "schema_version": "story-processing-v0.1",
+  "artifact_version": "volume-04-v0.1",
+  "work": "Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court",
+  "volume": 4,
+  "source": {
+    "path": "data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court/惡女不才_第四卷_純文字版.md",
+    "github_blob_sha": "7c3afd445988ee38225038bb25c2b9a0ae85d712",
+    "media_type": "novel_text_markdown",
+    "translation_note": "網譯版，來源欄位依原檔保存",
+    "author": "中村颯希",
+    "translator": "雲華蓓蕾Bud",
+    "original_file_modified": false
+  },
+  "source_structure": [
+    "序章",
+    "第1章 玲琳，治療",
+    "第2章 慧月，舉辦茶會",
+    "第3章 玲琳，流淚",
+    "第4章 慧月，擔心",
+    "第5章 玲琳，打倒",
+    "尾聲"
+  ],
+  "processing_stages": {
+    "source_normalization": "source preserved; Markdown headings used as structural locators",
+    "speaker_attribution": "event-relevant first pass only; derived annotation",
+    "scene_span_segmentation": "semantic source spans referenced by chapter plus unique anchor",
+    "observation_extraction": "completed for selected story-relevant spans",
+    "event_segmentation": "completed as semantic events; chapter boundaries are not event boundaries",
+    "event_participants": "completed for current event set",
+    "objective_facts": "stored as fact identifiers on events and perspective map",
+    "timeline": "narrative-order timeline created",
+    "perspective_accessibility": "fact-level first pass created"
+  },
+  "status": "first_pass_auditable",
+  "limitations": [
+    "Speaker attribution is not an exhaustive line-by-line transcript.",
+    "Context-inferred speaker labels remain derived annotations, not canonical source text.",
+    "Source locators currently use chapter plus distinctive anchor text; a future normalized line/span index may strengthen deterministic addressing.",
+    "Perspective mapping focuses on facts needed to distinguish story truth from character-accessible information and is not an exhaustive theory-of-mind model.",
+    "UNKNOWN and STORY_ONLY are preserved when Volume 4 does not establish access.",
+    "No Aiko Period State, Memory, Development, Skill Profile, or Compiled Character State is produced here."
+  ],
+  "outputs": [
+    "speaker_annotations_v0.1.json",
+    "observations_v0.1.json",
+    "events_v0.1.json",
+    "timeline_v0.1.json",
+    "perspectives_v0.1.json"
+  ]
+}

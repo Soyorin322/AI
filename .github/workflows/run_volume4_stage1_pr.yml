@@ -5,6 +5,8 @@ on:
     types: [opened, synchronize, reopened]
     paths:
       - 'data_processing/text/.trigger_volume4_stage1_pr'
+      - 'data_processing/text/volume4_stage1_map/**'
+      - '.github/workflows/run_volume4_stage1_pr.yml'
 
 permissions:
   contents: write
@@ -22,16 +24,18 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           from collections import Counter, defaultdict, deque
-          import base64, bz2, json, re
+          import base64, bz2, hashlib, json, re
 
           ROOT = Path('data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court')
           SOURCE = ROOT / '惡女不才_第四卷_純文字版.md'
           TARGET = ROOT / 'processed/volume_04/惡女不才_第四卷_speaker重校.md'
-          STORE = Path('.github/workflows/temp_build_volume4_stage1.yml').read_text(encoding='utf-8')
-          m = re.search(r"DATA = '''(.*?)'''", STORE, re.S)
-          if not m:
-              raise SystemExit('FATAL: attribution map not found')
-          data = json.loads(bz2.decompress(base64.b64decode(m.group(1))).decode('utf-8'))
+          MAP_DIR = Path('data_processing/text/volume4_stage1_map')
+
+          parts = sorted(MAP_DIR.glob('part*.txt'))
+          if len(parts) != 8:
+              raise SystemExit(f'FATAL: expected 8 map parts, got {len(parts)}')
+          payload = ''.join(p.read_text(encoding='utf-8').strip() for p in parts)
+          data = json.loads(bz2.decompress(base64.b64decode(payload)).decode('utf-8'))
           labels = data['labels']
           skips = set(data['skips'])
 
@@ -48,6 +52,7 @@ jobs:
           queues = {k: deque(v) for k, v in label_lists.items()}
 
           out = []
+          applied = uncertain = intentionally_unlabelled = 0
           for line, body in zip(source_lines, source_bodies):
               ending = line[len(body):]
               label = None
@@ -59,25 +64,42 @@ jobs:
               elif q and len(set(q)) == 1:
                   label = q[0]; q.popleft()
               elif body in skips:
-                  pass
+                  intentionally_unlabelled += 1
               elif body.startswith('「'):
-                  label = '【speaker 不確定】'
+                  label = '【speaker 不確定】'; uncertain += 1
               elif body.startswith('（') and body.endswith('）') and 'bilibili.com' not in body:
-                  label = '【speaker 不確定】'
-              out.append((f'{label}: ' if label else '') + body + ending)
+                  label = '【speaker 不確定】'; uncertain += 1
+
+              if label:
+                  out.append(f'{label}: {body}{ending}')
+                  applied += 1
+              else:
+                  out.append(line)
 
           result = ''.join(out)
+
+          # Hard invariant: stripping only Stage-1 attribution prefixes reproduces canonical source exactly.
           prefix = re.compile(r'^(?:【speaker 不確定[^】]*】|[^:：\n]{1,100})\s*:\s*(?=[「（])')
           restored = []
           for ln in result.splitlines(keepends=True):
               body = ln.rstrip('\r\n')
               ending = ln[len(body):]
               restored.append(prefix.sub('', body, count=1) + ending)
-          if ''.join(restored) != text:
+          restored_text = ''.join(restored)
+          if restored_text != text:
               raise SystemExit('FATAL: attribution-only invariant failed')
 
+          git_blob_sha = hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+          if git_blob_sha != '7c3afd445988ee38225038bb25c2b9a0ae85d712':
+              raise SystemExit(f'FATAL: canonical source blob changed: {git_blob_sha}')
+
           TARGET.parent.mkdir(parents=True, exist_ok=True)
-          TARGET.write_bytes((b'\xef\xbb\xbf' if has_bom else b'') + result.encode('utf-8'))
+          target_bytes = (b'\xef\xbb\xbf' if has_bom else b'') + result.encode('utf-8')
+          TARGET.write_bytes(target_bytes)
+          print(f'map_parts={len(parts)} mapped_records={len(labels)}')
+          print(f'applied={applied} uncertain_fallback={uncertain} intentionally_unlabelled={intentionally_unlabelled}')
+          print(f'canonical_git_blob={git_blob_sha}')
+          print('ATTRIBUTION_ONLY_INVARIANT=PASS')
           PY
       - name: Commit generated Stage 1 file to PR branch
         run: |

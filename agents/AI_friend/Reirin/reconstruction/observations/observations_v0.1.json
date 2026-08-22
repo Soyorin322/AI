@@ -1,0 +1,308 @@
+{
+  "artifact": [
+    {
+      "content": "Narration identifies Reirin as fifteen, physically frail, socially favored, and the maker of the leading embroidery; some praise is reported through other speakers.",
+      "id": "obs-001",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-001"
+        ]
+      },
+      "metadata": {
+        "observation_type": "narrator_fact_plus_reported_speech",
+        "speaker_uncertainty": "reported praise is not treated as Reirin self-report"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "pre-swap protected life through tower fall",
+        "metadata": {
+          "period_order": 1,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Reirin falls from the tower after an attributed hostile line from Keigetsu and later awakens in a body with unfamiliar voice, hands, and clothing.",
+      "id": "obs-002",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-002"
+        ]
+      },
+      "metadata": {
+        "observation_type": "observed_action_and_first_person_sensation",
+        "speaker_uncertainty": "hostile speaker label is derived but consistent with nearby action"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Reirin infers a body exchange, cannot express her identity or the exchange, and attempts to identify herself through private facts known to Dongxue.",
+      "id": "obs-003",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-003"
+        ]
+      },
+      "metadata": {
+        "observation_type": "explicit_inference_and_action"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Keigetsu, appearing through flame in Reirin's original body, states that she caused the exchange and blocked disclosure; Reirin hears this and initially offers health advice despite the threat.",
+      "id": "obs-004",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-004"
+        ]
+      },
+      "metadata": {
+        "observation_type": "accessible_statement_and_response",
+        "speaker_uncertainty": "speaker labels remain derived annotations; identity is additionally supported by dialogue content"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Reirin checks the current body, explicitly calls it healthy, recalls her original body's extreme recurrent illness and self-management, and reminds herself of responsibility toward her original body.",
+      "id": "obs-005",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-005"
+        ]
+      },
+      "metadata": {
+        "observation_type": "explicit_statement_narrator_fact_and_inner_reasoning"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "During the beast-seeking rite Reirin remains behaviorally calm, says she is accustomed to proximity to death, and explains that anticipating pain would consume strength.",
+      "id": "obs-006",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-006"
+        ]
+      },
+      "metadata": {
+        "observation_type": "observed_behavior_and_explicit_statement"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Reirin had kept a mouse's body for burial after it consumed poison she dropped; when the lion dies after eating it, she says she bears responsibility and apologizes.",
+      "id": "obs-007",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-007"
+        ]
+      },
+      "metadata": {
+        "observation_type": "narrated_action_and_explicit_statement"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "After acquittal Reirin accepts the imposed public identity label, prays for the dead animals, and tells herself to do what she can.",
+      "id": "obs-008",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-008"
+        ]
+      },
+      "metadata": {
+        "observation_type": "observed_behavior_and_explicit_statement"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Lily tells Reirin that the former body-owner mistreated her and refuses to provide care; Reirin recognizes Lily as a socially vulnerable attendant and hears the hostility directly.",
+      "id": "obs-009",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-009"
+        ]
+      },
+      "metadata": {
+        "observation_type": "accessible_relationship_statement"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "On seeing the warehouse and grounds, Reirin explicitly expresses joy at soil, physical activity, privacy, freedom, and no longer suppressing her voice; narration links prior suppression to illness and others' worry.",
+      "id": "obs-010",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-010"
+        ]
+      },
+      "metadata": {
+        "observation_type": "explicit_emotion_action_and_narrator_context"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Reirin performs substantial clearing work, declines broad rescue, and asks Chenyu only for salt; she remains polite toward Chenyu and Weng Ang.",
+      "id": "obs-011",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-011"
+        ]
+      },
+      "metadata": {
+        "observation_type": "observed_work_and_explicit_request"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Outside Reirin's presence, Lily accepts food and a promised promotion in exchange for reporting mistreatment of the person believed to be Keigetsu.",
+      "id": "obs-012",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-012"
+        ]
+      },
+      "metadata": {
+        "observation_type": "story_level_event_not_character_accessible"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Reirin identifies edible plants, reorganizes cultivation beds, cooks and shares food, calls applying book knowledge joyful, and gives Lily only a constrained hint that she changed after the festival.",
+      "id": "obs-013",
+      "lineage": {
+        "parent_artifact_ids": [],
+        "source_ids": [],
+        "source_unit_ids": [
+          "su-013"
+        ]
+      },
+      "metadata": {
+        "observation_type": "demonstrated_ability_explicit_statement_and_relationship_action"
+      },
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

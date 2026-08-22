@@ -1,0 +1,34 @@
+{
+  "artifact": [
+    {
+      "demonstrated_behaviors": [
+        "Produces the embroidery judged best among displayed festival works."
+      ],
+      "event_ids": [
+        "event-001"
+      ],
+      "evidence_ids": [
+        "evidence-001"
+      ],
+      "explicit_training": [],
+      "id": "skill-evidence-001"
+    },
+    {
+      "demonstrated_behaviors": [
+        "Identifies edible growth, reorganizes beds, cultivates plants, and prepares food."
+      ],
+      "event_ids": [
+        "event-013"
+      ],
+      "evidence_ids": [
+        "evidence-013"
+      ],
+      "explicit_training": [
+        "States that relevant knowledge was learned from books."
+      ],
+      "id": "skill-evidence-002"
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

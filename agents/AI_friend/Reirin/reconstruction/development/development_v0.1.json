@@ -1,0 +1,132 @@
+{
+  "artifact": [
+    {
+      "accessibility_profiles": [],
+      "causal_hypotheses": [
+        {
+          "alternative_hypotheses": [
+            "Novelty of the environment or immediate survival necessity may explain part of the change."
+          ],
+          "counterevidence_ids": [
+            "evidence-011",
+            "evidence-015"
+          ],
+          "statement": "Reduced physical constraint and reduced observation may enable expression and autonomy previously suppressed by illness and protection.",
+          "supporting_evidence_ids": [
+            "evidence-002",
+            "evidence-004",
+            "evidence-009",
+            "evidence-010"
+          ],
+          "uncertainty": "The source supports correlation and Reirin's own contrast, not a finalized causal model."
+        }
+      ],
+      "change_resistance": {
+        "rationale": "The source window is too short to infer resistance to change.",
+        "uncertainty": "Confidence in the contrast does not determine persistence.",
+        "value": "unresolved"
+      },
+      "confidence": "supported as a bounded source-window contrast",
+      "habitual_processing": [],
+      "historical_adaptations": [
+        {
+          "evidence_ids": [
+            "evidence-004",
+            "evidence-009",
+            "evidence-010",
+            "evidence-011",
+            "evidence-015"
+          ],
+          "period_ids": [
+            "period-001",
+            "period-002",
+            "period-003"
+          ],
+          "statement": "The post-swap healthy body and warehouse privacy coincide with broader expression and activity.",
+          "uncertainty": "Persistence beyond the initial warehouse interval is unknown."
+        }
+      ],
+      "id": "development-001",
+      "lineage": {
+        "parent_artifact_ids": [
+          "evidence-002",
+          "evidence-004",
+          "evidence-009",
+          "evidence-010",
+          "evidence-011",
+          "evidence-015"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "period_state_ids": [
+        "period-state-001",
+        "period-state-002",
+        "period-state-003"
+      ],
+      "statement": "Visible emotional expression and independent physical activity increase after the body and environment changes.",
+      "status": "unresolved",
+      "temporal_scope": {
+        "end": "period-003",
+        "label": "first-three-chapters-development",
+        "metadata": {},
+        "start": "period-001"
+      }
+    },
+    {
+      "accessibility_profiles": [],
+      "causal_hypotheses": [
+        {
+          "alternative_hypotheses": [
+            "Immediate situational demands and the healthy borrowed body may sufficiently explain the actions."
+          ],
+          "counterevidence_ids": [
+            "evidence-007",
+            "evidence-015"
+          ],
+          "statement": "Prior illness-management experience may contribute to deliberate action under constraint.",
+          "supporting_evidence_ids": [
+            "evidence-004",
+            "evidence-005",
+            "evidence-010"
+          ],
+          "uncertainty": "Causal formation is provisional and not consolidated."
+        }
+      ],
+      "change_resistance": {
+        "rationale": "Two short adjacent periods cannot establish change resistance.",
+        "uncertainty": null,
+        "value": "unresolved"
+      },
+      "confidence": "limited cross-period support",
+      "habitual_processing": [],
+      "historical_adaptations": [],
+      "id": "development-002",
+      "lineage": {
+        "parent_artifact_ids": [
+          "evidence-004",
+          "evidence-006",
+          "evidence-010",
+          "evidence-013",
+          "evidence-015"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "period_state_ids": [
+        "period-state-002",
+        "period-state-003"
+      ],
+      "statement": "Responsibility-directed action appears in both the adjudication and warehouse periods, but its breadth and durability remain unresolved.",
+      "status": "unresolved",
+      "temporal_scope": {
+        "end": "period-003",
+        "label": "first-three-chapters-development",
+        "metadata": {},
+        "start": "period-002"
+      }
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

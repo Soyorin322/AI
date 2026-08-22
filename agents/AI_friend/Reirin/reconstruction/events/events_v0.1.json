@@ -1,0 +1,509 @@
+{
+  "artifact": [
+    {
+      "character_accessible_information": [
+        "Reirin is present for the festival and knows her own physical condition and embroidery work."
+      ],
+      "description": "Reirin participates in the festival as a frail, publicly favored candidate with demonstrated embroidery.",
+      "explicit_statements": [],
+      "id": "event-001",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-001"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "黃玲琳",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "Reirin's embroidery is displayed and judged best among the displayed works.",
+        "Narration describes recurrent frailty and close family protection."
+      ],
+      "observed_behaviors": [],
+      "outcome": "The protected pre-swap situation is established.",
+      "participants": [
+        "黃玲琳",
+        "堯明",
+        "雛宮女官"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "pre-swap protected life through tower fall",
+        "metadata": {
+          "period_order": 1,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": "Other women's broad praise is reported opinion, not direct access to Reirin's cognition."
+    },
+    {
+      "character_accessible_information": [
+        "Reirin remembers the fall, perceives the unfamiliar body, and recognizes the cell."
+      ],
+      "description": "Reirin falls from the tower and awakens in confinement in Keigetsu's body.",
+      "explicit_statements": [],
+      "id": "event-002",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-002"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "Reirin falls and later awakens in a body with unfamiliar features in a cell."
+      ],
+      "observed_behaviors": [],
+      "outcome": "Character identity remains 黃玲琳 while current body identity becomes 朱慧月.",
+      "participants": [
+        "黃玲琳",
+        "朱慧月",
+        "堯明",
+        "冬雪"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": "The source's speaker attribution is derived; the swap is subsequently corroborated in accessible dialogue."
+    },
+    {
+      "character_accessible_information": [
+        "Reirin knows her identity, infers the exchange, and learns that Dongxue believes a diary was stolen."
+      ],
+      "description": "Reirin attempts and fails to prove her identity to Dongxue under a disclosure restriction.",
+      "explicit_statements": [],
+      "id": "event-003",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-003"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "Speech and writing about the exchange are blocked; Dongxue rejects private identifying facts because of a false diary explanation."
+      ],
+      "observed_behaviors": [
+        "Offers private biographical facts to establish identity."
+      ],
+      "outcome": "The identity proof fails and Reirin remains treated as Keigetsu.",
+      "participants": [
+        "黃玲琳",
+        "冬雪"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": null
+    },
+    {
+      "character_accessible_information": [
+        "Reirin hears the stated motive, method, disclosure constraint, and threat."
+      ],
+      "description": "Keigetsu tells Reirin that the exchange and disclosure block were intentional.",
+      "explicit_statements": [
+        "Reirin asks why and offers advice for treating her original body's fever."
+      ],
+      "id": "event-004",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-004"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "The person in Reirin's original body claims responsibility for the exchange and threatens Reirin with execution."
+      ],
+      "observed_behaviors": [],
+      "outcome": "Reirin's accessible knowledge now includes an asserted intentional exchange.",
+      "participants": [
+        "黃玲琳",
+        "朱慧月"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": "The other party's causal account is a statement by an adversarial participant, not independent narrator verification."
+    },
+    {
+      "character_accessible_information": [
+        "Reirin directly tests the current body, recalls her illness-management history, envies the health, and recalls duty toward her original body."
+      ],
+      "description": "Reirin evaluates the healthy borrowed body against her severely frail original body.",
+      "explicit_statements": [],
+      "id": "event-005",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-005"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "The borrowed body has stable pulse and movement while narration describes the original body's recurrent severe illness."
+      ],
+      "observed_behaviors": [],
+      "outcome": "She understands a sharp body/health contrast without changing character identity.",
+      "participants": [
+        "黃玲琳"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": null
+    },
+    {
+      "character_accessible_information": [
+        "She knows the danger and explains her learned strategy of not anticipating pain."
+      ],
+      "description": "Reirin faces the beast-seeking rite and remains behaviorally calm before the lion.",
+      "explicit_statements": [],
+      "id": "event-006",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-006"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "Reirin is placed with a hungry lion and remains standing as it approaches."
+      ],
+      "observed_behaviors": [
+        "Maintains composure before attack."
+      ],
+      "outcome": null,
+      "participants": [
+        "黃玲琳",
+        "辰宇",
+        "堯明"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": "Calm behavior is bounded to this danger context and must not alone establish lifelong fearlessness."
+    },
+    {
+      "character_accessible_information": [
+        "Reirin knows how the mouse encountered the poison and treats both deaths as her responsibility."
+      ],
+      "description": "The lion dies after consuming the poisoned mouse remains kept by Reirin.",
+      "explicit_statements": [],
+      "id": "event-007",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-007"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "The lion consumes poisoned remains and dies; Reirin survives."
+      ],
+      "observed_behaviors": "Warns the lion, explains the accident, apologizes, and intends burial/prayer.",
+      "outcome": "The rite ends without Reirin's death.",
+      "participants": [
+        "黃玲琳",
+        "辰宇"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": null
+    },
+    {
+      "character_accessible_information": [
+        "Reirin hears the acquittal, the continued threat against identity-like behavior, and knows she cannot disclose the swap."
+      ],
+      "description": "Reirin is declared innocent of the tower attack and resolves to act within her constrained public identity.",
+      "explicit_statements": [],
+      "id": "event-008",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-008"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "The rite formally declares the person publicly identified as Keigetsu innocent of the attack."
+      ],
+      "observed_behaviors": "Prays for the animals and verbally rallies herself.",
+      "outcome": "Execution danger ends, but identity concealment and social hostility continue.",
+      "participants": [
+        "黃玲琳",
+        "辰宇",
+        "堯明"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": null
+    },
+    {
+      "character_accessible_information": [
+        "Reirin learns Lily's name, vulnerable status, claimed mistreatment, and present refusal."
+      ],
+      "description": "Lily escorts Reirin to a derelict warehouse and directly refuses service while describing prior abuse.",
+      "explicit_statements": [],
+      "id": "event-009",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-009"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "Reirin is relocated and Lily states that she will not provide household care."
+      ],
+      "observed_behaviors": [],
+      "outcome": "Reirin enters a new environment with a hostile attendant relationship.",
+      "participants": [
+        "黃玲琳",
+        "莉莉"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": null
+    },
+    {
+      "character_accessible_information": [
+        "She knows she is isolated, inhabits a healthy body, and explicitly experiences joy and freedom while remembering the wrongful exchange."
+      ],
+      "description": "Reirin welcomes warehouse isolation as an opportunity for physical activity, autonomy, and open expression.",
+      "explicit_statements": [],
+      "id": "event-010",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-010"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "Reirin is left at the warehouse with overgrown grounds and no immediate supervision."
+      ],
+      "observed_behaviors": "Runs into the grass, touches the soil, jumps, and speaks loudly.",
+      "outcome": "Her active goals shift toward self-sufficient living while the exchange remains unresolved.",
+      "participants": [
+        "黃玲琳"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": null
+    },
+    {
+      "character_accessible_information": [
+        "Reirin participates in the conversation and knows what support is offered and accepted."
+      ],
+      "description": "Reirin begins clearing the grounds and requests only basic supplies when Chenyu offers help.",
+      "explicit_statements": [],
+      "id": "event-011",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-011"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "Reirin clears vegetation; Chenyu offers intervention or supplies; she asks for salt and receives basic provisions."
+      ],
+      "observed_behaviors": "Performs manual work, declines broad intervention, and makes a limited practical request.",
+      "outcome": "Initial self-sufficient settlement receives minimal material support.",
+      "participants": [
+        "黃玲琳",
+        "辰宇",
+        "文昴"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": null
+    },
+    {
+      "character_accessible_information": [],
+      "description": "Lily privately accepts an inducement to report on mistreatment of the person believed to be Keigetsu.",
+      "explicit_statements": [],
+      "id": "event-012",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-012"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "Lily accepts rice and a promised promotion for future reports."
+      ],
+      "observed_behaviors": [],
+      "outcome": "An undisclosed pressure enters Lily's relationship context.",
+      "participants": [
+        "莉莉",
+        "雅容"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": "This story-level event is inaccessible to Reirin in the allowed source window and is excluded from her Memory and Period domain claims."
+    },
+    {
+      "character_accessible_information": [
+        "Reirin knows her own work, book-derived knowledge, enjoyment, and the limited hint she gives Lily; she does not know Lily's private agreement."
+      ],
+      "description": "Reirin cultivates recovered plants, cooks, shares food with Lily, and gives a constrained identity hint.",
+      "explicit_statements": [],
+      "id": "event-013",
+      "lineage": {
+        "parent_artifact_ids": [
+          "obs-013"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "body_identity": "朱慧月",
+        "character_identity": "黃玲琳 / Reirin"
+      },
+      "objective_facts": [
+        "Reirin has cleared and organized part of the grounds, identified edible plants, cooked food, and shared it."
+      ],
+      "observed_behaviors": "Cultivates, cooks, offers food, and avoids falsely claiming use of magic.",
+      "outcome": "Lily encounters behavior inconsistent with her prior model of Keigetsu, but Reirin's identity remains undisclosed.",
+      "participants": [
+        "黃玲琳",
+        "莉莉"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": null
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

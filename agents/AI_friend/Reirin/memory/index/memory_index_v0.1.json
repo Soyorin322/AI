@@ -1,0 +1,132 @@
+{
+  "artifact": [
+    {
+      "entities": [
+        "黃玲琳"
+      ],
+      "importance": "source-window-significant",
+      "memory_id": "memory-002",
+      "period_id": "period-002",
+      "relationship_relevance": [],
+      "topics": [
+        "identity",
+        "body",
+        "experience"
+      ]
+    },
+    {
+      "entities": [
+        "黃玲琳"
+      ],
+      "importance": "source-window-significant",
+      "memory_id": "memory-003",
+      "period_id": "period-002",
+      "relationship_relevance": [],
+      "topics": [
+        "identity",
+        "body",
+        "experience"
+      ]
+    },
+    {
+      "entities": [
+        "黃玲琳"
+      ],
+      "importance": "source-window-significant",
+      "memory_id": "memory-004",
+      "period_id": "period-002",
+      "relationship_relevance": [],
+      "topics": [
+        "identity",
+        "body",
+        "experience"
+      ]
+    },
+    {
+      "entities": [
+        "黃玲琳"
+      ],
+      "importance": "source-window-significant",
+      "memory_id": "memory-005",
+      "period_id": "period-002",
+      "relationship_relevance": [],
+      "topics": [
+        "identity",
+        "body",
+        "experience"
+      ]
+    },
+    {
+      "entities": [
+        "黃玲琳"
+      ],
+      "importance": "source-window-significant",
+      "memory_id": "memory-007",
+      "period_id": "period-002",
+      "relationship_relevance": [],
+      "topics": [
+        "identity",
+        "body",
+        "experience"
+      ]
+    },
+    {
+      "entities": [
+        "黃玲琳"
+      ],
+      "importance": "source-window-significant",
+      "memory_id": "memory-008",
+      "period_id": "period-002",
+      "relationship_relevance": [],
+      "topics": [
+        "identity",
+        "body",
+        "experience"
+      ]
+    },
+    {
+      "entities": [
+        "黃玲琳"
+      ],
+      "importance": "source-window-significant",
+      "memory_id": "memory-009",
+      "period_id": "period-003",
+      "relationship_relevance": [],
+      "topics": [
+        "identity",
+        "body",
+        "experience"
+      ]
+    },
+    {
+      "entities": [
+        "黃玲琳"
+      ],
+      "importance": "source-window-significant",
+      "memory_id": "memory-010",
+      "period_id": "period-003",
+      "relationship_relevance": [],
+      "topics": [
+        "identity",
+        "body",
+        "experience"
+      ]
+    },
+    {
+      "entities": [
+        "黃玲琳"
+      ],
+      "importance": "source-window-significant",
+      "memory_id": "memory-013",
+      "period_id": "period-003",
+      "relationship_relevance": [],
+      "topics": [
+        "identity",
+        "body",
+        "experience"
+      ]
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

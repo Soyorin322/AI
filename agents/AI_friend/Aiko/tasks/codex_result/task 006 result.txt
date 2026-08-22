@@ -1,0 +1,173 @@
+Task 006 已完成。這是第一次正式依照 Aiko v0.0.8 contracts 建立並從 persisted JSON reload 驗證的 `Reirin v0.1`。
+
+完整稽核報告：[reconstruction_v0.1_report.md](/C:/AI/agents/AI_friend/Reirin/reconstruction/reconstruction_v0.1_report.md)
+
+## Artifact counts
+
+| Artifact | 數量 |
+|---|---:|
+| SourceReference | 1 |
+| Exact SourceUnit | 13 |
+| ObservationRecord | 13 |
+| EventRecord | 13 |
+| EvidenceRecord | 15 |
+| PeriodDefinition | 3 |
+| PeriodAssignment | 13 |
+| PeriodCharacterState | 3 |
+| MemoryFormationDecision | 13 |
+| MemoryRecord | 9 |
+| MemoryIndexMetadata | 9 |
+| SkillEvidence | 2 |
+| CharacterSkillProfile | 2 |
+| DevelopmentRecord | 2 |
+| CompiledCharacterState | 1 |
+
+13 個 Event 各自只保存一次；Domain、Memory、Skill、Development 與 Compiled State 均透過 ID 引用。
+
+## Period boundaries
+
+- `period-001` — confirmed  
+  交換前基準：原身體、受保護環境、公開身份與既有知識狀態。
+
+- `period-002` — confirmed  
+  高樓事件後醒於朱慧月身體，body identity、環境、公開身份、知識、目標與處刑風險同時改變。
+
+- `period-003` — candidate  
+  獲判無罪並遷往梨園後，危險、環境、自主程度、關係與目標改變；但來源只涵蓋新狀態初期，不足以確認長期穩定性。
+
+Period 並非依章節切分。所有 13 個 Event 均有唯一且明確的 PeriodAssignment。
+
+## 八 Domain 與 abstention
+
+| Period | Personality | Physical | Motivation | Backstory | Emotion | Relationships | Growth | Conflict |
+|---|---|---|---|---|---|---|---|---|
+| 001 | bounded | observed | insufficient | observed | insufficient | observed | not applicable | insufficient |
+| 002 | bounded | observed | observed | observed | observed | observed | bounded | observed |
+| 003 | bounded | observed | observed | unchanged | observed | observed | bounded | observed |
+
+刻意 abstain 的例子：
+
+- Period 001 Motivation、Emotion、Conflict：`insufficient_evidence`
+- Period 001 Growth：`not_applicable`
+- Period 003 Backstory：`unchanged`
+
+角色 identity 始終為 `黃玲琳 / Reirin`；body identity 在 Period 001 為黃玲琳，Period 002–003 為朱慧月。
+
+## Bounded inference 與 counterevidence
+
+未升格為永久人格的推論包括：
+
+- 處刑危險下的鎮定只限該情境，不等於普遍無所畏懼。
+- 動物死亡事件中的責任承擔只形成 bounded pattern。
+- 梨園中的自立、實作與情緒表達不代表已形成終身穩定人格。
+
+保留的 counterevidence／alternative explanations：
+
+- 強烈敵意仍令玲琳流淚並接近昏厥，反駁「情緒不受影響」。
+- 交換前高度依賴保護，限制對既有全面自主性的推論。
+- 梨園 Period 很短，無法證明新行為持續。
+- 健康身體、隱私、環境新奇性及求生需求，都可能解釋表達與活動增加。
+- 兩個 DevelopmentRecord 的 `change_resistance` 均保持 `unresolved`，未由 confidence 推算。
+
+## Memory、Skills 與 knowledge boundary
+
+13 個 Event 都有 MemoryFormationDecision：
+
+- `persist`：9
+- `do_not_persist`：4
+
+Lily 私下接受利誘的 `event-012` 是 story-level truth，但玲琳不知情：
+
+- 不進入 Reirin Memory。
+- 列入 Period 003 `excluded_fact_ids`。
+- 不作為玲琳當時的主觀關係知識。
+
+建立的保守 Skill Profiles：
+
+- 刺繡：只記錄節慶比較中實際展示的高品質作品。
+- 基礎栽培與食物處理：只記錄梨園單一時段內實際完成的工作。
+
+未建立 RuntimeCapability 或任何技術 skill pack。
+
+## Persisted reload validation
+
+實際驗證流程為：
+
+```text
+persisted JSON
+→ reload
+→ Aiko dataclasses
+→ ReconstructionGraph
+→ validate_reconstruction_graph()
+→ 0 errors
+```
+
+另外逐一重算所有 SourceUnit content hashes，並檢查：
+
+```text
+Compiled State
+→ Period State
+→ Evidence / Event
+→ Observation
+→ Exact SourceUnit
+→ approved Source
+```
+
+結果全部可追溯。
+
+## Validation results
+
+- `validate_reconstruction_graph()`：`0 validation errors`
+- Aiko完整測試：`27 passed`
+- Reirin persisted instance測試：`3 passed`
+- `git diff --check`：通過
+- Machine-readable JSON scope leakage audit：`0 matches`
+
+## 新增檔案
+
+- [README.md](/C:/AI/agents/AI_friend/Reirin/README.md)
+- [build_v0_1.py](/C:/AI/agents/AI_friend/Reirin/reconstruction/build_v0_1.py)
+- [manifest](/C:/AI/agents/AI_friend/Reirin/reconstruction/manifests/reconstruction_v0.1_manifest.json)
+- [source units](/C:/AI/agents/AI_friend/Reirin/reconstruction/source_units/source_units_v0.1.json)
+- [observations](/C:/AI/agents/AI_friend/Reirin/reconstruction/observations/observations_v0.1.json)
+- [events](/C:/AI/agents/AI_friend/Reirin/reconstruction/events/events_v0.1.json)
+- [evidence](/C:/AI/agents/AI_friend/Reirin/reconstruction/evidence/evidence_v0.1.json)
+- [period definitions](/C:/AI/agents/AI_friend/Reirin/reconstruction/periods/period_definitions_v0.1.json)
+- [period assignments](/C:/AI/agents/AI_friend/Reirin/reconstruction/periods/period_assignments_v0.1.json)
+- [period states](/C:/AI/agents/AI_friend/Reirin/reconstruction/periods/period_states_v0.1.json)
+- [development](/C:/AI/agents/AI_friend/Reirin/reconstruction/development/development_v0.1.json)
+- [memory decisions](/C:/AI/agents/AI_friend/Reirin/memory/records/memory_decisions_v0.1.json)
+- [memories](/C:/AI/agents/AI_friend/Reirin/memory/records/memories_v0.1.json)
+- [memory index](/C:/AI/agents/AI_friend/Reirin/memory/index/memory_index_v0.1.json)
+- [skill evidence](/C:/AI/agents/AI_friend/Reirin/character/skill_profile/skill_evidence_v0.1.json)
+- [skill profiles](/C:/AI/agents/AI_friend/Reirin/character/skill_profile/skill_profile_v0.1.json)
+- [compiled state](/C:/AI/agents/AI_friend/Reirin/character/compiled/compiled_character_state_v0.1.json)
+- [loader](/C:/AI/agents/AI_friend/Reirin/validation/load_v0_1.py)
+- [validator](/C:/AI/agents/AI_friend/Reirin/validation/validate_instance.py)
+- [instance tests](/C:/AI/agents/AI_friend/Reirin/tests/test_instance_v0_1.py)
+- [audit report](/C:/AI/agents/AI_friend/Reirin/reconstruction/reconstruction_v0.1_report.md)
+
+原 placeholder `.gitkeep` 已移除。
+
+## Scope confirmation
+
+- 完整讀取且只使用：`惡女不才_第一卷_前三章.md`
+- Source SHA-256：`c4ebb0d72546fa79ef6c6371cda65f9916a097e62576adda20e523934e050c03`
+- Speaker attribution 明確記為 derived、not guaranteed。
+- 未讀取或使用第一卷後續章節、第二卷、第三卷、wiki、web、reference notes、Task 004 reconstruction 或既有人格摘要。
+- 本次沒有修改任何 Aiko framework 檔案，也沒有加入 Reirin-specific generic logic。
+- 這只是 `Reirin v0.1 — 第一卷前三章`，不是完整或最終玲琳人格。
+
+
+
+
+
+已編輯 7 個檔案+819-1檢閱變更復原查看
+
+agents/AI_friend/Reirin/.gitkeepagents/AI_friend/Reirin/.gitkeep+0-1
+agents/AI_friend/Reirin/README.mdagents/AI_friend/Reirin/README.md+27-0
+agents/AI_friend/Reirin/reconstruction/build_v0_1.pyagents/AI_friend/Reirin/reconstruction/build_v0_1.py+384-0
+agents/AI_friend/Reirin/reconstruction/reconstruction_v0.1_report.mdagents/AI_friend/Reirin/reconstruction/reconstruction_v0.1_report.md+159-0
+agents/AI_friend/Reirin/tests/test_instance_v0_1.pyagents/AI_friend/Reirin/tests/test_instance_v0_1.py+65-0
+agents/AI_friend/Reirin/validation/load_v0_1.pyagents/AI_friend/Reirin/validation/load_v0_1.py+151-0
+agents/AI_friend/Reirin/validation/validate_instance.pyagents/AI_friend/Reirin/validation/validate_instance.py+33-0

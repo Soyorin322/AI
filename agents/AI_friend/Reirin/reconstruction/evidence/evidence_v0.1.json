@@ -1,0 +1,387 @@
+{
+  "artifact": [
+    {
+      "content": "The displayed embroidery and narrator comparison support demonstrated embroidery ability, without importing every bystander's praise as fact.",
+      "id": "evidence-001",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-001"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "demonstrated_skill",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "supports",
+      "temporal_scope": {
+        "end": null,
+        "label": "pre-swap protected life through tower fall",
+        "metadata": {
+          "period_order": 1,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Narration supports severe recurrent original-body frailty and extensive family protection before the swap.",
+      "id": "evidence-002",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-001"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "narrator_supported_state",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "supports",
+      "temporal_scope": {
+        "end": null,
+        "label": "pre-swap protected life through tower fall",
+        "metadata": {
+          "period_order": 1,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Direct bodily perception, failed disclosure, and later dialogue support identity/body separation after the fall.",
+      "id": "evidence-003",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-002",
+          "event-003",
+          "event-004"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "identity_and_knowledge",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "supports",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Reirin's health checks and explicit duty reminder support the borrowed-body health contrast and continued identification with her original body.",
+      "id": "evidence-004",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-005"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "explicit_reasoning",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "supports",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Behavior and explicit statements during the rite support context-bounded composure under anticipated physical danger.",
+      "id": "evidence-005",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-006"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "observed_behavior_plus_statement",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "supports",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Her apology and ownership of the animal deaths support responsibility-taking in this concrete incident.",
+      "id": "evidence-006",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-007",
+          "event-008"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "observed_behavior_plus_statement",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "supports",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Reirin's tears and near-faint response to intense personal hatred limit any broad claim that she is emotionally unaffected by threat or rejection.",
+      "id": "evidence-007",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-004"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "counterevidence",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "contradicts",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Lily's direct account establishes present hostility and claimed prior abuse by the former body-owner, not acts attributable to Reirin's identity.",
+      "id": "evidence-008",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-009"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "relationship_context",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "supports",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Reirin's explicit joy and narrator context support health- and privacy-enabled release of previously restrained emotional expression.",
+      "id": "evidence-009",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-010"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "explicit_emotion_plus_narrator_context",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "supports",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Manual clearing and a narrowly scoped supply request support self-directed practical action in the warehouse context.",
+      "id": "evidence-010",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-011"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "demonstrated_action",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "supports",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Pre-swap dependence on intensive protection limits any claim that visible independence was already broadly demonstrated in all contexts.",
+      "id": "evidence-011",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-001"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "contextual_counterevidence",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "contradicts",
+      "temporal_scope": {
+        "end": null,
+        "label": "pre-swap protected life through tower fall",
+        "metadata": {
+          "period_order": 1,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Lily's private agreement is story-level relationship context but cannot support Reirin-accessible knowledge or memory in this period.",
+      "id": "evidence-012",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-012"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "knowledge_boundary_guard",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "contradicts",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Cultivation, plant identification, food preparation, and sharing are directly demonstrated in the warehouse scene.",
+      "id": "evidence-013",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-013"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "demonstrated_skill_and_behavior",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "supports",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "Reirin explicitly remembers the wrongful motive for the swap while enjoying the warehouse, supporting a concurrent freedom-versus-duty tension.",
+      "id": "evidence-014",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-010",
+          "event-013"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "explicit_conflict",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "supports",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "content": "The source window ends shortly after relocation, so persistence of the new expression and autonomy pattern is not established.",
+      "id": "evidence-015",
+      "lineage": {
+        "parent_artifact_ids": [
+          "event-010",
+          "event-011",
+          "event-013"
+        ],
+        "source_ids": [],
+        "source_unit_ids": []
+      },
+      "metadata": {
+        "evidence_type": "scope_counterevidence",
+        "scope_limit": "first-three-chapters-only"
+      },
+      "stance": "contradicts",
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

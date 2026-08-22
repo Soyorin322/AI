@@ -1,0 +1,110 @@
+{
+  "artifact": [
+    {
+      "event_id": "event-001",
+      "id": "assignment-001",
+      "metadata": {},
+      "period_id": "period-001",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "confirmed"
+    },
+    {
+      "event_id": "event-002",
+      "id": "assignment-002",
+      "metadata": {},
+      "period_id": "period-002",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "confirmed"
+    },
+    {
+      "event_id": "event-003",
+      "id": "assignment-003",
+      "metadata": {},
+      "period_id": "period-002",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "confirmed"
+    },
+    {
+      "event_id": "event-004",
+      "id": "assignment-004",
+      "metadata": {},
+      "period_id": "period-002",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "confirmed"
+    },
+    {
+      "event_id": "event-005",
+      "id": "assignment-005",
+      "metadata": {},
+      "period_id": "period-002",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "confirmed"
+    },
+    {
+      "event_id": "event-006",
+      "id": "assignment-006",
+      "metadata": {},
+      "period_id": "period-002",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "confirmed"
+    },
+    {
+      "event_id": "event-007",
+      "id": "assignment-007",
+      "metadata": {},
+      "period_id": "period-002",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "confirmed"
+    },
+    {
+      "event_id": "event-008",
+      "id": "assignment-008",
+      "metadata": {},
+      "period_id": "period-002",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "confirmed"
+    },
+    {
+      "event_id": "event-009",
+      "id": "assignment-009",
+      "metadata": {},
+      "period_id": "period-003",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "candidate"
+    },
+    {
+      "event_id": "event-010",
+      "id": "assignment-010",
+      "metadata": {},
+      "period_id": "period-003",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "candidate"
+    },
+    {
+      "event_id": "event-011",
+      "id": "assignment-011",
+      "metadata": {},
+      "period_id": "period-003",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "candidate"
+    },
+    {
+      "event_id": "event-012",
+      "id": "assignment-012",
+      "metadata": {},
+      "period_id": "period-003",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "candidate"
+    },
+    {
+      "event_id": "event-013",
+      "id": "assignment-013",
+      "metadata": {},
+      "period_id": "period-003",
+      "reason": "Assigned from body/environment/knowledge/goal state active during the event.",
+      "status": "candidate"
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

@@ -1,0 +1,81 @@
+{
+  "architecture_version": "character_create_v0.0.8",
+  "artifact_counts": {
+    "character_skill_profiles": 2,
+    "compiled_character_states": 1,
+    "development_records": 2,
+    "events": 13,
+    "evidence_records": 15,
+    "memory_decisions": 13,
+    "memory_records": 9,
+    "observations": 13,
+    "period_assignments": 13,
+    "period_character_states": 3,
+    "periods": 3,
+    "skill_evidence": 2,
+    "source_references": 1,
+    "source_units": 13
+  },
+  "character_id": "Reirin",
+  "framework": "Aiko",
+  "known_limitations": [
+    "short source window",
+    "derived speaker annotation",
+    "candidate final period boundary",
+    "no later-source knowledge"
+  ],
+  "periods": [
+    {
+      "id": "period-001",
+      "order": 1,
+      "reason": "Baseline body, protected environment, public identity, and knowledge state precede the tower fall and exchange.",
+      "status": "confirmed"
+    },
+    {
+      "id": "period-002",
+      "order": 2,
+      "reason": "Awakening in Keigetsu's body changes body identity, environment, public identity, accessible knowledge, immediate goal, and execution risk.",
+      "status": "confirmed"
+    },
+    {
+      "id": "period-003",
+      "order": 3,
+      "reason": "Acquittal ends immediate execution risk and relocation changes environment, available autonomy, relationships, and active goals; the source window is too short to confirm lasting coherence.",
+      "status": "candidate"
+    }
+  ],
+  "reconstruction_version": "0.1",
+  "source_annotation_status": "speaker attribution is derived and not guaranteed",
+  "source_hash": {
+    "git_blob": "5dae00c1fd63de0566c7dbf19e00689ef3d63bc6",
+    "sha256": "c4ebb0d72546fa79ef6c6371cda65f9916a097e62576adda20e523934e050c03"
+  },
+  "source_path": "character_data/Reirin/sources/raw/novel/惡女不才_第一卷_前三章.md",
+  "source_reference": {
+    "approved": true,
+    "id": "source-v1-first-three",
+    "locator": "character_data/Reirin/sources/raw/novel/惡女不才_第一卷_前三章.md",
+    "media_type": "text/markdown",
+    "metadata": {
+      "approval_scope": "Task 006 only",
+      "content_basis": "novel_text",
+      "git_blob": "5dae00c1fd63de0566c7dbf19e00689ef3d63bc6",
+      "sha256": "c4ebb0d72546fa79ef6c6371cda65f9916a097e62576adda20e523934e050c03",
+      "source_role": "approved_reconstruction_input",
+      "speaker_annotation": "derived",
+      "speaker_annotation_confidence": "not_guaranteed"
+    },
+    "title": "惡女不才 第一卷前三章 Speaker 標註版"
+  },
+  "source_role": "approved_reconstruction_input",
+  "source_scope": "Volume 1 selected prologue/first three chapters file only",
+  "unresolved_items": [
+    "Period 003 boundary remains candidate because only its opening interval is present.",
+    "Long-term trait stability and change resistance are unresolved.",
+    "Speaker attribution is derived and not treated as infallible.",
+    "No knowledge after the first three chapters is included.",
+    "Relationship ownership remains the Aiko architecture's unresolved issue."
+  ],
+  "validation_error_count": 0,
+  "validation_status": "passed: persisted JSON reloaded into Aiko dataclasses; 0 validation errors"
+}

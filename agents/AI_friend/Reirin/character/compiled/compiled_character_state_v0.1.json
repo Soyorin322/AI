@@ -1,0 +1,84 @@
+{
+  "artifact": [
+    {
+      "character_version": "Reirin-v0.1",
+      "current_period_state_id": "period-state-003",
+      "development_ids": [
+        "development-001",
+        "development-002"
+      ],
+      "entries": [
+        {
+          "development_ids": [],
+          "evidence_ids": [
+            "evidence-003",
+            "evidence-004"
+          ],
+          "period_state_ids": [
+            "period-state-002",
+            "period-state-003"
+          ],
+          "statement": "Current character identity is 黃玲琳 / Reirin while current body identity is 朱慧月 within this source window."
+        },
+        {
+          "development_ids": [
+            "development-001"
+          ],
+          "evidence_ids": [
+            "evidence-009",
+            "evidence-010",
+            "evidence-013"
+          ],
+          "period_state_ids": [
+            "period-state-003"
+          ],
+          "statement": "Current warehouse-period state includes explicit joy in bodily capacity, privacy, practical work, and applying learned knowledge."
+        },
+        {
+          "development_ids": [
+            "development-002"
+          ],
+          "evidence_ids": [
+            "evidence-005",
+            "evidence-006",
+            "evidence-007",
+            "evidence-015"
+          ],
+          "period_state_ids": [
+            "period-state-002",
+            "period-state-003"
+          ],
+          "statement": "Composure and responsibility-taking are supported only as bounded patterns in the observed danger and settlement contexts."
+        },
+        {
+          "development_ids": [],
+          "evidence_ids": [
+            "evidence-008",
+            "evidence-012",
+            "evidence-013"
+          ],
+          "period_state_ids": [
+            "period-state-003"
+          ],
+          "statement": "The current relationship with Lily begins under hostility attached to the former body-owner and includes Reirin's food sharing; Lily's private inducement is not accessible to Reirin."
+        }
+      ],
+      "historical_period_state_ids": [
+        "period-state-001",
+        "period-state-002",
+        "period-state-003"
+      ],
+      "id": "compiled-reirin-v0.1",
+      "schema_version": "0.0.8",
+      "unresolved_items": [
+        "Period 003 boundary remains candidate because only its opening interval is present.",
+        "Long-term trait stability and change resistance are unresolved.",
+        "Speaker attribution is derived and not treated as infallible.",
+        "No knowledge after the first three chapters is included.",
+        "Relationship ownership remains the Aiko architecture's unresolved issue."
+      ]
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

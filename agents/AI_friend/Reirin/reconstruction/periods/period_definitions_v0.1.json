@@ -1,0 +1,57 @@
+{
+  "artifact": [
+    {
+      "boundary_reason": "Baseline body, protected environment, public identity, and knowledge state precede the tower fall and exchange.",
+      "boundary_status": "confirmed",
+      "id": "period-001",
+      "knowledge_boundary_order": 1,
+      "metadata": {},
+      "order": 1,
+      "temporal_scope": {
+        "end": null,
+        "label": "pre-swap protected life through tower fall",
+        "metadata": {
+          "period_order": 1,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "boundary_reason": "Awakening in Keigetsu's body changes body identity, environment, public identity, accessible knowledge, immediate goal, and execution risk.",
+      "boundary_status": "confirmed",
+      "id": "period-002",
+      "knowledge_boundary_order": 2,
+      "metadata": {},
+      "order": 2,
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    },
+    {
+      "boundary_reason": "Acquittal ends immediate execution risk and relocation changes environment, available autonomy, relationships, and active goals; the source window is too short to confirm lasting coherence.",
+      "boundary_status": "candidate",
+      "id": "period-003",
+      "knowledge_boundary_order": 3,
+      "metadata": {},
+      "order": 3,
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      }
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

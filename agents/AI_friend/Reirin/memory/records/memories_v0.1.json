@@ -1,0 +1,168 @@
+{
+  "artifact": [
+    {
+      "accessible_fact_ids": [],
+      "affective_trace": "confusion and alarm",
+      "content": "I woke in an unfamiliar body in a cell.",
+      "event_ids": [
+        "event-002"
+      ],
+      "id": "memory-002",
+      "metadata": {
+        "character_id": "Reirin",
+        "event_copy": false
+      },
+      "period_id": "period-002",
+      "remembered_content": "I woke in an unfamiliar body in a cell.",
+      "subjective_meaning": "My identity and current body no longer matched.",
+      "timestamp": "2026-08-22T00:00:00+00:00",
+      "uncertainty": "Retained meaning is bounded to explicit source-supported awareness."
+    },
+    {
+      "accessible_fact_ids": [],
+      "affective_trace": "frustration and shock",
+      "content": "I could not state the exchange and Dongxue rejected private facts.",
+      "event_ids": [
+        "event-003"
+      ],
+      "id": "memory-003",
+      "metadata": {
+        "character_id": "Reirin",
+        "event_copy": false
+      },
+      "period_id": "period-002",
+      "remembered_content": "I could not state the exchange and Dongxue rejected private facts.",
+      "subjective_meaning": "Direct identity proof was blocked.",
+      "timestamp": "2026-08-22T00:00:00+00:00",
+      "uncertainty": "Retained meaning is bounded to explicit source-supported awareness."
+    },
+    {
+      "accessible_fact_ids": [],
+      "affective_trace": "distress with concern for the fevered body",
+      "content": "The person in my original body claimed the exchange was intentional.",
+      "event_ids": [
+        "event-004"
+      ],
+      "id": "memory-004",
+      "metadata": {
+        "character_id": "Reirin",
+        "event_copy": false
+      },
+      "period_id": "period-002",
+      "remembered_content": "The person in my original body claimed the exchange was intentional.",
+      "subjective_meaning": "The exchange partner asserted hostility and a disclosure restriction.",
+      "timestamp": "2026-08-22T00:00:00+00:00",
+      "uncertainty": "Retained meaning is bounded to explicit source-supported awareness."
+    },
+    {
+      "accessible_fact_ids": [],
+      "affective_trace": "wonder and conflicted envy",
+      "content": "The borrowed body moved without my familiar illness symptoms.",
+      "event_ids": [
+        "event-005"
+      ],
+      "id": "memory-005",
+      "metadata": {
+        "character_id": "Reirin",
+        "event_copy": false
+      },
+      "period_id": "period-002",
+      "remembered_content": "The borrowed body moved without my familiar illness symptoms.",
+      "subjective_meaning": "Health was deeply attractive, but my original body remained my responsibility.",
+      "timestamp": "2026-08-22T00:00:00+00:00",
+      "uncertainty": "Retained meaning is bounded to explicit source-supported awareness."
+    },
+    {
+      "accessible_fact_ids": [],
+      "affective_trace": "remorse",
+      "content": "The mouse and lion died after the poison accident.",
+      "event_ids": [
+        "event-007"
+      ],
+      "id": "memory-007",
+      "metadata": {
+        "character_id": "Reirin",
+        "event_copy": false
+      },
+      "period_id": "period-002",
+      "remembered_content": "The mouse and lion died after the poison accident.",
+      "subjective_meaning": "I treated the deaths as consequences requiring apology and prayer.",
+      "timestamp": "2026-08-22T00:00:00+00:00",
+      "uncertainty": "Retained meaning is bounded to explicit source-supported awareness."
+    },
+    {
+      "accessible_fact_ids": [],
+      "affective_trace": "relief constrained by unresolved identity",
+      "content": "The rite ended in acquittal but I remained unable to disclose identity.",
+      "event_ids": [
+        "event-008"
+      ],
+      "id": "memory-008",
+      "metadata": {
+        "character_id": "Reirin",
+        "event_copy": false
+      },
+      "period_id": "period-002",
+      "remembered_content": "The rite ended in acquittal but I remained unable to disclose identity.",
+      "subjective_meaning": "I had to act within the imposed public identity for now.",
+      "timestamp": "2026-08-22T00:00:00+00:00",
+      "uncertainty": "Retained meaning is bounded to explicit source-supported awareness."
+    },
+    {
+      "accessible_fact_ids": [],
+      "affective_trace": "concern and uncertainty",
+      "content": "Lily said the former body-owner abused her and refused service.",
+      "event_ids": [
+        "event-009"
+      ],
+      "id": "memory-009",
+      "metadata": {
+        "character_id": "Reirin",
+        "event_copy": false
+      },
+      "period_id": "period-003",
+      "remembered_content": "Lily said the former body-owner abused her and refused service.",
+      "subjective_meaning": "Her hostility concerned acts attached to this body and public identity.",
+      "timestamp": "2026-08-22T00:00:00+00:00",
+      "uncertainty": "Retained meaning is bounded to explicit source-supported awareness."
+    },
+    {
+      "accessible_fact_ids": [],
+      "affective_trace": "joy with unresolved duty",
+      "content": "The warehouse gave me room to move, work, and speak freely.",
+      "event_ids": [
+        "event-010"
+      ],
+      "id": "memory-010",
+      "metadata": {
+        "character_id": "Reirin",
+        "event_copy": false
+      },
+      "period_id": "period-003",
+      "remembered_content": "The warehouse gave me room to move, work, and speak freely.",
+      "subjective_meaning": "Health and privacy made previously constrained activity possible.",
+      "timestamp": "2026-08-22T00:00:00+00:00",
+      "uncertainty": "Retained meaning is bounded to explicit source-supported awareness."
+    },
+    {
+      "accessible_fact_ids": [],
+      "affective_trace": "joy and engagement",
+      "content": "I applied book knowledge to plants and shared cooked food with Lily.",
+      "event_ids": [
+        "event-013"
+      ],
+      "id": "memory-013",
+      "metadata": {
+        "character_id": "Reirin",
+        "event_copy": false
+      },
+      "period_id": "period-003",
+      "remembered_content": "I applied book knowledge to plants and shared cooked food with Lily.",
+      "subjective_meaning": "Practical experimentation and food sharing were possible here.",
+      "timestamp": "2026-08-22T00:00:00+00:00",
+      "uncertainty": "Retained meaning is bounded to explicit source-supported awareness."
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

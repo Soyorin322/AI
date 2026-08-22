@@ -1,0 +1,84 @@
+{
+  "artifact": [
+    {
+      "event_id": "event-001",
+      "memory_id": null,
+      "outcome": "do_not_persist",
+      "reason": "The source supplies baseline state but no evidence of a distinct retained episode."
+    },
+    {
+      "event_id": "event-002",
+      "memory_id": "memory-002",
+      "outcome": "persist",
+      "reason": "Identity/body transition is directly experienced and remains active."
+    },
+    {
+      "event_id": "event-003",
+      "memory_id": "memory-003",
+      "outcome": "persist",
+      "reason": "Failed identity proof directly shapes her current constraint."
+    },
+    {
+      "event_id": "event-004",
+      "memory_id": "memory-004",
+      "outcome": "persist",
+      "reason": "The asserted motive and disclosure restriction become accessible knowledge."
+    },
+    {
+      "event_id": "event-005",
+      "memory_id": "memory-005",
+      "outcome": "persist",
+      "reason": "She explicitly compares body states and recalls responsibility."
+    },
+    {
+      "event_id": "event-006",
+      "memory_id": null,
+      "outcome": "do_not_persist",
+      "reason": "No later recall is shown within scope; its state evidence remains in Event/Evidence."
+    },
+    {
+      "event_id": "event-007",
+      "memory_id": "memory-007",
+      "outcome": "persist",
+      "reason": "She explicitly assumes responsibility for deaths and later prays."
+    },
+    {
+      "event_id": "event-008",
+      "memory_id": "memory-008",
+      "outcome": "persist",
+      "reason": "Acquittal and continued identity restriction determine subsequent action."
+    },
+    {
+      "event_id": "event-009",
+      "memory_id": "memory-009",
+      "outcome": "persist",
+      "reason": "Lily's direct account is accessible and defines the current relationship constraint."
+    },
+    {
+      "event_id": "event-010",
+      "memory_id": "memory-010",
+      "outcome": "persist",
+      "reason": "Reirin explicitly reflects on freedom, expression, and the exchange."
+    },
+    {
+      "event_id": "event-011",
+      "memory_id": null,
+      "outcome": "do_not_persist",
+      "reason": "Routine supply acquisition is retained as Event but no durable subjective meaning is shown."
+    },
+    {
+      "event_id": "event-012",
+      "memory_id": null,
+      "outcome": "do_not_persist",
+      "reason": "The event is inaccessible to Reirin in this source window."
+    },
+    {
+      "event_id": "event-013",
+      "memory_id": "memory-013",
+      "outcome": "persist",
+      "reason": "She explicitly names the joy of applying learned knowledge and engages Lily."
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

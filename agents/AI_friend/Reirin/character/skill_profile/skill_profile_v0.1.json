@@ -1,0 +1,34 @@
+{
+  "artifact": [
+    {
+      "canonical_proficiency": "high-quality demonstrated work within the festival comparison",
+      "id": "skill-profile-001",
+      "limitations": [
+        "No broader textile curriculum or professional standard is established."
+      ],
+      "origin": "canon_supported",
+      "period_id": "period-001",
+      "skill_evidence_ids": [
+        "skill-evidence-001"
+      ],
+      "skill_id": "embroidery",
+      "uncertainty": "Bystander superlatives are not treated as a formal proficiency scale."
+    },
+    {
+      "canonical_proficiency": "multiple basic tasks demonstrated successfully in one warehouse interval",
+      "id": "skill-profile-002",
+      "limitations": [
+        "Short observation window; no expert agronomy or culinary level is established."
+      ],
+      "origin": "canon_supported",
+      "period_id": "period-003",
+      "skill_evidence_ids": [
+        "skill-evidence-002"
+      ],
+      "skill_id": "practical-cultivation-and-food-preparation",
+      "uncertainty": "Demonstration combines book-derived knowledge with one observed implementation context."
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

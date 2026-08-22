@@ -1,0 +1,456 @@
+{
+  "artifact": [
+    {
+      "domains": {
+        "backstory": {
+          "event_ids": [
+            "event-001"
+          ],
+          "evidence_ids": [
+            "evidence-002"
+          ],
+          "state": "observed",
+          "statements": [
+            "Her mother died near her birth and her family responds to her frailty with intensive protection."
+          ],
+          "uncertainty": null
+        },
+        "conflict": {
+          "event_ids": [],
+          "evidence_ids": [],
+          "state": "insufficient_evidence",
+          "statements": [],
+          "uncertainty": null
+        },
+        "emotion": {
+          "event_ids": [],
+          "evidence_ids": [],
+          "state": "insufficient_evidence",
+          "statements": [],
+          "uncertainty": null
+        },
+        "growth": {
+          "event_ids": [],
+          "evidence_ids": [],
+          "state": "not_applicable",
+          "statements": [],
+          "uncertainty": null
+        },
+        "motivation": {
+          "event_ids": [],
+          "evidence_ids": [],
+          "state": "insufficient_evidence",
+          "statements": [],
+          "uncertainty": null
+        },
+        "personality": {
+          "event_ids": [
+            "event-001"
+          ],
+          "evidence_ids": [
+            "evidence-001",
+            "evidence-002"
+          ],
+          "state": "bounded_inference",
+          "statements": [
+            "Within the public pre-swap setting, Reirin is presented as polite and socially esteemed; direct behavioral coverage is limited."
+          ],
+          "uncertainty": "Some praise originates in bystander speech."
+        },
+        "physical": {
+          "event_ids": [
+            "event-001"
+          ],
+          "evidence_ids": [
+            "evidence-002"
+          ],
+          "state": "observed",
+          "statements": [
+            "Character identity and body identity are both 黃玲琳; the original body is severely and recurrently frail."
+          ],
+          "uncertainty": null
+        },
+        "relationships": {
+          "event_ids": [
+            "event-001"
+          ],
+          "evidence_ids": [
+            "evidence-002"
+          ],
+          "state": "observed",
+          "statements": [
+            "Narration places her in a close, protective family network and as Yaoming's favored future partner; her private interpretation is not established."
+          ],
+          "uncertainty": "Relationship description is narrator-level, not a complete subjective relationship model."
+        }
+      },
+      "id": "period-state-001",
+      "knowledge_boundary": {
+        "accessible_fact_ids": [
+          "fact-own-identity",
+          "fact-original-body-frailty",
+          "fact-public-role"
+        ],
+        "as_of_period_order": 1,
+        "excluded_fact_ids": []
+      },
+      "period_id": "period-001",
+      "status": "candidate",
+      "supporting_event_ids": [
+        "event-001"
+      ],
+      "supporting_evidence_ids": [
+        "evidence-001",
+        "evidence-002"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "pre-swap protected life through tower fall",
+        "metadata": {
+          "period_order": 1,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": "Only one pre-swap event unit is directly represented."
+    },
+    {
+      "domains": {
+        "backstory": {
+          "event_ids": [
+            "event-005"
+          ],
+          "evidence_ids": [
+            "evidence-004"
+          ],
+          "state": "observed",
+          "statements": [
+            "She recalls frequent severe illness and sustained self-management before the exchange."
+          ],
+          "uncertainty": null
+        },
+        "conflict": {
+          "event_ids": [
+            "event-005"
+          ],
+          "evidence_ids": [
+            "evidence-004"
+          ],
+          "state": "observed",
+          "statements": [
+            "She is drawn to the borrowed body's health while explicitly maintaining duty to her original body and identity."
+          ],
+          "uncertainty": null
+        },
+        "emotion": {
+          "event_ids": [
+            "event-004",
+            "event-005",
+            "event-007"
+          ],
+          "evidence_ids": [
+            "evidence-004",
+            "evidence-006",
+            "evidence-007"
+          ],
+          "state": "observed",
+          "statements": [
+            "She expresses distress and tears at intense hatred, surprise and envy at health, and subdued remorse over animal deaths."
+          ],
+          "uncertainty": null
+        },
+        "growth": {
+          "event_ids": [
+            "event-003",
+            "event-008"
+          ],
+          "evidence_ids": [
+            "evidence-003",
+            "evidence-006"
+          ],
+          "state": "bounded_inference",
+          "statements": [
+            "Within this emergency period she adapts from failed identity proof to acting within the imposed public identity."
+          ],
+          "uncertainty": "Persistence beyond the immediate constraint is unknown."
+        },
+        "motivation": {
+          "event_ids": [
+            "event-003",
+            "event-005",
+            "event-007",
+            "event-008"
+          ],
+          "evidence_ids": [
+            "evidence-004",
+            "evidence-006"
+          ],
+          "state": "observed",
+          "statements": [
+            "She attempts to communicate her identity, survive the imposed process, and preserve responsibility toward her original body and harmed animals."
+          ],
+          "uncertainty": null
+        },
+        "personality": {
+          "event_ids": [
+            "event-003",
+            "event-006",
+            "event-007",
+            "event-008"
+          ],
+          "evidence_ids": [
+            "evidence-005",
+            "evidence-006",
+            "evidence-007"
+          ],
+          "state": "bounded_inference",
+          "statements": [
+            "Across confinement and the rite, Reirin uses deliberate action and remains composed under physical danger while taking responsibility for concrete harm."
+          ],
+          "uncertainty": "This does not establish universal fearlessness or emotional invulnerability."
+        },
+        "physical": {
+          "event_ids": [
+            "event-002",
+            "event-005"
+          ],
+          "evidence_ids": [
+            "evidence-003",
+            "evidence-004"
+          ],
+          "state": "observed",
+          "statements": [
+            "Character identity remains 黃玲琳 while current body identity is 朱慧月; she experiences the current body as markedly healthy while her original body is fever-prone."
+          ],
+          "uncertainty": null
+        },
+        "relationships": {
+          "event_ids": [
+            "event-003",
+            "event-004",
+            "event-006",
+            "event-008"
+          ],
+          "evidence_ids": [
+            "evidence-003"
+          ],
+          "state": "observed",
+          "statements": [
+            "Dongxue and Yaoming reject her identity claim; Keigetsu is an adversarial exchange partner; Chenyu begins reassessing the person publicly identified as Keigetsu."
+          ],
+          "uncertainty": "Chenyu's private thoughts are story-level and not included as Reirin knowledge."
+        }
+      },
+      "id": "period-state-002",
+      "knowledge_boundary": {
+        "accessible_fact_ids": [
+          "fact-own-identity",
+          "fact-body-swapped",
+          "fact-disclosure-blocked",
+          "fact-keigetsu-claimed-intent"
+        ],
+        "as_of_period_order": 2,
+        "excluded_fact_ids": []
+      },
+      "period_id": "period-002",
+      "status": "candidate",
+      "supporting_event_ids": [
+        "event-002",
+        "event-003",
+        "event-004",
+        "event-005",
+        "event-006",
+        "event-007",
+        "event-008"
+      ],
+      "supporting_evidence_ids": [
+        "evidence-003",
+        "evidence-004",
+        "evidence-005",
+        "evidence-006",
+        "evidence-007"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-swap confinement and beast-seeking adjudication",
+        "metadata": {
+          "period_order": 2,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": "Adversarial testimony and derived speaker labels are retained with bounded certainty."
+    },
+    {
+      "domains": {
+        "backstory": {
+          "event_ids": [],
+          "evidence_ids": [],
+          "state": "unchanged",
+          "statements": [],
+          "uncertainty": null
+        },
+        "conflict": {
+          "event_ids": [
+            "event-010",
+            "event-013"
+          ],
+          "evidence_ids": [
+            "evidence-014"
+          ],
+          "state": "observed",
+          "statements": [
+            "She enjoys the bodily freedom and warehouse life while remembering that the exchange arose from another person's hatred and remains unresolved."
+          ],
+          "uncertainty": null
+        },
+        "emotion": {
+          "event_ids": [
+            "event-010",
+            "event-013"
+          ],
+          "evidence_ids": [
+            "evidence-009"
+          ],
+          "state": "observed",
+          "statements": [
+            "She explicitly expresses joy, excitement, and relief at freedom, privacy, food, and bodily capacity."
+          ],
+          "uncertainty": null
+        },
+        "growth": {
+          "event_ids": [
+            "event-001",
+            "event-010",
+            "event-011",
+            "event-013"
+          ],
+          "evidence_ids": [
+            "evidence-009",
+            "evidence-010",
+            "evidence-011",
+            "evidence-015"
+          ],
+          "state": "bounded_inference",
+          "statements": [
+            "Relative to the protected pre-swap baseline, visible expression and independent activity expand under the healthy body and unsupervised environment."
+          ],
+          "uncertainty": "Health, privacy, novelty, and situational necessity are competing explanations."
+        },
+        "motivation": {
+          "event_ids": [
+            "event-010",
+            "event-011",
+            "event-013"
+          ],
+          "evidence_ids": [
+            "evidence-010",
+            "evidence-013"
+          ],
+          "state": "observed",
+          "statements": [
+            "She pursues self-sufficient living, practical cultivation, food preparation, and limited rather than comprehensive outside aid."
+          ],
+          "uncertainty": null
+        },
+        "personality": {
+          "event_ids": [
+            "event-009",
+            "event-011",
+            "event-013"
+          ],
+          "evidence_ids": [
+            "evidence-008",
+            "evidence-010",
+            "evidence-013",
+            "evidence-015"
+          ],
+          "state": "bounded_inference",
+          "statements": [
+            "In the warehouse context Reirin acts politely, practically, and with marked self-direction."
+          ],
+          "uncertainty": "The short period cannot establish a stable lifetime trait."
+        },
+        "physical": {
+          "event_ids": [
+            "event-010",
+            "event-011",
+            "event-013"
+          ],
+          "evidence_ids": [
+            "evidence-009",
+            "evidence-010",
+            "evidence-013"
+          ],
+          "state": "observed",
+          "statements": [
+            "Character identity remains 黃玲琳 in 朱慧月's healthy body, enabling sustained movement, eating, and manual work not available in her original body."
+          ],
+          "uncertainty": null
+        },
+        "relationships": {
+          "event_ids": [
+            "event-009",
+            "event-011",
+            "event-013"
+          ],
+          "evidence_ids": [
+            "evidence-008",
+            "evidence-010",
+            "evidence-013"
+          ],
+          "state": "observed",
+          "statements": [
+            "Lily is openly hostile and reports prior abuse by the former body-owner; Reirin responds with attention, food sharing, and a constrained identity hint. Chenyu supplies basic necessities after her limited request."
+          ],
+          "uncertainty": "Lily's private inducement remains excluded from Reirin-accessible state."
+        }
+      },
+      "id": "period-state-003",
+      "knowledge_boundary": {
+        "accessible_fact_ids": [
+          "fact-own-identity",
+          "fact-body-swapped",
+          "fact-warehouse-exile",
+          "fact-lily-hostility",
+          "fact-basic-supplies"
+        ],
+        "as_of_period_order": 3,
+        "excluded_fact_ids": [
+          "fact-lily-private-inducement"
+        ]
+      },
+      "period_id": "period-003",
+      "status": "candidate",
+      "supporting_event_ids": [
+        "event-009",
+        "event-010",
+        "event-011",
+        "event-012",
+        "event-013"
+      ],
+      "supporting_evidence_ids": [
+        "evidence-008",
+        "evidence-009",
+        "evidence-010",
+        "evidence-011",
+        "evidence-012",
+        "evidence-013",
+        "evidence-014",
+        "evidence-015"
+      ],
+      "temporal_scope": {
+        "end": null,
+        "label": "post-acquittal warehouse relocation and initial self-sufficient living",
+        "metadata": {
+          "period_order": 3,
+          "source_scope": "first-three-chapters-only"
+        },
+        "start": null
+      },
+      "uncertainty": "This candidate period covers only the initial relocation interval."
+    }
+  ],
+  "artifact_version": "Reirin-v0.1",
+  "schema_version": "0.0.8"
+}

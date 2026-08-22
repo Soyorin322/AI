@@ -1,0 +1,188 @@
+{
+  "schema_version": "story-processing-v0.1",
+  "artifact_version": "volume-04-v0.1",
+  "observations": [
+    {
+      "id": "v04-observation-001",
+      "source_locator": {"chapter": "序章", "anchor": "藍芳林與皇后絹秀下棋"},
+      "statement": "藍芳林在與皇后絹秀下棋時，外在表現順從可親，內心則明確把示弱、輸棋與討好視為操控形象和權力關係的手段。",
+      "source_mode": "narration_plus_inner_thought",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-002",
+      "source_locator": {"chapter": "序章", "anchor": "芳林想到交給芳春的計畫"},
+      "statement": "芳林把芳春視為可操控的棋子，並期待自己安排的計畫使黃家與玲琳受損。",
+      "source_mode": "inner_thought",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-003",
+      "source_locator": {"chapter": "第1章 玲琳，治療", "anchor": "玲琳在邑中照顧患者"},
+      "statement": "玲琳留在邑中參與患者照護、藥草與衛生處置，並在高負荷環境下持續行動。",
+      "source_mode": "narration_and_action",
+      "uncertainty": "本 v0.1 對第1章的醫療步驟只保留故事層概要，不推導專業醫療能力等級。"
+    },
+    {
+      "id": "v04-observation-004",
+      "source_locator": {"chapter": "第1章 玲琳，治療", "anchor": "雲嵐傷病惡化"},
+      "statement": "雲嵐的傷病狀態惡化，玲琳持續嘗試治療並承受明顯的體力與情緒壓力。",
+      "source_mode": "narration_and_action",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-005",
+      "source_locator": {"chapter": "第2章 慧月，舉辦茶會", "anchor": "慧月決定在茶會應對芳春"},
+      "statement": "慧月在黃玲琳的身體中主持茶會，並把防止藍芳春操縱輿論作為當前目標。",
+      "source_mode": "narration_plus_inner_thought",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-006",
+      "source_locator": {"chapter": "第2章 慧月，舉辦茶會", "anchor": "芳春談及慧月與媚藥"},
+      "statement": "芳春在茶會中向其他雛女散布朱慧月計畫使用媚藥等說法，並以膽怯、勸解的外在姿態逐步引導他人形成負面推論。",
+      "source_mode": "dialogue_plus_narration",
+      "uncertainty": "芳春所述內容包含虛構與操控性敘述；Observation 記錄的是她說了什麼與對話如何發展，不把其陳述當成客觀事實。"
+    },
+    {
+      "id": "v04-observation-007",
+      "source_locator": {"chapter": "第2章 慧月，舉辦茶會", "anchor": "慧月以黃玲琳身份追問不存在的媚藥細節"},
+      "statement": "慧月故意提出不存在的細節，引導芳春公開肯定，藉此取得可用來檢驗芳春說法真偽的矛盾點。",
+      "source_mode": "dialogue_plus_inner_thought",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-008",
+      "source_locator": {"chapter": "第2章 慧月，舉辦茶會", "anchor": "堯明決定渡河前往邑"},
+      "statement": "堯明在取得景行以信鴿傳回的情報後，決定秘密渡河前往邑支援玲琳等人，並要求慧月同行以使用炎術聯絡。",
+      "source_mode": "dialogue_and_action",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-009",
+      "source_locator": {"chapter": "第2章 慧月，舉辦茶會", "anchor": "景彰模仿堯明聲音"},
+      "statement": "景彰能模仿堯明的聲音，並被安排在屏風後代替堯明對外傳話，以維持堯明仍在原地的表象。",
+      "source_mode": "dialogue_and_demonstration",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-010",
+      "source_locator": {"chapter": "第3章 玲琳，流淚", "anchor": "玲琳說等待死亡很可怕"},
+      "statement": "面對雲嵐可能死亡，玲琳明確表達恐懼與痛苦，並一度希望讓雲嵐盡快從痛苦中解脫。",
+      "source_mode": "dialogue_plus_emotional_behavior",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-011",
+      "source_locator": {"chapter": "第3章 玲琳，流淚", "anchor": "堯明安慰玲琳並指出雲嵐仍在戰鬥"},
+      "statement": "堯明安慰玲琳，並以自己面對重視之人病痛的經驗勸她不要先替雲嵐放棄。",
+      "source_mode": "dialogue_and_action",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-012",
+      "source_locator": {"chapter": "第3章 玲琳，流淚", "anchor": "雲嵐恢復意識並嫌聲音吵"},
+      "statement": "雲嵐恢復了足以作出反應與發聲的意識，玲琳因而重新產生希望。",
+      "source_mode": "dialogue_and_action",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-013",
+      "source_locator": {"chapter": "第3章 玲琳，流淚", "anchor": "玲琳以替換賭約請求堯明援助"},
+      "statement": "玲琳指出堯明再次沒有識破身體替換，並依賭約要求他原諒替換期間的行動且協助拯救邑。",
+      "source_mode": "dialogue",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-014",
+      "source_locator": {"chapter": "第4章 慧月，擔心", "anchor": "慧月衝進儲備庫要玲琳復仇"},
+      "statement": "慧月看到玲琳崩潰後，以強烈語氣要求她重新站起來，並承諾用道術幫助她反擊加害者。",
+      "source_mode": "dialogue_action_inner_motivation",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-015",
+      "source_locator": {"chapter": "第4章 慧月，擔心", "anchor": "玲琳接受慧月幫助並轉入作戰會議"},
+      "statement": "玲琳立即接受慧月的協助，之後與堯明、慧月、景行、辰宇及邑民交換情報並準備次日行動。",
+      "source_mode": "dialogue_and_narration",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-016",
+      "source_locator": {"chapter": "第5章 玲琳，打倒", "anchor": "江氏與藍林熙率先遣隊前往邑"},
+      "statement": "江氏與藍林熙帶領先遣隊前往邑，並在內部計畫中預期利用疫病、焚邑與封口來消除風險。",
+      "source_mode": "narration_plus_private_dialogue_plus_inner_thought",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-017",
+      "source_locator": {"chapter": "第5章 玲琳，打倒", "anchor": "江氏不知道屏風後皇太子是景彰"},
+      "statement": "江氏把屏風後的傳話者當成皇太子本人，並不知道景彰正在以模仿聲音維持偽裝。",
+      "source_mode": "narration",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-018",
+      "source_locator": {"chapter": "第5章 玲琳，打倒", "anchor": "先遣隊抵達邑卻看不到預期的大量病人"},
+      "statement": "先遣隊抵達邑後發現環境已被清理、患者不再呈現預期的大規模失控狀態，與江氏原先期待的災情不符。",
+      "source_mode": "narration_and_perception",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-019",
+      "source_locator": {"chapter": "第5章 玲琳，打倒", "anchor": "堯明主持祈禱後天候劇變"},
+      "statement": "堯明在豐饒祭情境中祈禱，現場隨後出現強風、暴雨、雷電與迅速放晴等劇烈天候變化。",
+      "source_mode": "narration_and_public_action",
+      "uncertainty": "記錄事件順序與公開可觀察現象，不在 story processing 層判定超自然因果機制。"
+    },
+    {
+      "id": "v04-observation-020",
+      "source_locator": {"chapter": "第5章 玲琳，打倒", "anchor": "雲嵐與江氏傷口位置發生變化"},
+      "statement": "眾人觀察到雲嵐原有腹部傷勢消失，同時江氏腹部出現嚴重傷口；現場百姓把此事理解為神意與懲罰。",
+      "source_mode": "public_observation_plus_crowd_interpretation",
+      "uncertainty": "客觀可記錄的是傷勢狀態變化及現場反應；神意屬角色/群體解釋。"
+    },
+    {
+      "id": "v04-observation-021",
+      "source_locator": {"chapter": "第5章 玲琳，打倒", "anchor": "堯明撤除江氏並廢止歧視邑的制度"},
+      "statement": "堯明公開撤除江氏鄉長職位，宣布廢止不合理稅收與歧視邑民的規定，並否定把邑民稱為賤民。",
+      "source_mode": "public_declaration",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-022",
+      "source_locator": {"chapter": "第5章 玲琳，打倒", "anchor": "堯明與藍林熙對峙"},
+      "statement": "事件收束後，堯明直接處理江氏並轉向藍林熙；林熙的平常從容明顯動搖。",
+      "source_mode": "dialogue_and_narration",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-023",
+      "source_locator": {"chapter": "尾聲", "anchor": "玲琳與芳春在梨園交談"},
+      "statement": "回宮後，玲琳與芳春以表面禮貌的方式交談；慧月從旁辨識出雙方話語中的敵意與攻防。",
+      "source_mode": "dialogue_plus_huiyue_interpretation",
+      "uncertainty": "慧月對話語潛台詞的解讀是慧月的 interpretation，不等同於每一句話的客觀唯一含義。"
+    },
+    {
+      "id": "v04-observation-024",
+      "source_locator": {"chapter": "尾聲", "anchor": "玲琳提出柳雲與土地安排"},
+      "statement": "玲琳利用柳雲土地與地契安排對芳春施加壓力，芳春罕見地顯露出明顯動搖。",
+      "source_mode": "dialogue_and_action",
+      "uncertainty": null
+    },
+    {
+      "id": "v04-observation-025",
+      "source_locator": {"chapter": "尾聲", "anchor": "玲琳說要進一步修鍊成惡女"},
+      "statement": "玲琳在事件後把提升自己對付惡意與反擊能力描述為要進一步修鍊成惡女。",
+      "source_mode": "dialogue",
+      "uncertainty": "這是當下自我表述，不在 story processing 層升格為永久人格。"
+    },
+    {
+      "id": "v04-observation-026",
+      "source_locator": {"chapter": "尾聲", "anchor": "絹秀書寫柳雲地契並回想玲琳"},
+      "statement": "絹秀在書寫與柳雲相關的地契時，私下評估玲琳在外游後學會憤怒、厭惡與反擊，並把這些變化看作玲琳形成更堅定自我的一部分。",
+      "source_mode": "juanxiu_inner_thought",
+      "uncertainty": "這是絹秀的私人評價，不是玲琳自知或客觀人格結論。"
+    }
+  ]
+}

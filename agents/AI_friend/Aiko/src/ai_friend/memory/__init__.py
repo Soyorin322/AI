@@ -1,4 +1,12 @@
-from ai_friend.memory.interfaces import MemoryStore
-from ai_friend.memory.models import MemoryRecord
+from ai_friend.memory.interfaces import MemoryFormationPolicy, MemoryStore
+from ai_friend.memory.models import (
+    MemoryFormationDecision,
+    MemoryFormationOutcome,
+    MemoryIndexMetadata,
+    MemoryRecord,
+)
 
-__all__ = ["MemoryRecord", "MemoryStore"]
+__all__ = [
+    "MemoryFormationDecision", "MemoryFormationOutcome", "MemoryFormationPolicy",
+    "MemoryIndexMetadata", "MemoryRecord", "MemoryStore",
+]

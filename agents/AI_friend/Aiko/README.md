@@ -11,10 +11,11 @@ context is a selected view for a replaceable reasoning engine, not canonical
 character storage or a static character card.
 
 The framework also includes an evidence-grounded Character Reconstruction
-foundation. It keeps sources, observations, events, evidence, claims, and
-versioned character-state snapshots distinct and traceable through provenance.
-Reconstruction persistence is replaceable and remains isolated from conversational
-Runtime. No real character instance or automatic extraction pipeline is included.
+framework. It enforces exact source grounding and keeps observations, single-copy
+events, period assignments, eight-domain period states, cross-period development,
+memories, skill profiles, and compiled state distinct and traceable. Reconstruction
+persistence is replaceable and isolated from conversational Runtime. No real
+character instance or automatic extraction pipeline is included.
 
 ## Install
 
@@ -36,6 +37,8 @@ python -m ai_friend
 python -m pytest
 ```
 
-See [docs/architecture.md](docs/architecture.md) for design boundaries and
-extension points, and [docs/reconstruction.md](docs/reconstruction.md) for the
-Task 003 reconstruction contracts.
+See [character_create_v0.0.8](docs/architecture/character_create_v0.0.8.txt) for
+the current architecture, [folder ownership](docs/folder_ownership.md) for
+mandatory artifact routing, and [reconstruction](docs/reconstruction.md) plus
+[schema docs](docs/schemas/) for contracts. Real character sources and instances
+belong outside Aiko.

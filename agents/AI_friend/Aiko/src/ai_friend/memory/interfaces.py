@@ -1,6 +1,13 @@
 from abc import ABC, abstractmethod
 
-from ai_friend.memory.models import MemoryRecord
+from ai_friend.memory.models import MemoryFormationDecision, MemoryRecord
+
+
+class MemoryFormationPolicy(ABC):
+    """Replaceable decision boundary; no retention algorithm is mandated."""
+
+    @abstractmethod
+    def decide(self, event_id: str) -> MemoryFormationDecision: ...
 
 
 class MemoryStore(ABC):
@@ -14,4 +21,3 @@ class MemoryStore(ABC):
 
     @abstractmethod
     def search(self, query: str) -> list[MemoryRecord]: ...
-

@@ -1,0 +1,184 @@
+Task 005 已完成。Aiko 現在具備明確的 folder ownership、跨階段 contracts、validation gates、portable JSON serialization，以及完全虛構的端到端測試。
+
+## 1. 新增檔案
+
+- [folder_ownership.md](/C:/AI/agents/AI_friend/Aiko/docs/folder_ownership.md)
+- [character_state.md](/C:/AI/agents/AI_friend/Aiko/docs/schemas/character_state.md)
+- [memory.md](/C:/AI/agents/AI_friend/Aiko/docs/schemas/memory.md)
+- [skills.md](/C:/AI/agents/AI_friend/Aiko/docs/schemas/skills.md)
+- [character/reconstruction.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/character/reconstruction.py)
+- [reconstruction/hardening.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/reconstruction/hardening.py)
+- [reconstruction/serialization.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/reconstruction/serialization.py)
+- [test_reconstruction_hardening.py](/C:/AI/agents/AI_friend/Aiko/tests/test_reconstruction_hardening.py)
+
+## 2. 修改檔案
+
+- [AGENTS.md](/C:/AI/agents/AI_friend/Aiko/AGENTS.md)
+- [README.md](/C:/AI/agents/AI_friend/Aiko/README.md)
+- [docs/reconstruction.md](/C:/AI/agents/AI_friend/Aiko/docs/reconstruction.md)
+- [docs/schemas/reconstruction.md](/C:/AI/agents/AI_friend/Aiko/docs/schemas/reconstruction.md)
+- [character/__init__.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/character/__init__.py)
+- [memory/__init__.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/memory/__init__.py)
+- [memory/interfaces.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/memory/interfaces.py)
+- [memory/models.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/memory/models.py)
+- [reconstruction/__init__.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/reconstruction/__init__.py)
+- [reconstruction/models.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/reconstruction/models.py)
+- [reconstruction/validation.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/reconstruction/validation.py)
+- [skills/__init__.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/skills/__init__.py)
+- [skills/interfaces.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/skills/interfaces.py)
+- [skills/models.py](/C:/AI/agents/AI_friend/Aiko/src/ai_friend/skills/models.py)
+- [test_reconstruction.py](/C:/AI/agents/AI_friend/Aiko/tests/test_reconstruction.py)
+
+工作樹中原有的 Task 004 移動及 Task 005 task 文件狀態未由本次實作修改。
+
+## 3. Folder ownership 決策
+
+主要 ownership 已固定為：
+
+- `reconstruction/`：Source、SourceUnit、Observation、單一 Event、Evidence、Period Definition／Assignment、provenance、workflow validation。
+- `character/`：八 Domain Period State、cross-period Development、Compiled State、Character Skill Profile。
+- `memory/`：Event-referencing Memory、formation decision、retrieval metadata；不保存 Event 副本。
+- `skills/`：Capability protocol、registry、runtime capability；不擁有 canonical proficiency。
+- 根目錄 `Aiko/skills/`：可重用的 `SKILL.md` capability resources。
+- `knowledge/`：角色可存取的世界／技術資訊。
+- `runtime/`：協調及 ephemeral context，不擁有 canonical data。
+- `characters/`：僅供模板或 synthetic fixture，不是真實角色 instance。
+- Relationship ownership繼續保持 unresolved，未新增獨立 subsystem。
+
+完整矩陣與 artifact routing table 位於 [folder_ownership.md](/C:/AI/agents/AI_friend/Aiko/docs/folder_ownership.md)。
+
+## 4. 新增 contracts
+
+新增：
+
+- `SourceUnitGrounding`
+- `PeriodDefinition`
+- `PeriodAssignment`
+- `BoundaryStatus`
+- `TraitDomain`
+- `DomainEvidenceState`
+- `DomainEntry`
+- `PeriodDomains`
+- `KnowledgeBoundary`
+- `PeriodCharacterState`
+- `ChangeResistance`
+- `HistoricalAdaptation`
+- `CausalHypothesis`
+- `AccessibilityProfile`
+- `HabitualProcessingPattern`
+- `DevelopmentRecord`
+- `SkillEvidence`
+- `CharacterSkillProfile`
+- `SkillAcquisitionOrigin`
+- `CompiledStateEntry`
+- `CompiledCharacterState`
+- `MemoryFormationDecision`
+- `MemoryFormationOutcome`
+- `MemoryIndexMetadata`
+- `MemoryFormationPolicy`
+- `CapabilitySkill`
+- `RuntimeCapability`
+- `ReconstructionGraph`
+
+## 5. 沿用的 Task 003 contracts
+
+保留並重用：
+
+- `TemporalScope`
+- `SourceReference`
+- `SourceUnit`
+- `ObservationRecord`
+- `EventRecord`
+- `EvidenceRecord`
+- `CharacterClaim`
+- `CharacterStateSnapshot`
+- `ReconstructionBundle`
+- `Lineage`
+- `ArtifactStatus`
+- `StatusTransition`
+- provenance traversal
+- status-transition validation
+- circularity protection
+- repository與pipeline abstractions
+
+## 6. 修改的 Task 003 contracts
+
+有三項刻意修正：
+
+- `SourceReference` 新增明確的 `approved` 狀態。
+- `SourceUnit` 新增 `grounding` 與 `integrity_hash`；未標記內容現在無法通過 validation。
+- `EventRecord` 新增 objective facts、character-accessible information、participants、statements、behavior、outcome、uncertainty 等可選欄位。
+- `ReconstructionBundle` 新增 Period Definition／Assignment collections。
+
+原因是 v0.0.8 明確要求 approved source boundary、exact-span grounding、Event single source of truth，以及不可跳過 Period Assignment。
+
+既有 Task 003 synthetic tests 已更新為明確 approved、exact-text source，原有 provenance/status 行為保持不變。
+
+## 7. Validation rules
+
+已自動檢查：
+
+- approved Source 與 reference-note 排除。
+- exact SourceUnit／immutable exact-span reference。
+- locator、integrity hash 與 content mode。
+- 全圖 ID 唯一性、missing reference、self-reference、cycle與parent type。
+- Event 必須源自 Observation、具 temporal scope，且不得宣告 persistent trait。
+- Event 不可重複分配或複製成 domain-specific Event。
+- Period order、assignment與candidate boundary。
+- 八 Domain slots 與明確 abstention state。
+- evidence-bearing domain 不得沒有 Event／Evidence。
+- earlier Period 禁止引用 later-period Event。
+- Development 必須跨多個 Period State。
+- confidence 與 change resistance 保持獨立。
+- Causal Hypothesis 必須保留 evidence、uncertainty、alternative hypothesis或counterevidence。
+- Memory 必須引用 Event，且不得嵌入第二份 objective Event。
+- Memory temporal compatibility與可存取資訊邊界。
+- canonical skill proficiency 必須有 SkillEvidence。
+- RuntimeCapability 不得改寫 CharacterSkillProfile。
+- Compiled State 必須具有版本資訊並追溯至 Period／Development。
+- deterministic portable JSON envelope。
+
+## 8. Synthetic tests
+
+測試角色是完全虛構的 `Mira`，只有三個微型 Event、兩個 Period、一個 persistent Memory、一個未形成 Memory 的 Event、一個 skill profile、一個 unresolved development hypothesis及一個 compiled state。
+
+它驗證：
+
+- 同一 Event 支援多個 Domain 但只存一次。
+- 一個 Domain 保留 `insufficient_evidence`。
+- candidate Period boundary。
+- 多 Period development。
+- causal uncertainty與alternative。
+- Memory形成與不形成。
+- canonical skill／runtime capability分離。
+- compiled-to-period provenance。
+- deterministic serialization。
+- reference note不能成為 canonical evidence。
+
+## 9. Test results
+
+- 完整測試套件：`27 passed`
+- 既有 Task 003／runtime／store／skill tests：全部通過
+- 新增 Task 005 synthetic tests：全部通過
+- `python -m ai_friend` CLI smoke test：通過
+- `git diff --check`：無 patch whitespace error
+
+## 10. 刻意保持 unresolved
+
+未決且未擴大實作：
+
+- 永久 Relationship subsystem ownership。
+- 人格評分與consolidation threshold。
+- change-resistance計分公式。
+- confidence-to-resistance映射。
+- Causal Formation判定算法。
+- Memory retention／salience算法。
+- Appraisal／Event Interpretation engine。
+- production LLM、vector DB、RAG或memory backend。
+- 真正 capability skill packs。
+- post-canon skill-learning更新算法。
+- filesystem/database canonical persistence選型。
+
+## 11. 真實角色資料確認
+
+本次沒有讀取、分析、引用或重建任何 Reirin／Sakiko 真實角色資料，沒有開啟或修改 `agents/AI_friend/Reirin/`，也沒有在 Aiko 加入任何角色-specific canonical data。

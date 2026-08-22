@@ -6,6 +6,7 @@ from ai_friend.reconstruction.models import (
     CharacterStateSnapshot,
     EvidenceRecord,
     ReconstructionBundle,
+    SourceUnitGrounding,
 )
 
 
@@ -45,6 +46,23 @@ def validate_bundle(bundle: ReconstructionBundle) -> ValidationReport:
     derived_items = [artifact for collection in collections for artifact in collection]
 
     all_ids = [*sources, *units, *(artifact.id for artifact in derived_items)]
+    for source in bundle.sources:
+        if not source.approved:
+            issues.append(
+                ValidationIssue(
+                    "unapproved_source",
+                    f"source {source.id} is not explicitly approved",
+                    source.id,
+                )
+            )
+        if source.metadata.get("source_role") == "reference_note":
+            issues.append(
+                ValidationIssue(
+                    "reference_note_as_source",
+                    f"source {source.id} is a navigation note, not canonical evidence",
+                    source.id,
+                )
+            )
     for artifact_id in sorted({item for item in all_ids if all_ids.count(item) > 1}):
         issues.append(ValidationIssue("duplicate_id", f"duplicate artifact id: {artifact_id}", artifact_id))
 
@@ -52,6 +70,32 @@ def validate_bundle(bundle: ReconstructionBundle) -> ValidationReport:
         if unit.source_id not in sources:
             issues.append(
                 ValidationIssue("missing_source", f"source unit {unit.id} references missing source {unit.source_id}", unit.id)
+            )
+        if unit.grounding is None:
+            issues.append(
+                ValidationIssue(
+                    "unmarked_source_unit",
+                    f"source unit {unit.id} must declare exact-text or immutable-reference grounding",
+                    unit.id,
+                )
+            )
+        elif not unit.locator or not unit.integrity_hash:
+            issues.append(
+                ValidationIssue(
+                    "incomplete_source_grounding",
+                    f"source unit {unit.id} requires an exact locator and integrity hash",
+                    unit.id,
+                )
+            )
+        elif unit.grounding is SourceUnitGrounding.EXACT_TEXT and not unit.content:
+            issues.append(ValidationIssue("missing_exact_text", f"source unit {unit.id} has no exact text", unit.id))
+        elif unit.grounding is SourceUnitGrounding.IMMUTABLE_EXACT_SPAN_REFERENCE and unit.content:
+            issues.append(
+                ValidationIssue(
+                    "reference_contains_derived_content",
+                    f"immutable source unit reference {unit.id} must not contain derived prose",
+                    unit.id,
+                )
             )
 
     derived = {artifact.id: artifact for artifact in derived_items}

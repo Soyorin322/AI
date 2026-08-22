@@ -601,3 +601,43 @@ A change is complete when:
 - relevant tests pass, or failures are clearly explained.
 
 When uncertain between a complex implementation and a minimal replaceable one, choose the minimal replaceable one.
+
+---
+
+## Character reconstruction stage and folder guardrails
+
+Use `docs/folder_ownership.md` as the implementation routing contract. If a new
+artifact does not fit its matrix, document the ownership gap before creating a
+location. Real character data belongs in `character_data/<Character>/` and
+`agents/AI_friend/<Character>/`, never inside Aiko.
+
+The mandatory reconstruction order is:
+
+```text
+approved Source -> exact SourceUnit -> Observation -> single-copy Event
+-> explicit Period Assignment -> Period Character State
+-> cross-period Development -> Compiled Character State
+```
+
+Do not skip directly from source or Event to final character state. A SourceUnit
+must contain exact approved text or an immutable exact-span reference with an
+explicit grounding marker, locator, and integrity hash. LLM summaries belong in
+Observation; reference notes may locate scenes but are not canonical evidence.
+
+Period Character State is the minimum character-analysis unit and contains all
+eight domain slots: Personality, Physical, Motivation, Backstory, Emotion,
+Relationships, Growth, and Conflict. Store the Event once and reference it from
+multiple domains. Missing evidence remains `unknown`, `unchanged`,
+`insufficient_evidence`, or `not_applicable`; never fill a slot merely because it
+exists. Earlier periods must not use later-only knowledge.
+
+Development analysis requires multiple Period States. Keep confidence separate
+from change resistance. Causal hypotheses retain provenance, uncertainty,
+alternatives, and counterevidence; do not invent scoring rules or consolidation
+thresholds.
+
+Memory references Event IDs and never becomes a second Event store. Canonical
+skill profile, post-canon learning, runtime capability, and underlying LLM
+knowledge are distinct; external capabilities cannot rewrite canonical
+proficiency. Relationship ownership remains unresolved, so do not add a permanent
+Relationship subsystem without a later architecture decision.

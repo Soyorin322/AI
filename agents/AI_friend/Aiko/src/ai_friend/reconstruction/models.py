@@ -26,6 +26,14 @@ class SourceReference:
     locator: str
     media_type: str
     metadata: dict[str, Any] = field(default_factory=dict)
+    approved: bool = False
+
+
+class SourceUnitGrounding(StrEnum):
+    """How a SourceUnit is bound to an approved exact source span."""
+
+    EXACT_TEXT = "exact_text"
+    IMMUTABLE_EXACT_SPAN_REFERENCE = "immutable_exact_span_reference"
 
 
 @dataclass(frozen=True, slots=True)
@@ -38,6 +46,8 @@ class SourceUnit:
     locator: str | None = None
     temporal_scope: TemporalScope | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
+    grounding: SourceUnitGrounding | None = None
+    integrity_hash: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -59,6 +69,44 @@ class EventRecord:
     description: str
     lineage: Lineage
     temporal_scope: TemporalScope | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+    participants: tuple[str, ...] = ()
+    objective_facts: tuple[str, ...] = ()
+    character_accessible_information: tuple[str, ...] = ()
+    explicit_statements: tuple[str, ...] = ()
+    observed_behaviors: tuple[str, ...] = ()
+    outcome: str | None = None
+    uncertainty: str | None = None
+
+
+class BoundaryStatus(StrEnum):
+    CONFIRMED = "confirmed"
+    CANDIDATE = "candidate"
+    UNRESOLVED = "unresolved"
+
+
+@dataclass(frozen=True, slots=True)
+class PeriodDefinition:
+    """Historically coherent interval; not an automatic chapter boundary."""
+
+    id: str
+    order: int
+    temporal_scope: TemporalScope
+    boundary_status: BoundaryStatus
+    boundary_reason: str
+    knowledge_boundary_order: int
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True, slots=True)
+class PeriodAssignment:
+    """Explicitly assigns one canonical Event record to a period."""
+
+    id: str
+    event_id: str
+    period_id: str
+    reason: str
+    status: BoundaryStatus = BoundaryStatus.CONFIRMED
     metadata: dict[str, Any] = field(default_factory=dict)
 
 
@@ -138,4 +186,5 @@ class ReconstructionBundle:
     snapshots: tuple[CharacterStateSnapshot, ...] = ()
     previous_version: int | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
-
+    period_definitions: tuple[PeriodDefinition, ...] = ()
+    period_assignments: tuple[PeriodAssignment, ...] = ()

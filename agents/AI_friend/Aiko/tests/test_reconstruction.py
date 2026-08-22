@@ -14,6 +14,7 @@ from ai_friend.reconstruction.models import (
     ReconstructionBundle,
     SourceReference,
     SourceUnit,
+    SourceUnitGrounding,
     StatusTransition,
     TemporalScope,
 )
@@ -24,8 +25,11 @@ from ai_friend.reconstruction.validation import ReconstructionValidationError, v
 
 
 def synthetic_bundle() -> ReconstructionBundle:
-    source = SourceReference("source-1", "Synthetic scene", "fixture://scene/1", "text/plain")
-    unit = SourceUnit("unit-1", source.id, "The subject returns the lost item.", "paragraph:1")
+    source = SourceReference("source-1", "Synthetic scene", "fixture://scene/1", "text/plain", approved=True)
+    unit = SourceUnit(
+        "unit-1", source.id, "The subject returns the lost item.", "paragraph:1",
+        grounding=SourceUnitGrounding.EXACT_TEXT, integrity_hash="sha256:synthetic-unit-1",
+    )
     observation = ObservationRecord(
         "observation-1",
         "The subject returned an item they could have kept.",

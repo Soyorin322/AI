@@ -8,3 +8,13 @@ class SkillMetadata:
     description: str
     path: Path
 
+
+@dataclass(frozen=True, slots=True)
+class RuntimeCapability:
+    """Executable availability; never canonical character proficiency."""
+
+    skill_id: str
+    capability_id: str
+    enabled: bool
+    implementation: str | None = None
+    metadata: dict[str, str] | None = None

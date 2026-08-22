@@ -1,5 +1,4 @@
-from ai_friend.skills.interfaces import SkillRegistry
-from ai_friend.skills.models import SkillMetadata
+from ai_friend.skills.interfaces import CapabilitySkill, SkillRegistry
+from ai_friend.skills.models import RuntimeCapability, SkillMetadata
 
-__all__ = ["SkillMetadata", "SkillRegistry"]
-
+__all__ = ["CapabilitySkill", "RuntimeCapability", "SkillMetadata", "SkillRegistry"]

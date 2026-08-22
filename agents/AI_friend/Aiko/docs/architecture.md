@@ -7,6 +7,19 @@ are abstract base classes, while immutable `dataclasses` carry typed data betwee
 them. Dataclasses were chosen because the current schema is small and needs no
 runtime validation framework, keeping dependencies minimal.
 
+Character Reconstruction is a separate offline/application boundary that produces
+Aiko-owned persistent artifacts. It does not run inside conversational Runtime:
+
+```text
+Source Material ──> Reconstruction ──> persistent bundle / state snapshot
+                                                │
+                         future compiler boundary
+                                                v
+                                     CharacterProvider
+                                                v
+                                       RuntimeContext
+```
+
 ```text
 Character ─────┐
 Knowledge ─────┤
@@ -28,6 +41,8 @@ Perception ────┘             │
 - **Perception** defines typed events and replaceable event sources.
 - **LLM** defines typed generation requests and responses.
 - **Runtime** is the sole coordinator and constructs one explicit context per turn.
+- **Reconstruction** validates and stores traceable reconstruction artifacts; it
+  neither interprets live events nor orchestrates Runtime subsystems.
 
 Domain modules depend only on their own models and shared core primitives.
 Runtime may depend on each subsystem's interface and models. The composition root
@@ -55,6 +70,13 @@ Character-facing data uses small Aiko-owned dataclasses and the sample YAML; no
 vendor object is canonical. Replacing an LLM or store therefore does not redefine
 the character.
 
+Reconstruction now provides the persistent-data foundation: distinct Source,
+Observation, Event, Evidence, Claim, and Snapshot contracts linked by provenance.
+Its repository is replaceable and its in-memory implementation preserves bundle
+revisions. `CharacterProfile` remains a runtime-facing abstraction, not the
+canonical reconstruction database. Compilation from a validated snapshot into a
+runtime CharacterProvider remains an explicit future boundary.
+
 ## Knowledge versus Memory
 
 Knowledge is reference information the agent can retrieve. Memory is evidence of
@@ -70,6 +92,9 @@ each subsystem evolve independently.
   load richer metadata while preserving `SkillRegistry`. The future distinction
   between role-execution and capability skills remains open and is not Persona
   storage.
+- Add reconstruction persistence by implementing `ReconstructionRepository`.
+  Extraction or compilation processors can later be added behind Aiko-owned
+  interfaces without changing the artifact schema or conversational Runtime.
 
 ## Why mocks
 
@@ -83,3 +108,6 @@ update/consolidation algorithms remain research-stage. Real characters; producti
 LLMs; embeddings, RAG, databases, consolidation and forgetting; automatic
 skill/tool execution; audio, speech, screen, vision, video, MIDI; GUI/web/mobile
 interfaces; cloud infrastructure; and multi-agent behavior are also deferred.
+Reconstruction does not yet include source parsers, automatic event/evidence/claim
+extraction, psychological scoring, contradiction resolution, state compilation,
+appraisal, or trait evolution.

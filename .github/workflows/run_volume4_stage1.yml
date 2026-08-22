@@ -1,0 +1,99 @@
+name: Run Volume 4 Stage 1
+
+on:
+  push:
+    paths:
+      - 'data_processing/text/.trigger_volume4_stage1'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build from canonical source and stored attribution map
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from collections import Counter, defaultdict, deque
+          import base64, bz2, json, re
+
+          ROOT = Path('data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court')
+          SOURCE = ROOT / '惡女不才_第四卷_純文字版.md'
+          TARGET = ROOT / 'processed/volume_04/惡女不才_第四卷_speaker重校.md'
+          STORE = Path('.github/workflows/temp_build_volume4_stage1.yml').read_text(encoding='utf-8')
+          m = re.search(r"DATA = '''(.*?)'''", STORE, re.S)
+          if not m:
+              raise SystemExit('FATAL: attribution map not found')
+          data = json.loads(bz2.decompress(base64.b64decode(m.group(1))).decode('utf-8'))
+          labels = data['labels']
+          skips = set(data['skips'])
+
+          raw = SOURCE.read_bytes()
+          has_bom = raw.startswith(b'\xef\xbb\xbf')
+          text = raw.decode('utf-8-sig')
+          source_lines = text.splitlines(keepends=True)
+          source_bodies = [x.rstrip('\r\n') for x in source_lines]
+          source_counts = Counter(source_bodies)
+
+          label_lists = defaultdict(list)
+          for body, label in labels:
+              label_lists[body].append(label)
+          queues = {k: deque(v) for k, v in label_lists.items()}
+
+          out = []
+          applied = uncertain = intentionally_unlabelled = 0
+          for line, body in zip(source_lines, source_bodies):
+              ending = line[len(body):]
+              label = None
+              q = queues.get(body)
+              if q and len(q) == source_counts[body]:
+                  label = q.popleft()
+              elif q and source_counts[body] == 1:
+                  label = q[0]; q.clear()
+              elif q and len(set(q)) == 1:
+                  label = q[0]; q.popleft()
+              elif body in skips:
+                  intentionally_unlabelled += 1
+              elif body.startswith('「'):
+                  label = '【speaker 不確定】'; uncertain += 1
+              elif body.startswith('（') and body.endswith('）') and 'bilibili.com' not in body:
+                  label = '【speaker 不確定】'; uncertain += 1
+
+              if label:
+                  out.append(f'{label}: {body}{ending}')
+                  applied += 1
+              else:
+                  out.append(line)
+
+          result = ''.join(out)
+
+          # Mandatory invariant: stripping only the added attribution prefix must reproduce canonical source exactly.
+          prefix = re.compile(r'^(?:【speaker 不確定[^】]*】|[^:：\n]{1,100})\s*:\s*(?=[「（])')
+          restored_parts = []
+          for ln in result.splitlines(keepends=True):
+              body = ln.rstrip('\r\n')
+              ending = ln[len(body):]
+              restored_parts.append(prefix.sub('', body, count=1) + ending)
+          restored = ''.join(restored_parts)
+          if restored != text:
+              raise SystemExit('FATAL: attribution-only invariant failed')
+
+          target_bytes = (b'\xef\xbb\xbf' if has_bom else b'') + result.encode('utf-8')
+          TARGET.parent.mkdir(parents=True, exist_ok=True)
+          TARGET.write_bytes(target_bytes)
+          print(f'applied={applied} uncertain={uncertain} intentionally_unlabelled={intentionally_unlabelled}')
+          print(f'source_bytes={len(raw)} target_bytes={len(target_bytes)}')
+          PY
+
+      - name: Commit generated Stage 1 file
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 'data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court/processed/volume_04/惡女不才_第四卷_speaker重校.md'
+          git commit -m 'Add Volume 4 Stage 1 speaker annotations'
+          git push

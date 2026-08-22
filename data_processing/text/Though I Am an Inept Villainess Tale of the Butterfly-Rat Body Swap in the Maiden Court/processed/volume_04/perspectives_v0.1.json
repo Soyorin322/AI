@@ -1,0 +1,402 @@
+{
+  "schema_version": "story-processing-v0.1",
+  "artifact_version": "volume-04-v0.1",
+  "granularity": "fact_level",
+  "default_unlisted_character_accessibility": "UNKNOWN",
+  "accessibility_vocabulary": {
+    "DIRECTLY_OBSERVED": "Character directly witnessed/perceived the fact.",
+    "DIRECTLY_TOLD": "Character received the information through explicit communication.",
+    "SELF_KNOWN": "Fact is the character's own action, intention, thought, or knowledge state.",
+    "CHARACTER_INFERRED": "Character formed an inference supported by the source; not objective certainty.",
+    "PARTIALLY_ACCESSIBLE": "Character had access to only part of the represented fact.",
+    "STORY_ONLY": "Story/reconstruction layer contains the fact, but this character is explicitly not shown to know it at this point.",
+    "UNKNOWN": "Volume 4 does not establish accessibility sufficiently."
+  },
+  "facts": [
+    {
+      "id": "v04-fact-001",
+      "event_id": "v04-event-001",
+      "statement": "芳林在棋局中刻意以不威脅皇后的方式輸棋並維持討喜形象。",
+      "access": {"藍芳林": "SELF_KNOWN", "黃絹秀": "PARTIALLY_ACCESSIBLE"},
+      "note": "絹秀能看到芳林的表面行為，但沒有被證實知道其完整策略。"
+    },
+    {
+      "id": "v04-fact-002",
+      "event_id": "v04-event-001",
+      "statement": "芳林私下輕蔑皇后與其他人，並把無害形象視為操控工具。",
+      "access": {"藍芳林": "SELF_KNOWN", "黃絹秀": "STORY_ONLY"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-003",
+      "event_id": "v04-event-001",
+      "statement": "芳林期待先前交給芳春的計畫削弱黃家與玲琳。",
+      "access": {"藍芳林": "SELF_KNOWN", "黃絹秀": "STORY_ONLY", "黃玲琳": "STORY_ONLY"},
+      "note": "芳春知道計畫的哪些部分需由其他事件逐項判定，不在此整體假定。"
+    },
+    {
+      "id": "v04-fact-004",
+      "event_id": "v04-event-002",
+      "statement": "玲琳在邑中參與疫病患者的照護與處置。",
+      "access": {"黃玲琳": "SELF_KNOWN", "黃景行": "DIRECTLY_OBSERVED", "辰宇": "DIRECTLY_OBSERVED", "邑民": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-005",
+      "event_id": "v04-event-002",
+      "statement": "邑中的治療與衛生措施使疫情狀況逐漸受到控制。",
+      "access": {"黃玲琳": "DIRECTLY_OBSERVED", "黃景行": "DIRECTLY_OBSERVED", "辰宇": "DIRECTLY_OBSERVED", "邑民": "DIRECTLY_OBSERVED", "堯明": "DIRECTLY_TOLD"},
+      "note": "堯明透過景行等情報管道得知改善情況。"
+    },
+    {
+      "id": "v04-fact-006",
+      "event_id": "v04-event-003",
+      "statement": "雲嵐的傷病狀態嚴重並一度持續惡化。",
+      "access": {"雲嵐": "DIRECTLY_OBSERVED", "黃玲琳": "DIRECTLY_OBSERVED", "黃景行": "DIRECTLY_OBSERVED", "辰宇": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-007",
+      "event_id": "v04-event-003",
+      "statement": "雲嵐的狀態使玲琳承受高度情緒與體力壓力。",
+      "access": {"黃玲琳": "SELF_KNOWN", "堯明": "DIRECTLY_OBSERVED"},
+      "note": "其他角色是否充分理解其內在壓力不作延伸。"
+    },
+    {
+      "id": "v04-fact-008",
+      "event_id": "v04-event-004",
+      "statement": "茶會期間人格為朱慧月者正處於黃玲琳的身體中。",
+      "access": {"朱慧月": "SELF_KNOWN", "黃玲琳": "SELF_KNOWN", "堯明": "DIRECTLY_TOLD", "黃景彰": "DIRECTLY_TOLD", "冬雪": "DIRECTLY_TOLD", "莉莉": "DIRECTLY_TOLD", "藍芳春": "STORY_ONLY", "金清佳": "STORY_ONLY", "玄歌吹": "STORY_ONLY"},
+      "note": "在茶會公開身份仍是黃玲琳。"
+    },
+    {
+      "id": "v04-fact-009",
+      "event_id": "v04-event-004",
+      "statement": "慧月打算利用茶會阻止芳春繼續操縱輿論。",
+      "access": {"朱慧月": "SELF_KNOWN", "冬雪": "PARTIALLY_ACCESSIBLE", "莉莉": "PARTIALLY_ACCESSIBLE", "藍芳春": "STORY_ONLY"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-010",
+      "event_id": "v04-event-005",
+      "statement": "芳春在茶會宣稱朱慧月曾計畫對禮武官使用媚藥。",
+      "access": {"藍芳春": "SELF_KNOWN", "朱慧月": "DIRECTLY_OBSERVED", "金清佳": "DIRECTLY_TOLD", "玄歌吹": "DIRECTLY_TOLD", "茶會在場者": "DIRECTLY_TOLD"},
+      "note": "這個 fact 是『芳春作出此陳述』，不是陳述內容為真。"
+    },
+    {
+      "id": "v04-fact-011",
+      "event_id": "v04-event-005",
+      "statement": "芳春的說法逐步使清佳、歌吹等人討論朱慧月名節與被綁架後的處境。",
+      "access": {"藍芳春": "DIRECTLY_OBSERVED", "朱慧月": "DIRECTLY_OBSERVED", "金清佳": "SELF_KNOWN", "玄歌吹": "SELF_KNOWN", "茶會在場者": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-012",
+      "event_id": "v04-event-005",
+      "statement": "芳春試圖利用談話方向建立『朱慧月即使活著也可能失去作為雛女的名節』的輿論。",
+      "access": {"藍芳春": "SELF_KNOWN", "朱慧月": "CHARACTER_INFERRED", "金清佳": "UNKNOWN", "玄歌吹": "UNKNOWN"},
+      "note": "慧月從對話策略推斷芳春目的；不是芳春公開宣告。"
+    },
+    {
+      "id": "v04-fact-013",
+      "event_id": "v04-event-006",
+      "statement": "慧月故意提出朱慧月實際沒有說過的媚藥細節。",
+      "access": {"朱慧月": "SELF_KNOWN", "藍芳春": "STORY_ONLY", "金清佳": "STORY_ONLY", "玄歌吹": "STORY_ONLY"},
+      "note": "其他茶會成員只聽到表面提問，不知道細節是測試用虛構。"
+    },
+    {
+      "id": "v04-fact-014",
+      "event_id": "v04-event-006",
+      "statement": "芳春公開肯定了慧月臨時虛構的細節。",
+      "access": {"藍芳春": "SELF_KNOWN", "朱慧月": "DIRECTLY_OBSERVED", "金清佳": "DIRECTLY_OBSERVED", "玄歌吹": "DIRECTLY_OBSERVED", "茶會在場者": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-015",
+      "event_id": "v04-event-007",
+      "statement": "景行持續以信鴿向堯明一方傳遞邑內情報。",
+      "access": {"黃景行": "SELF_KNOWN", "堯明": "DIRECTLY_TOLD", "黃景彰": "DIRECTLY_TOLD", "朱慧月": "DIRECTLY_TOLD", "江氏": "STORY_ONLY", "藍林熙": "STORY_ONLY"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-016",
+      "event_id": "v04-event-007",
+      "statement": "堯明決定秘密渡河前往邑。",
+      "access": {"堯明": "SELF_KNOWN", "朱慧月": "DIRECTLY_TOLD", "黃景彰": "DIRECTLY_TOLD", "冬雪": "DIRECTLY_TOLD", "莉莉": "DIRECTLY_TOLD", "江氏": "STORY_ONLY", "藍林熙": "STORY_ONLY"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-017",
+      "event_id": "v04-event-007",
+      "statement": "堯明要求慧月同行，以炎術補足秘密行動中的即時聯絡。",
+      "access": {"堯明": "SELF_KNOWN", "朱慧月": "DIRECTLY_TOLD", "黃景彰": "DIRECTLY_OBSERVED", "冬雪": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-018",
+      "event_id": "v04-event-008",
+      "statement": "景彰能高度模仿堯明聲音。",
+      "access": {"黃景彰": "SELF_KNOWN", "堯明": "DIRECTLY_OBSERVED", "朱慧月": "DIRECTLY_OBSERVED", "江氏": "STORY_ONLY"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-019",
+      "event_id": "v04-event-008",
+      "statement": "景彰被安排在屏風後代替堯明傳話，以維持堯明仍在原處的假象。",
+      "access": {"黃景彰": "SELF_KNOWN", "堯明": "SELF_KNOWN", "朱慧月": "DIRECTLY_TOLD", "江氏": "STORY_ONLY", "藍林熙": "STORY_ONLY"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-020",
+      "event_id": "v04-event-009",
+      "statement": "玲琳因雲嵐可能死亡而哭泣並明確表達恐懼。",
+      "access": {"黃玲琳": "SELF_KNOWN", "堯明": "DIRECTLY_OBSERVED", "雲嵐": "UNKNOWN", "朱慧月": "PARTIALLY_ACCESSIBLE"},
+      "note": "慧月後續看見玲琳哭泣，但未必聽見崩潰過程全部內容。"
+    },
+    {
+      "id": "v04-fact-021",
+      "event_id": "v04-event-009",
+      "statement": "玲琳一度希望讓雲嵐盡快從持續痛苦中解脫。",
+      "access": {"黃玲琳": "SELF_KNOWN", "堯明": "DIRECTLY_TOLD", "朱慧月": "STORY_ONLY", "雲嵐": "UNKNOWN"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-022",
+      "event_id": "v04-event-010",
+      "statement": "堯明向玲琳談及自己面對重視之人長期病痛時的矛盾與不願放手。",
+      "access": {"堯明": "SELF_KNOWN", "黃玲琳": "DIRECTLY_TOLD", "朱慧月": "STORY_ONLY"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-023",
+      "event_id": "v04-event-010",
+      "statement": "堯明主張只要雲嵐本人沒有放棄，就不應由玲琳先替他放棄。",
+      "access": {"堯明": "SELF_KNOWN", "黃玲琳": "DIRECTLY_TOLD", "雲嵐": "UNKNOWN"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-024",
+      "event_id": "v04-event-011",
+      "statement": "雲嵐恢復到能睜眼並發出有意義反應的程度。",
+      "access": {"雲嵐": "SELF_KNOWN", "黃玲琳": "DIRECTLY_OBSERVED", "堯明": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-025",
+      "event_id": "v04-event-011",
+      "statement": "看到雲嵐仍有反應後，玲琳重新產生希望。",
+      "access": {"黃玲琳": "SELF_KNOWN", "堯明": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-026",
+      "event_id": "v04-event-012",
+      "statement": "堯明再次未能立即識破玲琳與慧月的身體替換。",
+      "access": {"堯明": "SELF_KNOWN", "黃玲琳": "SELF_KNOWN", "朱慧月": "SELF_KNOWN"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-027",
+      "event_id": "v04-event-012",
+      "statement": "玲琳依替換賭約要求堯明原諒替換期間行動並支援拯救邑。",
+      "access": {"黃玲琳": "SELF_KNOWN", "堯明": "DIRECTLY_TOLD"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-028",
+      "event_id": "v04-event-013",
+      "statement": "慧月承諾用自己的道術協助玲琳反擊加害者。",
+      "access": {"朱慧月": "SELF_KNOWN", "黃玲琳": "DIRECTLY_TOLD", "堯明": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-029",
+      "event_id": "v04-event-013",
+      "statement": "玲琳迅速接受慧月協助並從先前低落狀態轉回積極準備行動。",
+      "access": {"黃玲琳": "SELF_KNOWN", "朱慧月": "DIRECTLY_OBSERVED", "堯明": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-030",
+      "event_id": "v04-event-014",
+      "statement": "救援方在夜間交換情報並制定次日應對江氏與藍家行動的計畫。",
+      "access": {"黃玲琳": "DIRECTLY_OBSERVED", "朱慧月": "DIRECTLY_OBSERVED", "堯明": "DIRECTLY_OBSERVED", "黃景行": "DIRECTLY_OBSERVED", "辰宇": "DIRECTLY_OBSERVED", "江氏": "STORY_ONLY", "藍林熙": "STORY_ONLY"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-031",
+      "event_id": "v04-event-014",
+      "statement": "邑民中的協力者承諾配合救援方次日行動。",
+      "access": {"黃玲琳": "DIRECTLY_OBSERVED", "朱慧月": "DIRECTLY_OBSERVED", "堯明": "DIRECTLY_OBSERVED", "邑民": "SELF_KNOWN"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-032",
+      "event_id": "v04-event-015",
+      "statement": "江氏與林熙一方預期利用邑中的疫病作為焚邑與封口的條件。",
+      "access": {"江氏": "SELF_KNOWN", "藍林熙": "SELF_KNOWN", "黃玲琳": "STORY_ONLY", "堯明": "UNKNOWN"},
+      "note": "堯明後來可能掌握相關罪證，但此 fact 不假設他在出發時知道完整內心計畫。"
+    },
+    {
+      "id": "v04-fact-033",
+      "event_id": "v04-event-015",
+      "statement": "林熙與江氏一方對先遣隊人員、說詞及行動路徑做了事前安排。",
+      "access": {"藍林熙": "SELF_KNOWN", "江氏": "DIRECTLY_TOLD", "先遣隊禮武官": "PARTIALLY_ACCESSIBLE", "堯明": "UNKNOWN"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-034",
+      "event_id": "v04-event-015",
+      "statement": "江氏公開把自己塑造成可能因仁慈而不忍焚邑、需要其他禮武官糾正的鄉長。",
+      "access": {"江氏": "SELF_KNOWN", "藍林熙": "DIRECTLY_OBSERVED", "先遣隊禮武官": "DIRECTLY_TOLD"},
+      "note": "公開說詞不等於其私人真實動機。"
+    },
+    {
+      "id": "v04-fact-035",
+      "event_id": "v04-event-016",
+      "statement": "屏風後向江氏等人傳話的實際發話者是景彰，而非堯明。",
+      "access": {"黃景彰": "SELF_KNOWN", "堯明": "SELF_KNOWN", "朱慧月": "DIRECTLY_TOLD", "江氏": "STORY_ONLY", "藍林熙": "STORY_ONLY"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-036",
+      "event_id": "v04-event-016",
+      "statement": "江氏相信皇太子因疫病而留在屏風後，沒有察覺堯明已秘密離開。",
+      "access": {"江氏": "SELF_KNOWN", "黃景彰": "CHARACTER_INFERRED", "堯明": "CHARACTER_INFERRED"},
+      "note": "江氏的錯誤信念本身是 story fact；真假與其 belief 分開。"
+    },
+    {
+      "id": "v04-fact-037",
+      "event_id": "v04-event-017",
+      "statement": "先遣隊抵達邑時沒有看到原先預期的大量失控病患與污穢場景。",
+      "access": {"江氏": "DIRECTLY_OBSERVED", "藍林熙": "DIRECTLY_OBSERVED", "先遣隊禮武官": "DIRECTLY_OBSERVED", "邑民": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-038",
+      "event_id": "v04-event-017",
+      "statement": "邑中的照護場所已整理，且可聽到邑民活動與歌聲。",
+      "access": {"江氏": "DIRECTLY_OBSERVED", "藍林熙": "DIRECTLY_OBSERVED", "先遣隊禮武官": "DIRECTLY_OBSERVED", "邑民": "SELF_KNOWN"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-039",
+      "event_id": "v04-event-018",
+      "statement": "堯明在豐饒祭場合公開進行祈禱。",
+      "access": {"堯明": "SELF_KNOWN", "黃玲琳": "DIRECTLY_OBSERVED", "朱慧月": "DIRECTLY_OBSERVED", "邑民": "DIRECTLY_OBSERVED", "先遣隊禮武官": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-040",
+      "event_id": "v04-event-018",
+      "statement": "祈禱進行期間現場出現強風、暴雨、雷電與迅速放晴。",
+      "access": {"堯明": "DIRECTLY_OBSERVED", "黃玲琳": "DIRECTLY_OBSERVED", "朱慧月": "DIRECTLY_OBSERVED", "邑民": "DIRECTLY_OBSERVED", "先遣隊禮武官": "DIRECTLY_OBSERVED"},
+      "note": "角色可觀察天候，但對因果的理解另行處理。"
+    },
+    {
+      "id": "v04-fact-041",
+      "event_id": "v04-event-019",
+      "statement": "事件高潮後，雲嵐原有腹部傷勢已不再存在。",
+      "access": {"雲嵐": "DIRECTLY_OBSERVED", "黃玲琳": "DIRECTLY_OBSERVED", "堯明": "DIRECTLY_OBSERVED", "邑民": "DIRECTLY_OBSERVED", "先遣隊禮武官": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-042",
+      "event_id": "v04-event-019",
+      "statement": "同一時間江氏腹部出現嚴重傷勢。",
+      "access": {"江氏": "DIRECTLY_OBSERVED", "黃玲琳": "DIRECTLY_OBSERVED", "堯明": "DIRECTLY_OBSERVED", "邑民": "DIRECTLY_OBSERVED", "先遣隊禮武官": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-043",
+      "event_id": "v04-event-019",
+      "statement": "現場邑民把雲嵐與江氏傷勢的反轉理解為農耕神的奇蹟與對惡人的懲罰。",
+      "access": {"邑民": "SELF_KNOWN", "黃玲琳": "DIRECTLY_OBSERVED", "堯明": "DIRECTLY_OBSERVED", "江氏": "DIRECTLY_OBSERVED"},
+      "note": "這是群體 interpretation，不等於 story layer 對超自然機制的定論。"
+    },
+    {
+      "id": "v04-fact-044",
+      "event_id": "v04-event-020",
+      "statement": "堯明公開撤除江氏的鄉長職位。",
+      "access": {"堯明": "SELF_KNOWN", "江氏": "DIRECTLY_TOLD", "邑民": "DIRECTLY_TOLD", "先遣隊禮武官": "DIRECTLY_TOLD"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-045",
+      "event_id": "v04-event-020",
+      "statement": "堯明公開廢止針對邑民的不合理稅收與歧視規定並禁止稱其為賤民。",
+      "access": {"堯明": "SELF_KNOWN", "邑民": "DIRECTLY_TOLD", "江氏": "DIRECTLY_TOLD", "先遣隊禮武官": "DIRECTLY_TOLD", "黃玲琳": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-046",
+      "event_id": "v04-event-021",
+      "statement": "堯明在處置江氏後轉而直接與藍林熙對峙。",
+      "access": {"堯明": "SELF_KNOWN", "藍林熙": "DIRECTLY_OBSERVED", "黃玲琳": "PARTIALLY_ACCESSIBLE"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-047",
+      "event_id": "v04-event-021",
+      "statement": "林熙面對超出自己預期的局勢時顯露出平常少見的動搖與恐懼。",
+      "access": {"藍林熙": "SELF_KNOWN", "堯明": "DIRECTLY_OBSERVED", "黃玲琳": "PARTIALLY_ACCESSIBLE"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-048",
+      "event_id": "v04-event-022",
+      "statement": "回宮後玲琳與芳春以表面禮貌的方式談論外游事件與藍林熙責任。",
+      "access": {"黃玲琳": "SELF_KNOWN", "藍芳春": "SELF_KNOWN", "朱慧月": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-049",
+      "event_id": "v04-event-022",
+      "statement": "慧月把玲琳與芳春多句禮貌話語理解為暗中敵意與反擊。",
+      "access": {"朱慧月": "SELF_KNOWN", "黃玲琳": "STORY_ONLY", "藍芳春": "STORY_ONLY"},
+      "note": "這是慧月的 interpretation；不反推玲琳或芳春一定具有完全相同的內在語意。"
+    },
+    {
+      "id": "v04-fact-050",
+      "event_id": "v04-event-023",
+      "statement": "玲琳在與芳春對話時提出位於藍家東領的柳雲及相關土地安排。",
+      "access": {"黃玲琳": "SELF_KNOWN", "藍芳春": "DIRECTLY_TOLD", "朱慧月": "DIRECTLY_OBSERVED", "黃絹秀": "PARTIALLY_ACCESSIBLE"},
+      "note": "絹秀參與地契安排，但不假定她知道談判現場全部話語。"
+    },
+    {
+      "id": "v04-fact-051",
+      "event_id": "v04-event-023",
+      "statement": "芳春在柳雲話題與玲琳的反制下罕見地顯露明顯動搖。",
+      "access": {"藍芳春": "SELF_KNOWN", "黃玲琳": "DIRECTLY_OBSERVED", "朱慧月": "DIRECTLY_OBSERVED"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-052",
+      "event_id": "v04-event-024",
+      "statement": "玲琳表示要進一步學習如何對付像芳春這類擅長操弄的人。",
+      "access": {"黃玲琳": "SELF_KNOWN", "朱慧月": "DIRECTLY_TOLD", "堯明": "DIRECTLY_TOLD", "辰宇": "DIRECTLY_TOLD", "黃景彰": "DIRECTLY_TOLD", "黃景行": "DIRECTLY_TOLD", "冬雪": "DIRECTLY_TOLD", "莉莉": "DIRECTLY_TOLD"},
+      "note": null
+    },
+    {
+      "id": "v04-fact-053",
+      "event_id": "v04-event-024",
+      "statement": "玲琳用『修鍊成惡女』描述自己想提升反擊與應對操弄能力的方向。",
+      "access": {"黃玲琳": "SELF_KNOWN", "朱慧月": "DIRECTLY_TOLD", "堯明": "DIRECTLY_TOLD", "辰宇": "DIRECTLY_TOLD"},
+      "note": "只記當下自我表述，不等於永久 trait。"
+    },
+    {
+      "id": "v04-fact-054",
+      "event_id": "v04-event-025",
+      "statement": "絹秀私下認為玲琳在外游後體驗了絕望、憤怒、厭惡與反擊。",
+      "access": {"黃絹秀": "SELF_KNOWN", "黃玲琳": "STORY_ONLY", "朱慧月": "STORY_ONLY", "藤黃女官": "STORY_ONLY"},
+      "note": "絹秀的私人評價。"
+    },
+    {
+      "id": "v04-fact-055",
+      "event_id": "v04-event-025",
+      "statement": "絹秀把玲琳的這些變化理解為她形成更堅定自我的一部分，並聯想到玲琳的母親靜秀。",
+      "access": {"黃絹秀": "SELF_KNOWN", "黃玲琳": "STORY_ONLY", "朱慧月": "STORY_ONLY", "藤黃女官": "STORY_ONLY"},
+      "note": "只屬絹秀 perspective，不提供給下游作為玲琳自知。"
+    }
+  ]
+}

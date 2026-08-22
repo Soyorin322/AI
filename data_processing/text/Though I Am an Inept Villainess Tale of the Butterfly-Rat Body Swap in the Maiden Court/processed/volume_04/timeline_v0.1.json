@@ -1,0 +1,37 @@
+{
+  "schema_version": "story-processing-v0.1",
+  "artifact_version": "volume-04-v0.1",
+  "timeline_type": "narrative_chronology_not_character_periods",
+  "entries": [
+    {"order": 1, "event_id": "v04-event-001", "chapter": "序章", "relation": "before_external_trip_crisis_resolution"},
+    {"order": 2, "event_id": "v04-event-002", "chapter": "第1章 玲琳，治療", "relation": "during_village_epidemic"},
+    {"order": 3, "event_id": "v04-event-003", "chapter": "第1章 玲琳，治療", "relation": "after_event_002_during_same_crisis"},
+    {"order": 4, "event_id": "v04-event-004", "chapter": "第2章 慧月，舉辦茶會", "relation": "parallel_to_village_crisis"},
+    {"order": 5, "event_id": "v04-event-005", "chapter": "第2章 慧月，舉辦茶會", "relation": "tea_party_progression"},
+    {"order": 6, "event_id": "v04-event-006", "chapter": "第2章 慧月，舉辦茶會", "relation": "immediately_after_event_005"},
+    {"order": 7, "event_id": "v04-event-007", "chapter": "第2章 慧月，舉辦茶會", "relation": "after_tea_party_information_update"},
+    {"order": 8, "event_id": "v04-event-008", "chapter": "第2章 慧月，舉辦茶會", "relation": "part_of_secret_departure_plan"},
+    {"order": 9, "event_id": "v04-event-009", "chapter": "第3章 玲琳，流淚", "relation": "village_crisis_before_full_rescue_arrival"},
+    {"order": 10, "event_id": "v04-event-010", "chapter": "第3章 玲琳，流淚", "relation": "immediately_after_event_009"},
+    {"order": 11, "event_id": "v04-event-011", "chapter": "第3章 玲琳，流淚", "relation": "immediately_after_event_010"},
+    {"order": 12, "event_id": "v04-event-012", "chapter": "第3章 玲琳，流淚", "relation": "after_reirin_regains_hope"},
+    {"order": 13, "event_id": "v04-event-013", "chapter": "第4章 慧月，擔心", "relation": "after_huiyue_arrives_and_observes_reirin_distress"},
+    {"order": 14, "event_id": "v04-event-014", "chapter": "第4章 慧月，擔心", "relation": "night_before_showdown"},
+    {"order": 15, "event_id": "v04-event-015", "chapter": "第5章 玲琳，打倒", "relation": "next_day_advance_to_village"},
+    {"order": 16, "event_id": "v04-event-016", "chapter": "第5章 玲琳，打倒", "relation": "knowledge_state_active_during_event_015"},
+    {"order": 17, "event_id": "v04-event-017", "chapter": "第5章 玲琳，打倒", "relation": "arrival_at_village"},
+    {"order": 18, "event_id": "v04-event-018", "chapter": "第5章 玲琳，打倒", "relation": "festival_showdown"},
+    {"order": 19, "event_id": "v04-event-019", "chapter": "第5章 玲琳，打倒", "relation": "climax_after_weather_event"},
+    {"order": 20, "event_id": "v04-event-020", "chapter": "第5章 玲琳，打倒", "relation": "public_resolution_after_climax"},
+    {"order": 21, "event_id": "v04-event-021", "chapter": "第5章 玲琳，打倒", "relation": "after_jiang_is_removed"},
+    {"order": 22, "event_id": "v04-event-022", "chapter": "尾聲", "relation": "after_return_to_maiden_court"},
+    {"order": 23, "event_id": "v04-event-023", "chapter": "尾聲", "relation": "during_reirin_fangchun_confrontation"},
+    {"order": 24, "event_id": "v04-event-024", "chapter": "尾聲", "relation": "after_fangchun_confrontation"},
+    {"order": 25, "event_id": "v04-event-025", "chapter": "尾聲", "relation": "epilogue_juanxiu_private_reflection"}
+  ],
+  "notes": [
+    "Narrative order is used where the source presents parallel story lines; this file does not claim exact clock timestamps.",
+    "Chapter boundaries are source locators only and do not define Aiko Character Periods.",
+    "Events 002-003 and 004-008 occur in story lines that are partly parallel; their total ordering reflects narrative presentation rather than a verified minute-by-minute synchronization."
+  ]
+}

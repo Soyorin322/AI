@@ -1,0 +1,89 @@
+name: Run Volume 4 Stage 1 PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'data_processing/text/.trigger_volume4_stage1_pr'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Build exact-source speaker version
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from collections import Counter, defaultdict, deque
+          import base64, bz2, json, re
+
+          ROOT = Path('data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court')
+          SOURCE = ROOT / '惡女不才_第四卷_純文字版.md'
+          TARGET = ROOT / 'processed/volume_04/惡女不才_第四卷_speaker重校.md'
+          STORE = Path('.github/workflows/temp_build_volume4_stage1.yml').read_text(encoding='utf-8')
+          m = re.search(r"DATA = '''(.*?)'''", STORE, re.S)
+          if not m:
+              raise SystemExit('FATAL: attribution map not found')
+          data = json.loads(bz2.decompress(base64.b64decode(m.group(1))).decode('utf-8'))
+          labels = data['labels']
+          skips = set(data['skips'])
+
+          raw = SOURCE.read_bytes()
+          has_bom = raw.startswith(b'\xef\xbb\xbf')
+          text = raw.decode('utf-8-sig')
+          source_lines = text.splitlines(keepends=True)
+          source_bodies = [x.rstrip('\r\n') for x in source_lines]
+          source_counts = Counter(source_bodies)
+
+          label_lists = defaultdict(list)
+          for body, label in labels:
+              label_lists[body].append(label)
+          queues = {k: deque(v) for k, v in label_lists.items()}
+
+          out = []
+          for line, body in zip(source_lines, source_bodies):
+              ending = line[len(body):]
+              label = None
+              q = queues.get(body)
+              if q and len(q) == source_counts[body]:
+                  label = q.popleft()
+              elif q and source_counts[body] == 1:
+                  label = q[0]; q.clear()
+              elif q and len(set(q)) == 1:
+                  label = q[0]; q.popleft()
+              elif body in skips:
+                  pass
+              elif body.startswith('「'):
+                  label = '【speaker 不確定】'
+              elif body.startswith('（') and body.endswith('）') and 'bilibili.com' not in body:
+                  label = '【speaker 不確定】'
+              out.append((f'{label}: ' if label else '') + body + ending)
+
+          result = ''.join(out)
+          prefix = re.compile(r'^(?:【speaker 不確定[^】]*】|[^:：\n]{1,100})\s*:\s*(?=[「（])')
+          restored = []
+          for ln in result.splitlines(keepends=True):
+              body = ln.rstrip('\r\n')
+              ending = ln[len(body):]
+              restored.append(prefix.sub('', body, count=1) + ending)
+          if ''.join(restored) != text:
+              raise SystemExit('FATAL: attribution-only invariant failed')
+
+          TARGET.parent.mkdir(parents=True, exist_ok=True)
+          TARGET.write_bytes((b'\xef\xbb\xbf' if has_bom else b'') + result.encode('utf-8'))
+          PY
+      - name: Commit generated Stage 1 file to PR branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 'data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court/processed/volume_04/惡女不才_第四卷_speaker重校.md'
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Add Volume 4 Stage 1 speaker annotations [skip ci]'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}

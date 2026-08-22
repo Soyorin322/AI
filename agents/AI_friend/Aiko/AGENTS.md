@@ -209,6 +209,57 @@ Removing an external dependency should not require redefining what the character
 
 ---
 
+## Framework and character-instance dependency direction
+
+Aiko is the reusable, character-agnostic framework and reconstruction architecture. A concrete AI Friend instance may use Aiko-owned contracts and framework capabilities, but Aiko must never depend on that concrete character instance.
+
+The dependency direction must remain:
+
+```text
+Aiko
+ ↑
+ │ uses
+Character Instance
+```
+
+For example:
+
+```text
+Aiko
+ ↑
+ │ uses
+Reirin instance
+```
+
+This means the concrete character instance depends on Aiko; Aiko does not import or depend on Reirin-specific code, schemas, paths, data, or assumptions.
+
+Never create a bidirectional dependency such as:
+
+```text
+Aiko ↔ Reirin
+```
+
+Rules:
+
+- Character-specific code may depend on stable Aiko-owned interfaces and contracts.
+- Aiko must not import from `agents/AI_friend/<Character>/`.
+- Aiko must not hard-code paths under `character_data/<Character>/`.
+- Character-specific fixes must not be added to Aiko unless they represent a genuinely reusable framework requirement.
+- Missing generic framework capability should be implemented in Aiko first rather than patched only inside one character instance.
+- Reconstruction methods and reusable architecture belong to Aiko; character-specific reconstruction results belong to the concrete character instance.
+
+The intended ownership flow is:
+
+```text
+character_data/<Character>
+        ↓
+Aiko Character Reconstruction
+        ↓
+agents/AI_friend/<Character>
+```
+
+---
+
 ## Runtime and dependency direction
 
 Runtime coordinates subsystem interaction.

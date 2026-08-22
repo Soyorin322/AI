@@ -182,3 +182,30 @@ Task 005 已完成。Aiko 現在具備明確的 folder ownership、跨階段 con
 ## 11. 真實角色資料確認
 
 本次沒有讀取、分析、引用或重建任何 Reirin／Sakiko 真實角色資料，沒有開啟或修改 `agents/AI_friend/Reirin/`，也沒有在 Aiko 加入任何角色-specific canonical data。
+
+
+已編輯 23 個檔案+1,172-70檢閱變更復原查看
+
+AGENTS.mdAGENTS.md+41-1
+README.mdREADME.md+10-7
+docs/folder_ownership.mddocs/folder_ownership.md+65-0
+docs/reconstruction.mddocs/reconstruction.md+29-35
+docs/schemas/character_state.mddocs/schemas/character_state.md+43-0
+docs/schemas/memory.mddocs/schemas/memory.md+18-0
+docs/schemas/reconstruction.mddocs/schemas/reconstruction.md+44-13
+docs/schemas/skills.mddocs/schemas/skills.md+23-0
+src/ai_friend/character/__init__.pysrc/ai_friend/character/__init__.py+15-2
+src/ai_friend/character/reconstruction.pysrc/ai_friend/character/reconstruction.py+178-0
+src/ai_friend/memory/__init__.pysrc/ai_friend/memory/__init__.py+11-3
+src/ai_friend/memory/interfaces.pysrc/ai_friend/memory/interfaces.py+8-2
+src/ai_friend/memory/models.pysrc/ai_friend/memory/models.py+31-0
+src/ai_friend/reconstruction/__init__.pysrc/ai_friend/reconstruction/__init__.py+8-0
+src/ai_friend/reconstruction/hardening.pysrc/ai_friend/reconstruction/hardening.py+257-0
+src/ai_friend/reconstruction/models.pysrc/ai_friend/reconstruction/models.py+50-1
+src/ai_friend/reconstruction/serialization.pysrc/ai_friend/reconstruction/serialization.py+32-0
+src/ai_friend/reconstruction/validation.pysrc/ai_friend/reconstruction/validation.py+44-0
+src/ai_friend/skills/__init__.pysrc/ai_friend/skills/__init__.py+3-4
+src/ai_friend/skills/interfaces.pysrc/ai_friend/skills/interfaces.py+9-0
+src/ai_friend/skills/models.pysrc/ai_friend/skills/models.py+10-0
+tests/test_reconstruction.pytests/test_reconstruction.py+6-2
+tests/test_reconstruction_hardening.pytests/test_reconstruction_hardening.py+237-0

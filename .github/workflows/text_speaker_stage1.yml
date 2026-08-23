@@ -1,0 +1,222 @@
+name: Text Stage 1 Speaker Attribution
+
+on:
+  pull_request:
+    paths:
+      - 'data_processing/text/.speaker_stage1_trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  annotate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Build one speaker-grounded source file
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, re, sys
+
+          trigger = json.loads(Path('data_processing/text/.speaker_stage1_trigger').read_text(encoding='utf-8'))
+          source = Path(trigger['source'])
+          target = Path(trigger['target'])
+          text = source.read_text(encoding='utf-8-sig')
+          lines = text.splitlines(keepends=True)
+
+          SPEECH_VERBS = r'(?:說道|說著|說完|說|回答|答道|答|問道|追問|詢問|問|喊道|喊|叫道|叫|開口|回應|反駁|嘟囔|呢喃|喃喃|宣告|補充|怒斥|打斷|搭話|勸道|笑道|笑著說|輕聲說|低聲說|大聲說|高聲說|冷冷地說|平靜地說|解釋道|解釋|提醒道|提醒|感嘆道|感嘆|咕噥|命令道|命令|應道|應聲|回話|發問|招呼道|招呼)'
+          NAME = r'([\u4e00-\u9fff·]{1,8})'
+          bad = {'她','他','它','男人','女人','男子','女子','女官','雛女','眾人','大家','人們','聲音','對方','其中一人','一人','那人','少女','青年','老人','孩子','小姓','武官','禮武官','三老','邑民','百姓','侍女','宮女','主人','兄長','妹妹','姐姐','姊姊','母親','父親','皇太子','皇后','陛下','殿下','大人','閣下'}
+
+          def body(line):
+              return line.rstrip('\r\n')
+          raw = [body(x) for x in lines]
+
+          def nonempty_before(i, count=1):
+              out=[]; j=i-1
+              while j>=0 and len(out)<count:
+                  if raw[j].strip(): out.append((j,raw[j]))
+                  j-=1
+              return out
+          def nonempty_after(i, count=1):
+              out=[]; j=i+1
+              while j<len(raw) and len(out)<count:
+                  if raw[j].strip(): out.append((j,raw[j]))
+                  j+=1
+              return out
+
+          def clean_name(name):
+              name=name.strip('「」『』（）()，。！？!?：:、 ')
+              # common descriptive prefixes before a real name
+              for p in ('黃家雛女','朱家雛女','金家雛女','藍家雛女','玄家雛女','皇太子','皇后','賢妃','德妃','淑妃','貴妃','鷲官長','禮武官','女官'):
+                  if name.startswith(p) and len(name)>len(p): name=name[len(p):]
+              if not name or name in bad or len(name)>8: return None
+              return name
+
+          def explicit_from_context(s):
+              patterns = [
+                  rf'說話的是(?:[^，。]*?)(?:——|—|-)?{NAME}',
+                  rf'{NAME}[^。！？]{{0,28}}{SPEECH_VERBS}',
+                  rf'{SPEECH_VERBS}[^。！？]{{0,12}}(?:的是|為|正是)?{NAME}',
+                  rf'{NAME}[^。！？]{{0,24}}(?:嘴角|視線|臉|眉|手)[^。！？]{{0,20}}(?:道|說)',
+              ]
+              for pat in patterns:
+                  for m in re.finditer(pat,s):
+                      groups=[g for g in m.groups() if g and re.fullmatch(r'[\u4e00-\u9fff·]{1,8}',g)]
+                      for g in groups:
+                          n=clean_name(g)
+                          if n: return n
+              return None
+
+          def thought_from_context(i):
+              ctx=[]
+              for _,s in nonempty_before(i,3)[::-1]+nonempty_after(i,2): ctx.append(s)
+              joined=' '.join(ctx)
+              pats=[
+                  rf'{NAME}[^。！？]{{0,20}}(?:心想|心裡|心中|內心|暗想|想到|想著|不禁想|腦海)',
+                  rf'(?:心想|心裡|心中|內心|暗想|想到|想著)[^。！？]{{0,12}}{NAME}',
+              ]
+              for p in pats:
+                  m=re.search(p,joined)
+                  if m:
+                      n=clean_name(m.group(1))
+                      if n:return n
+              # nearest strongly foregrounded named subject
+              for _,s in nonempty_before(i,4):
+                  m=re.search(r'([黃朱金藍玄][\u4e00-\u9fff]{1,3}|玲琳|慧月|莉莉|冬雪|堯明|辰宇|景行|景彰|絹秀|芳春|芳林|清佳|歌吹|雲嵐|豪龍|林熙|英旋|永昌|雅媚|傲雪|琥珀)[^。]{0,20}(?:看|望|想|覺得|感到|皺|笑|沉默|低頭|抬頭|回憶|意識到|明白|驚訝|困惑)',s)
+                  if m:return clean_name(m.group(1))
+              return None
+
+          def render(name, swapped):
+              if name=='玲琳' and swapped: return '玲琳（身體：朱慧月）'
+              if name=='慧月' and swapped: return '慧月（身體：黃玲琳）'
+              return name
+
+          def update_swap_state(s, swapped):
+              # Explicit local identity descriptions are strongest.
+              if re.search(r'(?:朱慧月模樣|朱慧月的身體)[^。]{0,18}玲琳|玲琳[^。]{0,18}(?:朱慧月模樣|朱慧月的身體)',s):
+                  return True
+              if re.search(r'(?:黃玲琳模樣|黃玲琳的身體)[^。]{0,18}慧月|慧月[^。]{0,18}(?:黃玲琳模樣|黃玲琳的身體)',s):
+                  return True
+              if re.search(r'(?:換回|替換回|交換回|恢復(?:到)?自己的身體|回到自己的身體)',s) and ('玲琳' in s or '慧月' in s):
+                  return False
+              if re.search(r'(?:完成|進行|再次|又一次|突然|立刻|馬上|現在).{0,8}(?:替換|換身|交換身體)',s) and ('玲琳' in s or '慧月' in s):
+                  return True
+              return swapped
+
+          out=[]
+          swapped=False
+          last_known=None
+          prev_known=None
+          last_dialogue_i=-999
+          stats={'dialogue':0,'thought':0,'uncertain_dialogue':0,'uncertain_thought':0,'swap_labels':0}
+
+          for i,line in enumerate(lines):
+              s=raw[i]
+              swapped=update_swap_state(s,swapped)
+              stripped=s.lstrip()
+              is_dialogue=stripped.startswith('「')
+              is_thought=stripped.startswith('（') and stripped.endswith('）') and 'bilibili.com' not in stripped and stripped!='（插畫）'
+              label=None
+
+              if is_dialogue:
+                  stats['dialogue']+=1
+                  # Explicit attribution after quote usually wins, then before quote.
+                  after=' '.join(x for _,x in nonempty_after(i,2))
+                  before=' '.join(x for _,x in nonempty_before(i,2)[::-1])
+                  label=explicit_from_context(after) or explicit_from_context(before)
+
+                  # Stable short two-person exchange: alternate only if context contains no new named speaker cue.
+                  if not label and last_known and prev_known and last_known!=prev_known and i-last_dialogue_i<=4:
+                      local=before+' '+after
+                      newcue=explicit_from_context(local)
+                      if not newcue:
+                          label=prev_known
+
+                  # Direct continuation after a narration clearly foregrounding one character.
+                  if not label:
+                      for _,ctx in nonempty_before(i,2):
+                          m=re.search(r'(玲琳|慧月|莉莉|冬雪|堯明|辰宇|景行|景彰|絹秀|芳春|芳林|清佳|歌吹|雲嵐|豪龍|林熙|英旋|永昌|雅媚|傲雪|琥珀)[^。！？]{0,22}(?:抬頭|低頭|看向|轉向|回頭|皺眉|笑|嘆氣|吸氣|沉默|點頭|搖頭|走近|靠近|站起|坐下)[^。！？]{0,12}$',ctx)
+                          if m:
+                              label=m.group(1); break
+
+                  if label:
+                      label=render(label,swapped)
+                      base=label.split('（',1)[0]
+                      prev_known,last_known=last_known,base
+                  else:
+                      label='【speaker 不確定】'
+                      stats['uncertain_dialogue']+=1
+                      # uncertainty must not consume an alternation turn
+                  last_dialogue_i=i
+
+              elif is_thought:
+                  stats['thought']+=1
+                  label=thought_from_context(i)
+                  if label:
+                      label=render(label,swapped)
+                  else:
+                      label='【thinker 不確定】'
+                      stats['uncertain_thought']+=1
+
+              if label:
+                  if '身體：' in label: stats['swap_labels']+=1
+                  prefix=line[:len(line)-len(line.lstrip())]
+                  content=line[len(prefix):]
+                  out.append(f'{prefix}{label}: {content}')
+              else:
+                  out.append(line)
+
+          result=''.join(out)
+
+          # Strict source-integrity invariant: strip only prefixes added to dialogue/thought lines.
+          restored=[]
+          pfx=re.compile(r'^(?:【(?:speaker|thinker) 不確定[^】]*】|[^:\n]{1,80})\s*:\s*(?=[「（])')
+          for orig,ann in zip(lines,result.splitlines(keepends=True)):
+              ob=orig.rstrip('\r\n'); oe=orig[len(ob):]
+              ab=ann.rstrip('\r\n'); ae=ann[len(ab):]
+              rb=pfx.sub('',ab,count=1) if ab!=ob else ab
+              restored.append(rb+ae)
+          if ''.join(restored)!=text:
+              raise SystemExit('FATAL: attribution-only invariant failed')
+
+          header=(
+              '# Stage 1 Speaker / Thinker Attribution\n'
+              '# Derived annotation only; original source text is preserved.\n'
+              '# Low-confidence attributions remain explicitly unresolved.\n\n'
+          )
+          # Header is metadata outside the canonical source body; integrity check above covers source body.
+          target.parent.mkdir(parents=True,exist_ok=True)
+          target.write_text(header+result,encoding='utf-8')
+          Path('/tmp/stats.json').write_text(json.dumps(stats,ensure_ascii=False,indent=2),encoding='utf-8')
+          print(json.dumps(stats,ensure_ascii=False))
+          print(f'SOURCE={source}')
+          print(f'TARGET={target}')
+          PY
+
+      - name: Commit generated file directly to main
+        shell: bash
+        run: |
+          TARGET=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          t=json.loads(Path('data_processing/text/.speaker_stage1_trigger').read_text())
+          print(t['target'])
+          PY
+          )
+          cp "$TARGET" /tmp/generated.md
+          git fetch origin main
+          git checkout -B main origin/main
+          mkdir -p "$(dirname "$TARGET")"
+          cp /tmp/generated.md "$TARGET"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET"
+          git commit -m "Add Stage 1 speaker attribution: $(basename "$TARGET")"
+          git push origin main

@@ -12,9 +12,9 @@ permissions:
   contents: write
 
 jobs:
-  annotate:
+  validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,16 +27,65 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install huggingface_hub
           python -m pip install llama-cpp-python --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
-      - name: Annotate and validate
-        run: python data_processing/text/speaker_stage1_batch_v5_v9.py
-      - name: Commit outputs to work branch
+      - name: Validate against Volume 3 gold
+        run: python data_processing/text/speaker_stage1_batch_v5_v9.py --validate-only
+      - uses: actions/upload-artifact@v4
+        with:
+          name: validation
+          path: data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court/processed/speaker_stage1_v5_v9_validation.md
+
+  annotate:
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        volume: [5, 6, 7, 8, 9]
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: speaker-volume5-9
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install inference runtime
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install huggingface_hub
+          python -m pip install llama-cpp-python --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+      - name: Annotate volume
+        run: python data_processing/text/speaker_stage1_batch_v5_v9.py --volume ${{ matrix.volume }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: volume-${{ matrix.volume }}
+          path: data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court/processed/volume_0${{ matrix.volume }}/
+
+  commit:
+    needs: annotate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: speaker-volume5-9
+      - uses: actions/download-artifact@v4
+        with:
+          path: _generated
+      - name: Install generated outputs
+        shell: bash
+        run: |
+          ROOT='data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court/processed'
+          mkdir -p "$ROOT"
+          cp '_generated/validation/speaker_stage1_v5_v9_validation.md' "$ROOT/"
+          for v in 5 6 7 8 9; do
+            mkdir -p "$ROOT/volume_0$v"
+            cp -R "_generated/volume-$v/." "$ROOT/volume_0$v/"
+          done
+          rm -rf _generated
+      - name: Commit generated outputs
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add 'data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court/processed/'
-          if git diff --cached --quiet; then
-            echo 'No generated changes'
-            exit 0
-          fi
           git commit -m 'Generate Volume 5-9 Stage 1 speaker annotations [skip ci]'
           git push origin HEAD:speaker-volume5-9

@@ -1,666 +1,690 @@
 # Text Data Processing
 
-`data_processing/text/` is the text-specific preprocessing and **story reconstruction** layer for novels, prose, subtitles, transcripts, webpages converted to text, and other textual source material.
+`data_processing/text/` is the text-specific preprocessing and story-indexing layer for novels, prose, subtitles, transcripts, webpages converted to text, and other textual source material.
 
-Its responsibility is to determine, as faithfully and audibly as possible:
+Its current responsibility is intentionally narrow:
 
 ```text
-What does the source say?
-What happened in the story?
-Who participated?
-Who could know which parts?
+1. Ground who is speaking / thinking in the source text.
+2. Build Event indexes that always trace back to the original text.
+3. Record which parts of an Event each character could actually know.
 ```
-
-It is deliberately separated from Aiko's character reconstruction responsibility.
 
 The core boundary is:
 
-> `data_processing/text/` determines **what happened and who could know it**.  
-> Aiko determines **what those experiences mean for a particular character**.
+> `data_processing/text/` determines **what happened, where it is in the source, and which source content each character could access**.  
+> Aiko determines **what those experiences mean for the target character**.
+
+This directory must not perform final personality reconstruction, Memory consolidation, Development analysis, or runtime persona compilation.
 
 ---
 
-# Core Pipeline
+# Current Official Workflow
 
-The intended long-term text-processing pipeline is:
-
-```text
-Raw Text
-↓
-Source Normalization
-↓
-Speaker Attribution
-↓
-Scene / Source-Span Segmentation
-↓
-Observation Extraction
-↓
-Event Segmentation
-↓
-Event Participants
-↓
-Objective Facts
-↓
-Timeline
-↓
-Perspective / Accessibility Mapping
-↓
-Story-level structured output
-```
-
-The resulting story-level output is then consumed by character reconstruction:
+The current implementation is deliberately divided into **two stages**.
 
 ```text
-StoryEvent
-+
-PerspectiveReference(<Character>)
-+
-Evidence
+Raw novel / text source
+↓
+Stage 1 — Speaker / Thinker Attribution
+↓
+Human Review
+↓
+Speaker-grounded source
+↓
+Stage 2 — Event Indexing
+↓
+events.json
 ↓
 Aiko Character Reconstruction
+```
+
+The previous, more granular design involving mandatory intermediate Observation / Fact artifacts is **not part of the required first implementation**.
+
+Those layers may be introduced later only if a concrete need appears. The current priority is to make four things reliable first:
+
+```text
+source grounding
+speaker correctness
+event indexing
+knowledge boundary
+```
+
+---
+
+# Stage 1 — Speaker / Thinker Attribution
+
+Stage 1 creates a speaker-grounded derivative of the original source.
+
+Its job is only to determine who is responsible for dialogue or inner thought.
+
+It does NOT create Events, personality conclusions, Memory, Development, or other character interpretation.
+
+## 1. Preserve the original source
+
+Never overwrite the original novel/source file.
+
+Preferred structure:
+
+```text
+original source
 ↓
-Period Character State
-Memory
-Development
-Character Skill Profile
-Compiled Character State
+automatically speaker-attributed derivative
+↓
+human-reviewed speaker-grounded source
 ```
 
-This separation is intentional.
+The human-reviewed version becomes the preferred input for Stage 2.
 
-Aiko should not need to repeatedly answer:
+## 2. Dialogue must receive speaker attribution
 
-```text
-"What happened in this chapter?"
-```
-
-for every character.
-
-Instead, the story-processing layer should establish a shared story representation once, and Aiko should consume the perspective relevant to the target character.
-
----
-
-# Ownership Boundary
-
-## `data_processing/text/` owns
-
-Source-side and story-level artifacts such as:
-
-```text
-Source normalization
-Speaker attribution
-Scene / span segmentation
-Source-grounded observations
-Story Event segmentation
-Event participants
-Objective story facts
-Story timeline
-Perspective / accessibility mapping
-Story-level evidence/provenance
-```
-
-## Aiko / Character Reconstruction owns
-
-Character-specific derived state such as:
-
-```text
-Period Character State
-Character-specific subjective interpretation
-Memory
-Development
-Character Skill Profile
-Compiled Character State
-Runtime-facing character context
-```
-
-## Explicit non-ownership
-
-`data_processing/text/` must NOT directly decide:
-
-```text
-final personality traits
-persistent character disposition
-long-term psychological development
-what the character remembers permanently
-compiled persona
-runtime behavior
-```
-
-Those belong downstream.
-
----
-
-# Story Truth vs Character Experience
-
-A central design principle is:
-
-```text
-Story Truth
-≠ Character-Accessible Truth
-≠ Character Interpretation
-```
+Every actual spoken utterance that can be attributed should be marked with its speaker.
 
 Example:
 
 ```text
-Story Truth:
-Lily privately accepts an inducement.
-
-Reirin-accessible truth:
-Lily behaves with hostility toward Reirin.
-
-Possible Reirin inference:
-Lily dislikes the person she believes to be Zhu Huiyue.
+慧月（身體：黃玲琳）: 「我知道。」
 ```
 
-The first fact may exist in the global story graph without being available to Reirin.
+If the work contains body swaps, possession, disguise, transformation, aliases, or similar identity changes, preserve the distinction between character identity and body identity.
+
+Example:
+
+```text
+慧月（身體：黃玲琳）: 「……」
+玲琳（身體：朱慧月）: 「……」
+```
+
+Do not infer the actual speaker only from the visible body.
+
+## 3. Inner thoughts in parentheses must also receive attribution
+
+Inner monologue written as `（...）` or equivalent private thought must be attributed to the thinker.
+
+Example, following the established reviewed-volume style:
+
+```text
+慧月（身體：黃玲琳）:（我，要死了嗎……？）
+```
+
+This is important because private thoughts must later remain inaccessible to other characters unless the source explicitly shows that they were communicated.
+
+A bare inner thought such as:
+
+```text
+（我還活著……）
+```
+
+should therefore become, when attribution is supported:
+
+```text
+慧月（身體：黃玲琳）:（我還活著……）
+```
+
+## 4. Narration is not dialogue
+
+Ordinary narration must not be given a speaker label merely because the current scene follows a character.
+
+Example:
+
+```text
+慧月默默地抬起手臂，凝視著掌心。
+```
+
+This remains narration.
+
+Do not convert it into:
+
+```text
+慧月: 慧月默默地抬起手臂，凝視著掌心。
+```
+
+## 5. Quoted material is not automatically dialogue
+
+Text inside quotation marks may represent:
+
+- remembered speech;
+- quoted documents;
+- hypothetical statements;
+- phrases mentioned as words;
+- imitation / performed voice;
+- embedded dialogue.
+
+Do not assign a current-scene speaker solely because quotation marks are present.
+
+## 6. Uncertainty must remain explicit
+
+Do not force a speaker when the source does not support a reliable attribution.
+
+Use a visible unresolved label such as:
+
+```text
+【speaker 不確定（候選：A / B）】: 「……」
+```
+
+or equivalent.
+
+Human review should resolve these where possible before Stage 2.
+
+## 7. Speaker attribution is derived annotation
+
+The speaker label is not part of the original canonical text unless explicitly present in the source.
 
 Therefore:
-
-> Facts may be global; access to facts is contextual.
-
----
-
-# Speaker Attribution Rules
-
-Speaker attribution is a **derived annotation**, not part of the original canonical text unless the source explicitly identifies the speaker.
-
-The annotated output must preserve:
 
 ```text
 original text
 ≠ speaker annotation
 ```
 
-## 1. Preserve the original source
+Adding labels must not silently rewrite, summarize, translate, reorder, or otherwise alter the underlying novel text.
 
-Never overwrite or replace the original source with a speaker-attributed derivative.
+## 8. Attribution should follow source context, not character stereotypes
 
-Preferred flow:
-
-```text
-raw source
-↓
-speaker-attributed derivative
-```
-
-Both must remain independently recoverable.
-
-## 2. Do not alter original wording
-
-Adding speaker labels must not silently rewrite, summarize, translate, reorder, or normalize the underlying prose/dialogue unless that transformation is explicitly another processing stage.
-
-A speaker-attributed derivative should ideally preserve the original text and add only annotation metadata or prefixes.
-
-## 3. Attribution provenance
-
-Each speaker annotation should eventually be distinguishable as one of the following conceptual classes:
-
-```text
-EXPLICIT
-    Source directly identifies the speaker.
-
-CONTEXT_INFERRED
-    Speaker is inferred from nearby narrative/dialogue context.
-
-RULE_INFERRED
-    Speaker is assigned by a deterministic annotation rule.
-
-UNCERTAIN
-    Available context is insufficient for reliable attribution.
-```
-
-Exact schema names may change, but the distinction should remain machine-readable.
-
-## 4. Never force an uncertain speaker
-
-If the context is insufficient, preserve uncertainty instead of guessing.
-
-Example textual convention:
-
-```text
-【speaker 不確定】「……」
-```
-
-A downstream model must be able to distinguish unresolved attribution from confirmed attribution.
-
-## 5. Context is evidence, not proof by default
-
-Useful attribution signals include:
+Useful evidence includes:
 
 - explicit speech verbs / names;
-- turn-taking structure;
+- dialogue turn-taking;
 - nearby narration;
 - vocatives / forms of address;
 - scene participation;
 - first-person self-reference;
 - character-specific knowledge;
-- body / identity state in body-swap, disguise, possession, or transformation scenarios.
+- body-swap state;
+- disguise / performed voice state.
 
-These signals may support attribution, but inferred attribution must not silently become canonical fact.
+Do not assign speakers based merely on what “sounds like” a character.
 
-## 6. Character identity and body identity must remain separate
+## 9. Human review is mandatory before Stage 2
 
-For stories involving body swaps, possession, disguise, transformation, aliases, or identity concealment, preserve both identities when relevant.
+Stage 1 may be produced automatically, but Stage 2 should consume the **human-reviewed** speaker-grounded source whenever available.
+
+The purpose of human review is to prevent attribution errors from propagating into Event participants and character knowledge boundaries.
+
+Potential error chain:
+
+```text
+wrong speaker
+↓
+wrong Event participant
+↓
+wrong accessible information
+↓
+wrong character reconstruction
+```
+
+---
+
+# Stage 2 — Event Indexing
+
+Stage 2 operates on the human-reviewed speaker-grounded source and creates `events.json`.
+
+Its purpose is not to summarize the novel.
+
+Its purpose is to build a reliable index between:
+
+```text
+Character
+↔ Event
+↔ Exact source text
+```
+
+with an explicit knowledge boundary for each character.
+
+The central rule is:
+
+> **Event = index, not replacement text.**
+
+An Event must always be able to return to the complete source passage from which it was identified.
+
+---
+
+# Event Requirements
+
+Each Event should support the following three downstream guarantees.
+
+## Guarantee 1 — Find all Events relevant to a character
+
+The system must be able to query a character and retrieve all Events in which that character:
+
+- actively participates;
+- directly observes relevant content;
+- directly receives information;
+- otherwise has source-supported access to part of the Event.
+
+Do not equate participation with knowledge.
+
+```text
+participant
+≠ observer
+≠ information recipient
+≠ complete knower
+```
+
+A character may know an Event without being an active participant, and a participant may know only part of an Event.
+
+## Guarantee 2 — Every Event must retrieve the complete original passage
+
+Each Event must preserve a deterministic reference to the full source passage that defines it.
+
+Preferred conceptual form:
+
+```json
+{
+  "event_id": "V04-E-0017",
+  "source_ranges": [
+    {
+      "file": "惡女不才_第四卷_speaker重校.md",
+      "start_span_id": "V04-C02-S0341",
+      "end_span_id": "V04-C02-S0389"
+    }
+  ]
+}
+```
+
+A future implementation may use stable span IDs, line ranges, byte offsets, or another deterministic locator, but it must satisfy the same invariant:
+
+```text
+event_id
+↓
+source range
+↓
+complete source passage
+```
+
+Do not rely only on:
+
+- an Event summary;
+- a chapter name;
+- one anchor sentence;
+- a paraphrase.
+
+The Event source range should include enough contiguous context to reconstruct the Event without requiring the model to guess missing material.
+
+## Guarantee 3 — Prevent characters from receiving inaccessible information
+
+The complete Event source passage may contain information that not every character could know.
+
+Examples include:
+
+- another character's inner thoughts;
+- private conversations;
+- actions occurring outside the character's presence;
+- narrator-only revelations;
+- causes that are hidden while consequences are visible;
+- information revealed only at a later time.
+
+Therefore each Event must record which source portions are accessible to which characters.
+
+The preferred rule is:
+
+> Do not summarize “what the character knows” when the source itself can be indexed directly.
+
+Prefer:
+
+```text
+character
+→ accessible source spans
+```
+
+over:
+
+```text
+character
+→ model-written summary of what they know
+```
+
+This keeps character knowledge grounded in original text rather than model interpretation.
+
+---
+
+# Recommended `events.json` Structure
+
+The first implementation should remain minimal.
+
+A conceptual Event record may contain:
+
+```json
+{
+  "event_id": "V04-E-0017",
+  "label": "景彰以聲音模仿協助堯明秘密離開",
+
+  "source_ranges": [
+    {
+      "file": "惡女不才_第四卷_speaker重校.md",
+      "start_span_id": "V04-C02-S0341",
+      "end_span_id": "V04-C02-S0389"
+    }
+  ],
+
+  "participants": [
+    "詠堯明",
+    "黃景彰",
+    "朱慧月"
+  ],
+
+  "observers": [
+    "冬雪",
+    "莉莉"
+  ],
+
+  "character_access": {
+    "詠堯明": [
+      "V04-C02-S0341:V04-C02-S0389"
+    ],
+    "黃景彰": [
+      "V04-C02-S0341:V04-C02-S0389"
+    ],
+    "朱慧月": [
+      "V04-C02-S0341:V04-C02-S0389"
+    ],
+    "江氏": []
+  },
+
+  "order": 17
+}
+```
+
+The exact schema may evolve, but the following responsibilities should remain stable:
+
+```text
+event_id
+source_ranges
+participants
+observers / information recipients where relevant
+character_access
+ordering / temporal locator
+```
+
+## `label` is navigation only
+
+A short human-readable Event label may be included for browsing.
 
 Example:
 
 ```text
-character_identity: Reirin / 黃玲琳
-body_identity: 朱慧月
+景彰以聲音模仿協助堯明秘密離開
 ```
 
-Do not infer identity only from the visible/current body.
+But:
 
-## 7. Speaker annotation is not direct personality evidence
+> Event labels must never be treated as character-analysis evidence.
 
-Preferred downstream flow:
-
-```text
-speaker annotation
-↓
-exact source/context
-↓
-Observation
-↓
-Story Event / Evidence
-↓
-Character Reconstruction
-```
-
-A derived speaker tag alone must not become a high-confidence personality, relationship, Memory, or knowledge claim.
-
-## 8. Corrections must be auditable
-
-If an attribution is corrected later, preserve enough provenance to determine:
-
-- which source span changed;
-- previous attribution;
-- new attribution;
-- reason for correction;
-- downstream artifacts that may require invalidation or rebuild.
-
-Long-term structured annotation should therefore prefer stable source-span IDs.
+The original source passage remains authoritative.
 
 ---
 
-# Scene / Source-Span Segmentation
+# Character Access Must Be Source-Derived
 
-Scene or span segmentation should create stable textual units that can be referenced by later story artifacts.
+`character_access` must be derived from the source situation, not from speculative reasoning about what a character “probably understood.”
 
-It should NOT automatically assume:
-
-```text
-chapter = scene
-a paragraph = event
-one dialogue line = event
-```
-
-Segmentation exists to provide recoverable source context, not to predetermine narrative meaning.
-
-A source span should preserve:
+Safe sources of access include:
 
 ```text
-source identity
-exact locator
-exact text or immutable exact-span reference
-annotation provenance
+character directly heard the dialogue
+character directly observed the action
+character was explicitly told the information
+character is the thinker of the inner monologue
+character is the speaker of the utterance
+source explicitly establishes later receipt of the information
 ```
+
+Do not automatically expose information merely because:
+
+```text
+the reader knows it
+it appears in the same Event
+another participant knows it
+it seems obvious in hindsight
+the model thinks the character could probably infer it
+```
+
+Inference may be handled later by Character Reconstruction if needed.
+
+Stage 2 should primarily model **source-supported access**, not speculative belief inference.
 
 ---
 
-# Observation Extraction
+# Inner Thought and Knowledge Boundary
 
-Observation is the first derived statement from source text.
+Inner thoughts are particularly important.
 
-It should answer:
-
-```text
-What does this source span directly support?
-```
-
-Examples:
+Example source:
 
 ```text
-X said Y.
-X moved from A to B.
-X was visibly injured.
-X explicitly stated a goal.
+芳春: 「沒事的。」
+芳春:（太好了，她們全都上當了。）
 ```
 
-Observation must remain narrower than interpretation.
+If Reirin heard only the spoken line, the Event may contain both source spans globally, but Reirin's accessible range must exclude the private thought.
 
-Do not turn:
+Conceptually:
 
 ```text
-"X apologizes for causing harm"
+Event source
+├── spoken line              → Reirin accessible
+└── 芳春 inner thought       → Reirin inaccessible
 ```
 
-into:
+The downstream character system should receive:
 
 ```text
-"X is fundamentally responsible"
+Event
+↓
+filter(character = Reirin)
+↓
+only accessible source spans
+↓
+Aiko
 ```
 
-at this layer.
+It should NOT receive the whole Event and then be instructed to “pretend not to know” hidden content.
 
 ---
 
-# Event Segmentation
+# Event Boundaries
 
-The text-processing layer should identify story-level Events from observations.
+An Event should represent a meaningful story occurrence, not a mechanical text unit.
 
-An Event answers:
-
-```text
-What happened?
-```
-
-not:
+Do not assume:
 
 ```text
-What permanent trait does this prove?
+one sentence = one Event
+one paragraph = one Event
+one chapter = one Event
 ```
 
-Event segmentation should be based on meaningful changes such as:
+Potential Event-boundary signals include meaningful changes in:
 
 - action / decision;
 - participants;
 - objective situation;
 - location;
-- goal or conflict;
-- outcome;
-- knowledge state;
-- identity/body state;
-- consequential causal transition.
+- conflict / goal;
+- result / consequence;
+- information availability;
+- identity / body state;
+- causal transition.
 
-Avoid both extremes:
+A chapter may contain many Events.
 
-```text
-one Event per sentence
-```
-
-and:
-
-```text
-one Event for an entire chapter
-```
+One Event may also require multiple contiguous or clearly linked source ranges if the narrative temporarily interrupts and resumes it. If multiple ranges are used, all ranges must remain explicitly traceable.
 
 ---
 
-# Event Single Source of Truth
+# Event Storage and Reuse
 
-The same objective Event should exist once in the shared story representation.
+The same objective Event should be stored once.
 
-Preferred:
-
-```text
-Event X
-├── objective facts
-├── participants
-├── source lineage
-└── perspective/accessibility references
-```
-
-and:
-
-```text
-Event X
-├── Reirin perspective
-├── Lily perspective
-├── Chenyu perspective
-└── Keigetsu perspective
-```
-
-rather than duplicating:
+Do not create:
 
 ```text
 Event X for Reirin
 Event X for Lily
 Event X for Chenyu
-...
 ```
 
-This is important for consistency, provenance, and multi-character reconstruction.
+Instead use:
+
+```text
+Event X
+├── source_ranges
+├── participants
+├── observers
+└── character_access
+    ├── Reirin
+    ├── Lily
+    ├── Chenyu
+    └── ...
+```
+
+This allows the same story index to support multiple character reconstructions.
 
 ---
 
-# Event Participants
+# Query Contract Toward Aiko
 
-Participants should represent who was actually involved in or present for an Event.
-
-Participation does NOT automatically imply full knowledge.
-
-A participant may:
+For a target character, downstream retrieval should conceptually perform:
 
 ```text
-observe only part of an Event
-misunderstand the Event
-arrive late
-leave early
-hear only dialogue
-observe consequences but not cause
+character = <Target>
+↓
+find Events where character is:
+    participant
+    OR observer
+    OR information recipient
+    OR present in character_access
+↓
+retrieve Event source_ranges
+↓
+apply character_access filter
+↓
+return only source text accessible to that character
+↓
+Aiko Character Reconstruction
+```
+
+This should ensure:
+
+```text
+1. A character can find all relevant Events.
+2. Every Event can retrieve the complete original passage.
+3. A character cannot receive source information they did not have access to.
+```
+
+These are mandatory invariants of the current design.
+
+---
+
+# Relationship to Aiko
+
+`data_processing/text/` owns:
+
+```text
+speaker / thinker attribution
+human-reviewed speaker-grounded source
+Event boundaries
+Event source ranges
+participants
+observers / recipients
+source-supported character access
+story ordering needed for Event lookup
+```
+
+Aiko owns:
+
+```text
+subjective interpretation
+Period Character State
+Memory formation / retention
+Development
+Character Skill Profile
+Compiled Character State
+runtime-facing character context
 ```
 
 Therefore:
 
 ```text
-participant
-≠ complete knower
+Text Processing
+= What source content did this character have access to?
+
+Aiko
+= What did that experience mean to this character?
 ```
 
 ---
 
-# Objective Facts
+# Deferred / Optional Future Layers
 
-Event processing may extract story-level objective facts where the source supports them.
-
-These should remain separate from:
+The following artifacts are not required in the current two-stage workflow:
 
 ```text
-what a character perceived
-what a character inferred
-what a character believed
+Observation records
+Fact records
+separate Perspective files
+separate Timeline files
+mandatory semantic summaries
 ```
 
-For example:
+They may become useful later for:
 
-```text
-Objective fact:
-A private agreement occurred.
+- auditability;
+- causal analysis;
+- belief modeling;
+- complex chronology;
+- cross-media alignment;
+- high-scale dependency invalidation.
 
-Character perception:
-Reirin did not witness it.
+But they should not be introduced merely because a schema can support them.
 
-Character inference:
-Reirin may infer only from later behavior.
-```
+Current rule:
 
-Do not flatten these layers.
+> Keep the semantic core minimal. Add new layers only when they solve a demonstrated problem.
 
 ---
 
-# Timeline
+# Correction and Rebuild Principle
 
-Timeline processing should establish story chronology independently from character Periods.
-
-```text
-Story Timeline
-≠ Character Period State
-```
-
-The story timeline answers:
-
-```text
-When did Event A occur relative to Event B?
-```
-
-Aiko Period reconstruction answers:
-
-```text
-When did the character enter a meaningfully different historical state?
-```
-
-A chapter or date may help chronology without defining a Character Period.
-
----
-
-# Perspective / Accessibility Mapping
-
-This layer records who could access what information at a given time.
-
-A future perspective representation may distinguish concepts such as:
-
-```text
-DIRECTLY_OBSERVED
-DIRECTLY_TOLD
-CHARACTER_INFERRED
-PARTIALLY_ACCESSIBLE
-STORY_ONLY
-UNKNOWN
-```
-
-The exact schema is not yet permanently fixed.
-
-## Prefer fact-level accessibility when needed
-
-Whole-Event accessibility may be too coarse.
-
-An Event may contain multiple facts:
-
-```text
-Event X
-├── fact-01
-├── fact-02
-└── fact-03
-```
-
-A character may know only some of them.
+Because Stage 2 depends on the human-reviewed Stage 1 source, a speaker correction may affect downstream Event metadata.
 
 Example:
 
 ```text
-Event:
-Lily accepts an inducement and later behaves hostilely.
-
-Reirin:
-├── hostile behavior → accessible
-└── private inducement → story-only
-```
-
-Therefore long-term perspective mapping should be capable of representing partial knowledge rather than only:
-
-```text
-knows_event = true / false
-```
-
-## Perspective is contextual
-
-The same global fact may have different accessibility for different characters:
-
-```text
-fact-X
-├── Reirin  → STORY_ONLY
-├── Lily    → CHARACTER_ACCESSIBLE
-├── Chenyu  → UNKNOWN
-└── Keigetsu→ CHARACTER_ACCESSIBLE
-```
-
-This enables the same story graph to support multiple character reconstructions without duplicating Events.
-
----
-
-# Output Contract Toward Aiko
-
-The intended handoff from text processing to Aiko is conceptually:
-
-```text
-StoryEvent
-+
-PerspectiveReference(target_character)
-+
-Evidence / Source Lineage
-```
-
-Aiko then answers:
-
-```text
-What did this character experience?
-What did they know at that point?
-What did they retain as Memory?
-What did the experience mean to them?
-How did their Period Character State change?
-What patterns emerge across Periods?
-```
-
-This means Aiko should increasingly consume story-level structured data rather than repeatedly re-parse raw novel text for every character.
-
----
-
-# Multi-Character Reuse
-
-The story-processing layer should be reusable across multiple target characters.
-
-Example:
-
-```text
-Shared Story Graph
-        ↓
-PerspectiveReference(Reirin)
-        ↓
-Reirin Character Reconstruction
-
-Shared Story Graph
-        ↓
-PerspectiveReference(Lily)
-        ↓
-Lily Character Reconstruction
-```
-
-The story layer is shared.
-
-Character reconstruction remains character-specific.
-
----
-
-# Upstream Correction and Dependency Invalidation
-
-Because Speaker → Observation → Event → Perspective forms a dependency chain, upstream corrections may invalidate downstream artifacts.
-
-Example:
-
-```text
-speaker attribution corrected
+speaker correction
 ↓
-Observation may change
+participant / observer correction
 ↓
-Event participant / statement attribution may change
+character_access correction
 ↓
-Perspective mapping may change
-↓
-Character reconstruction may need rebuild
+character reconstruction may need rebuild
 ```
 
-Future tooling should preserve dependency/provenance links so these rebuilds can be targeted rather than manual and global.
+The original source remains immutable.
+
+Future tooling may add explicit dependency IDs or stale-artifact detection, but the current workflow should at minimum preserve clear source-file and source-range references.
 
 ---
 
 # Design Principles
 
-1. Preserve exact-source provenance.
-2. Raw text and derived annotation are separate artifacts.
-3. Speaker attribution uncertainty must remain visible.
-4. Do not use schema completeness as permission to guess.
-5. Observation ≠ interpretation.
-6. Event segmentation should be evidence-driven, not mechanically sentence- or chapter-based.
-7. Story Event ≠ Character subjective interpretation.
-8. Store each objective Event once.
-9. Reuse one story graph for multiple characters.
-10. Participants do not automatically know the complete Event.
-11. Prefer fact-level accessibility when Event-level accessibility is too coarse.
-12. Story chronology ≠ Character Period segmentation.
-13. Character accessibility is contextual and time-dependent.
-14. Upstream annotation corrections must be traceable to downstream dependent artifacts.
-15. Formats should remain portable and independent of any specific LLM provider.
-16. `data_processing/text/` determines **what happened and who could know it**.
-17. Aiko determines **what those experiences mean for the target character**.
+1. Preserve the original source unchanged.
+2. Speaker attribution is derived annotation.
+3. Dialogue attribution should be complete before Event indexing.
+4. Inner thoughts in `（...）` must also be attributed to the thinker when supported.
+5. Narration must not be mislabeled as dialogue.
+6. Preserve character identity separately from body / disguise / performed identity.
+7. Never force unresolved speaker attribution.
+8. Human review of Stage 1 is required before Stage 2 whenever possible.
+9. `Event = index, not replacement text`.
+10. Every Event must deterministically retrieve its complete source passage.
+11. Event labels are navigation aids, not evidence.
+12. Participation does not imply complete knowledge.
+13. Character access should point to original source spans whenever possible.
+14. Do not summarize hidden knowledge into a character-access record when direct source indexing is possible.
+15. Reader knowledge must not automatically become character knowledge.
+16. Private thoughts must remain inaccessible to other characters unless communicated.
+17. Store each objective Event once and reuse it for multiple characters.
+18. Keep current implementation minimal; add Observation / Fact / other semantic layers only when necessary.
+19. `data_processing/text/` determines **what happened, where it is in the source, and what source content each character could access**.
+20. Aiko determines **what those experiences mean for the target character**.

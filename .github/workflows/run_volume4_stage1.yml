@@ -1,0 +1,23 @@
+name: Run Volume 4 Stage 1
+
+on:
+  push:
+    paths:
+      - 'data_processing/text/.trigger_volume4_stage1'
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Write marker
+        run: |
+          printf 'actions-ok\n' > data_processing/text/.volume4_actions_ok
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data_processing/text/.volume4_actions_ok
+          git commit -m 'Verify Volume 4 workflow execution [skip ci]'
+          git push

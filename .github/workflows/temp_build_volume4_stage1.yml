@@ -1,0 +1,101 @@
+name: Build Volume 4 Stage 1
+
+on:
+  push:
+    paths:
+      - '.github/workflows/temp_build_volume4_stage1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build exact-source speaker version
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from collections import Counter, defaultdict, deque
+          import base64, bz2, json, re
+
+          ROOT = Path('data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court')
+          SOURCE = ROOT / '惡女不才_第四卷_純文字版.md'
+          TARGET = ROOT / 'processed/volume_04/惡女不才_第四卷_speaker重校.md'
+
+          DATA = '''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[...truncated for tool call transmission in this summary]...'''
+
+          data = json.loads(bz2.decompress(base64.b64decode(DATA)).decode('utf-8'))
+          labels = data['labels']
+          skips = set(data['skips'])
+
+          raw = SOURCE.read_bytes()
+          has_bom = raw.startswith(b'\xef\xbb\xbf')
+          text = raw.decode('utf-8-sig')
+          source_lines = text.splitlines(keepends=True)
+          source_bodies = [x.rstrip('\r\n') for x in source_lines]
+          source_counts = Counter(source_bodies)
+
+          label_lists = defaultdict(list)
+          for body, label in labels:
+              label_lists[body].append(label)
+          queues = {k: deque(v) for k, v in label_lists.items()}
+
+          out = []
+          applied = 0
+          uncertain = 0
+          skipped = 0
+          for line, body in zip(source_lines, source_bodies):
+              ending = line[len(body):]
+              label = None
+              q = queues.get(body)
+              if q and len(q) == source_counts[body]:
+                  label = q.popleft()
+              elif q and source_counts[body] == 1:
+                  label = q[0]
+                  q.clear()
+              elif q and len(set(q)) == 1:
+                  label = q[0]
+                  q.popleft()
+              elif body in skips:
+                  skipped += 1
+              elif body.startswith('「'):
+                  label = '【speaker 不確定】'
+                  uncertain += 1
+              elif body.startswith('（') and body.endswith('）') and 'bilibili.com' not in body:
+                  label = '【speaker 不確定】'
+                  uncertain += 1
+
+              if label:
+                  out.append(f'{label}: {body}{ending}')
+                  applied += 1
+              else:
+                  out.append(line)
+
+          result = ''.join(out)
+
+          # Hard invariant: stripping Stage-1 prefixes reconstructs canonical source exactly.
+          prefix = re.compile(r'^(?:【speaker 不確定[^】]*】|[^:：\n]{1,100})\s*:\s*(?=[「（])')
+          restored = ''.join(prefix.sub('', ln.rstrip('\r\n'), count=1) + ln[len(ln.rstrip(chr(13)+chr(10))):] for ln in result.splitlines(keepends=True))
+          if restored != text:
+              raise SystemExit('FATAL: attribution-only invariant failed')
+
+          target_bytes = (b'\xef\xbb\xbf' if has_bom else b'') + result.encode('utf-8')
+          TARGET.parent.mkdir(parents=True, exist_ok=True)
+          TARGET.write_bytes(target_bytes)
+          print(f'applied={applied} uncertain={uncertain} intentionally_unlabelled={skipped}')
+          print(f'source_bytes={len(raw)} target_bytes={len(target_bytes)}')
+          PY
+
+      - name: Commit Stage 1 result and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 'data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court/processed/volume_04/惡女不才_第四卷_speaker重校.md'
+          git rm '.github/workflows/temp_build_volume4_stage1.yml'
+          git commit -m 'Add Volume 4 Stage 1 speaker annotations'
+          git push

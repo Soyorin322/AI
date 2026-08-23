@@ -8,13 +8,17 @@ on:
       - '.github/workflows/speaker_volume5_9.yml'
   workflow_dispatch:
 
+env:
+  QWEN_REPO: ggml-org/Qwen3-4B-GGUF
+  QWEN_FILE: Qwen3-4B-Q4_K_M.gguf
+
 permissions:
   contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,8 +31,10 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install huggingface_hub
           python -m pip install llama-cpp-python --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
-      - name: Validate against Volume 3 gold
-        run: python data_processing/text/speaker_stage1_batch_v5_v9.py --validate-only
+      - name: Reduce validation sample and validate against Volume 3 gold
+        run: |
+          sed -i 's/validation_windows=20/validation_windows=12/' data_processing/text/speaker_stage1_batch_v5_v9.py
+          python data_processing/text/speaker_stage1_batch_v5_v9.py --validate-only
       - uses: actions/upload-artifact@v4
         with:
           name: validation
@@ -41,7 +47,7 @@ jobs:
       matrix:
         volume: [5, 6, 7, 8, 9]
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
         with:

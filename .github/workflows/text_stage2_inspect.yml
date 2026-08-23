@@ -21,7 +21,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import hashlib, json
+          import hashlib, json, re
           p=Path('data_processing/text/Though I Am an Inept Villainess Tale of the Butterfly-Rat Body Swap in the Maiden Court/惡女不才_volume1.md')
           raw=p.read_bytes()
           text=raw.decode('utf-8-sig')
@@ -29,6 +29,7 @@ jobs:
           print('TOTAL_LINES', len(lines))
           print('SHA256', hashlib.sha256(raw).hexdigest())
           for i,line in enumerate(lines,1):
-              if line.startswith('#'):
-                  print('HEADING', i, json.dumps(line, ensure_ascii=False))
+              s=line.strip()
+              if line.startswith('#') or re.fullmatch(r'【[^】]{1,40}】', s) or re.fullmatch(r'[★☆]{2,}.*', s):
+                  print('STRUCTURE', i, json.dumps(line, ensure_ascii=False))
           PY

@@ -12,18 +12,18 @@ agents/AI_friend/Aiko/docs/research/event/character_perspective_preanalysis_v0.0
 
 # 0. Purpose
 
-This stage is executed **after source-side Event preparation and before character analysis**.
+This stage is executed **after source-side Event preparation and before character interpretation**.
 
-Its purpose is to prevent story-level truth from being silently treated as character-level knowledge while still allowing the LLM to read the complete Event context.
+Its purpose is to prevent story-level truth from being silently treated as character-level knowledge while preserving the **complete Event** for analysis.
 
-The stage answers two different questions in sequence:
+It answers two different questions in sequence:
 
 ```text
-1. What information is available to the target character?
-2. Given that information and the character's existing state, what does the character know, believe, suspect, or misunderstand?
+1. What information in this complete Event is available, unavailable, or uncertain from the target character's perspective?
+2. Given the complete Event, that perspective analysis, and relevant validated character context, what does the character know, believe, suspect, or misunderstand?
 ```
 
-It does **not** yet answer:
+It does **not** answer:
 
 ```text
 What personality trait does this prove?
@@ -42,12 +42,16 @@ data_processing
 ────────────────────
 Canon
 ↓
+Speaker / Thinker Attribution
+↓
 Event segmentation
 ↓
-source_ranges
-participants
-narrative_order
-story_chronology
+Complete Event
+├── event_id
+├── source_ranges / source locator
+├── source-supported participants when useful
+├── narrative_order
+└── story_chronology when needed
 
 
 Aiko
@@ -84,9 +88,41 @@ Core boundary:
 
 ---
 
-# 2. Why Full Event Context Is Preserved
+# 2. Complete Event Is Always the Analysis Source
 
-The previous line-level access approach can produce a sparse character-only text such as:
+The canonical analysis material for this stage is the **complete Event**, not a character-filtered replacement text.
+
+```text
+Complete Event
++
+Perspective analysis / prompt guidance
+```
+
+The Event remains linked to its original Canon source through deterministic locators:
+
+```text
+Perspective result
+↓
+event_id
+↓
+Event.source_ranges
+↓
+original source passage
+```
+
+`Accessible`, `Inaccessible`, and `Uncertain` are **analysis guidance / perspective judgments**. They do not delete, hide, rewrite, or replace source material.
+
+Therefore:
+
+```text
+Context available to the analysis model
+≠
+Knowledge available to the target character
+```
+
+The analysis model may read the complete Event for scene comprehension, causal continuity, subjects, observable actions, and conversational structure. It must use the perspective result as a constraint on what may be attributed to the target character.
+
+The previous line-level hard-filter approach could produce sparse character-only text such as:
 
 ```text
 34-35
@@ -98,55 +134,75 @@ The previous line-level access approach can produce a sparse character-only text
 76-77
 ```
 
-Although conservative, this can remove subjects, causal links, conversational context, action continuity, and narrator structure.
+That approach can remove subjects, causal links, conversational context, action continuity, and narrator structure. It is therefore not the current design.
 
-Therefore this stage does **not** physically replace the Event with only accessible lines.
+This design is motivated by work such as PICTURE (ACL 2026), which explores explicit representation of what a character does and does not know rather than relying only on event hiding.
 
-Instead:
-
-```text
-Full Event Context
-+
-Character Perspective Constraint
-```
-
-The full source remains available to the analysis model for scene comprehension, while inaccessible information must not be attributed to the target character.
-
-Core distinction:
-
-```text
-Context available to the analysis model
-≠
-Knowledge available to the character
-```
-
-This design is motivated by work such as PICTURE (ACL 2026), which explores explicit representation of what a character does and does not know instead of relying only on event hiding.
-
-This is still a research-sensitive mechanism: seeing inaccessible information may cause leakage, so the output requires validation and human-review support.
+Because full context can still create leakage risk, perspective judgments remain reviewable and uncertain cases must not be forced into definite classes.
 
 ---
 
-# 3. Stage A — Perspective Pass
+# 3. Perspective Results Are Not a Source Mask
+
+The three perspective classes mean:
+
+```text
+Accessible
+= analysis suggests this information was available to the target character
+
+Inaccessible
+= analysis suggests this information was not available to the target character
+
+Uncertain
+= source/context does not justify a reliable access judgment
+```
+
+They are not instructions to physically construct three separate source files or to remove inaccessible passages from the Event.
+
+Wrong interpretation:
+
+```text
+Complete Event
+↓
+remove Inaccessible
+↓
+character-only Event
+↓
+analysis
+```
+
+Current interpretation:
+
+```text
+Complete Event
++
+Accessible / Inaccessible / Uncertain guidance
+↓
+character-perspective reasoning
+```
+
+A downstream prompt or structured reasoning adapter may present these classes as explicit constraints, but the complete Event remains available and source-addressable.
+
+---
+
+# 4. Stage A — Perspective Pass
 
 The Perspective Pass should be as independent from personality interpretation as possible.
 
-It primarily uses:
+Primary inputs:
 
 ```text
 complete Event context
 speaker / thinker identity
-participants
-presence / absence when source-supported
+source-supported participants / presence cues
 explicit information transmission
-prior validated knowledge state when necessary
 story chronology
+prior validated knowledge only when required
 ```
 
 It should avoid using personality claims unless strictly required.
 
-## 3.1 Output classes
-
-### Accessible
+## 4.1 Accessible
 
 Information directly available to the target character at this point.
 
@@ -163,9 +219,9 @@ own bodily experience
 public environmental information directly experienced
 ```
 
-### Inaccessible
+## 4.2 Inaccessible
 
-Information present in the Event context but not available to the target character.
+Information present in the complete Event but not available to the target character.
 
 Typical examples:
 
@@ -178,7 +234,7 @@ hidden motive not externally revealed
 information learned only later
 ```
 
-### Uncertain
+## 4.3 Uncertain
 
 Cases where source evidence does not justify a reliable accessible / inaccessible decision.
 
@@ -195,7 +251,7 @@ uncertain chronology / presence
 
 ---
 
-# 4. Stage B — Character Inference
+# 5. Stage B — Character Inference
 
 Perspective access and character inference are different stages.
 
@@ -205,9 +261,23 @@ Accessible Information
 What the character concludes from that information
 ```
 
-Character Inference may use validated character state, prior memories, relationship history, beliefs, relevant knowledge, and reasoning tendencies.
+Character Inference may use:
 
-Its current output classes are:
+```text
+complete Event
++
+Perspective Pass result
++
+validated prior Character State
++
+relevant prior knowledge / memory
++
+relationship history when needed
+```
+
+The complete Event remains present for contextual understanding. Information marked `Inaccessible` must not be promoted into target-character knowledge merely because the model can see it.
+
+Current output classes:
 
 ### Known
 
@@ -229,11 +299,11 @@ Important:
 
 > `Misunderstood` is not an error in reconstruction when the source supports that the character misunderstood the situation.
 
-The objective of this stage is character fidelity, not omniscient correctness.
+The objective is character fidelity, not omniscient correctness.
 
 ---
 
-# 5. Separation From Character Interpretation
+# 6. Separation From Character Interpretation
 
 This stage must stop before personality interpretation.
 
@@ -267,11 +337,11 @@ Evidence Candidate
 Period Character State
 ```
 
-This separation is required to reduce circular reasoning.
+This separation reduces circular reasoning.
 
 ---
 
-# 6. Two-Pass Execution
+# 7. Two-Pass Execution
 
 The initial implementation may use two LLM analysis passes.
 
@@ -282,7 +352,7 @@ Input:
 ```text
 Complete Event
 + target character
-+ source metadata
++ source metadata / locator
 + previous validated knowledge only when required
 ```
 
@@ -294,6 +364,8 @@ Inaccessible
 Uncertain
 ```
 
+The output should reference Event/source locations when useful for review, but it does not become replacement source text.
+
 Pass 1 should not infer stable personality.
 
 ## Pass 2 — Character Knowledge / Inference
@@ -302,7 +374,7 @@ Input:
 
 ```text
 Complete Event
-+ Pass 1 result
++ Pass 1 result as perspective guidance
 + relevant validated Character State
 + relevant prior knowledge / memory
 ```
@@ -316,15 +388,56 @@ Suspected
 Misunderstood
 ```
 
-The complete Event remains available in Pass 2 for contextual comprehension, but information marked Inaccessible must not be used as target-character knowledge.
+The complete Event remains available in Pass 2 for contextual comprehension.
 
-The two-pass design is intentional. The main risk is not the extra pass itself but **error propagation** from Pass 1 into Pass 2.
+The two-pass design is intentional. The main risk is error propagation from Pass 1 into Pass 2, not the presence of inaccessible source text itself.
 
-Therefore Pass 1 results should remain reviewable and should preserve uncertainty rather than pretending to be ground truth.
+Therefore Pass 1 results should remain reviewable and preserve uncertainty rather than pretending to be ground truth.
 
 ---
 
-# 7. Error Propagation Guardrails
+# 8. Prompt Semantics
+
+A perspective-aware analysis prompt should make the following distinction explicit:
+
+```text
+You are given the complete Event for analysis.
+Some information in the Event may not be available to the target character.
+Use the Perspective Pass to distinguish story context from target-character knowledge.
+Do not attribute Inaccessible information to the target character.
+Do not treat Uncertain information as definitely known or definitely unknown.
+The complete Event remains authoritative context and must retain its source lineage.
+```
+
+The purpose of `Accessible / Inaccessible / Uncertain` is therefore to guide reasoning, not to reduce the input corpus.
+
+---
+
+# 9. Provenance Requirement
+
+Every perspective-analysis result must remain traceable to the complete Event and original source.
+
+Minimum conceptual lineage:
+
+```text
+perspective_analysis_id
+↓
+target_character
+↓
+event_id
+↓
+Event.source_ranges
+↓
+original source
+```
+
+If individual judgments cite a proposition or source fragment, those references are review aids. They do not change the canonical source ownership of the Event.
+
+A model-written perspective summary alone is never sufficient provenance.
+
+---
+
+# 10. Error Propagation Guardrails
 
 Major failure mode:
 
@@ -341,19 +454,20 @@ X contaminates Character Evidence
 Required guardrails:
 
 1. Preserve `Uncertain` instead of forcing binary classification.
-2. Keep provenance links back to Event and source ranges.
+2. Keep provenance back to Event IDs and original source locators.
 3. Do not transform Pass 1 output into permanent personality evidence directly.
-4. Allow later Events to contradict or revise a prior knowledge-state inference.
+4. Allow later Events to contradict or revise prior knowledge-state inference.
 5. Keep story truth, character knowledge, and character belief distinct.
 6. Prefer human review for representative / high-impact Events before downstream consolidation.
+7. Never construct a character-only replacement Event by deleting `Inaccessible` source lines.
 
 ---
 
-# 8. Human Review Markdown
+# 11. Human Review Markdown
 
-Every completed perspective pre-analysis batch should be able to produce an additional human-readable `.md` projection.
+Every completed perspective pre-analysis batch should be able to produce a human-readable `.md` projection.
 
-This Markdown file is **not canonical storage**. It is a review artifact generated from the structured result.
+This Markdown file is **not canonical storage**. It is a review artifact generated from structured perspective-analysis data.
 
 Suggested filename:
 
@@ -367,20 +481,7 @@ Example:
 reirin_perspective_review_volume1.md
 ```
 
-## 8.1 Review goals
-
-The reviewer should be able to answer quickly:
-
-```text
-Did the model incorrectly expose private information?
-Did it hide information the character obviously perceived?
-Did it confuse story truth with character belief?
-Did it treat a suspicion as knowledge?
-Did it miss a character misunderstanding?
-Did chronology cause future-knowledge leakage?
-```
-
-## 8.2 Required review structure
+Suggested structure:
 
 ```markdown
 # Character Perspective Review
@@ -390,10 +491,9 @@ Source: Volume 1
 
 ## V01-E-0001
 
-### Event
-- Source: lines 32-79
-- Narrative order: 1
-- Story chronology: ...
+### Complete Event Source
+- Event ID: V01-E-0001
+- Source locator: lines 32-79
 
 ### Accessible
 - ...
@@ -419,24 +519,22 @@ Source: Volume 1
 - ...
 
 ### Review
-- [ ] Access boundary checked
-- [ ] No private-thought leakage
+- [ ] Complete Event still retrievable
+- [ ] No private-thought leakage into character knowledge
 - [ ] No future-knowledge leakage
 - [ ] Known vs believed/suspected checked
 - [ ] Uncertain cases reviewed
 
 Reviewer notes:
-
----
 ```
 
-The review file may contain readable source excerpts or source references as needed for checking, but must not become a second source-of-truth database.
+The review file may quote or reference source fragments for checking, but must not become a second source-of-truth database.
 
 ---
 
-# 9. Validation Strategy
+# 12. Validation Strategy
 
-The mechanism should first be tested on a manually reviewed sample rather than assumed reliable across the full corpus.
+The mechanism should first be tested on manually reviewed samples rather than assumed reliable across the full corpus.
 
 Recommended evaluation unit:
 
@@ -464,15 +562,14 @@ temporal-leakage:
 
 private-state-leakage:
   another character's private thought attributed to target character
-```
 
-A practical initial acceptance threshold may be defined empirically after manual review of representative Events. A lower-than-perfect per-Event accuracy may still be usable when downstream evidence accumulation and contradiction checking prevent isolated errors from becoming consolidated character claims.
+source-detachment:
+  perspective result cannot be traced back to the complete Event / original source
+```
 
 ---
 
-# 10. Research Questions
-
-The first implementation should explicitly evaluate:
+# 13. Research Questions
 
 ### RQ1 — Full context vs hard filtering
 
@@ -480,7 +577,7 @@ Does full Event context improve scene coherence compared with sparse character-o
 
 ### RQ2 — Information inhibition
 
-Can the LLM reliably avoid attributing inaccessible information to the target character even though that information remains visible in the prompt?
+Can the LLM reliably avoid attributing inaccessible information to the target character even though that information remains visible in the complete Event?
 
 ### RQ3 — Character-state dependence
 
@@ -492,22 +589,28 @@ How often does an incorrect Perspective Pass produce a downstream Character Inte
 
 ### RQ5 — Human review efficiency
 
-Can the generated Markdown review artifact make manual correction faster than reviewing raw structured output or the complete novel directly?
+Can generated Markdown make manual correction faster than reviewing raw structured output or the complete novel directly?
+
+### RQ6 — Provenance usability
+
+Can every perspective judgment be reviewed efficiently while retaining direct access to the complete original Event passage?
 
 ---
 
-# 11. Scope Guardrail
+# 14. Scope Guardrail
 
 Do not expand this stage into another complete Character Reconstruction engine.
 
 This stage owns only:
 
 ```text
-Event
+Complete Event
 ↓
-Perspective / access state
+Perspective guidance
+  Accessible / Inaccessible / Uncertain
 ↓
-character knowledge / belief state
+Character knowledge / belief-state inference
+  Known / Believed / Suspected / Misunderstood
 ```
 
 It does not own:
@@ -525,4 +628,4 @@ causal personality formation
 
 Core principle:
 
-> Determine what world the character can reason from before asking what that world means to the character.
+> Determine what world the character can reason from before asking what that world means to the character, while preserving the complete Event as the analysis source and retaining direct provenance to the original Canon.

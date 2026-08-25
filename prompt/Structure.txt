@@ -1,0 +1,28 @@
+Canon
+↓
+data_processing
+├─ Speaker / Thinker Attribution
+└─ Event Segmentation
+↓
+Complete Event
+↕
+Original source locator
+↓
+Aiko Perspective Pre-Analysis
+├─ Accessible
+├─ Inaccessible
+└─ Uncertain
+      ↑
+  僅作分析提示
+      │
+Complete Event 仍完整存在
+↓
+Character Inference
+├─ Known
+├─ Believed
+├─ Suspected
+└─ Misunderstood
+↓
+Character Interpretation
+↓
+Evidence / Period State / Memory / Development
